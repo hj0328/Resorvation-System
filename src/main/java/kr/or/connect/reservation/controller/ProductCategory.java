@@ -24,8 +24,8 @@ public class ProductCategory {
 	}
 	
 	@GetMapping(path = "/products")
-	public Map<String, Object> getProducts(@RequestParam(required = false) Integer categoryId
-			, @RequestParam(required = false, defaultValue = "0") Integer start) {
+	public Map<String, Object> getProducts(@RequestParam(required = false) int categoryId
+			, @RequestParam(required = false, defaultValue = "0") int start) {
 
 		List<ProductItem> products = productService.getProducts(categoryId, start);
 		int productCntById = productService.getProductCntById(categoryId);
