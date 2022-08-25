@@ -53,6 +53,10 @@ public class DBConfig implements TransactionManagementConfigurer {
 		return transactionManger();
 	}
 	
+	/*
+	 * Transactional 어노테이션 적용하기 위한 설정
+	 *  - @EnableTransactionManagement 포함 
+	 */
 	@Bean
 	public PlatformTransactionManager transactionManger() {
 		return new DataSourceTransactionManager(dataSource());

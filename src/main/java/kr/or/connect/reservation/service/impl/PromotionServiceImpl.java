@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import kr.or.connect.reservation.dao.PromotionDao;
 import kr.or.connect.reservation.dto.PromotionItem;
@@ -21,7 +20,6 @@ public class PromotionServiceImpl implements PromotionService {
 	}
 	
 	@Override
-	@Transactional(readOnly = false)
 	public List<PromotionItem> getPromotions() {
 		return promotionDao.selectPromotions();
 	}

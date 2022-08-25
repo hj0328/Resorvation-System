@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import kr.or.connect.reservation.dao.CategoryDao;
 import kr.or.connect.reservation.dao.ProductDao;
@@ -25,13 +24,11 @@ public class ProductServiceImpl implements ProductService {
 	}
 	
 	@Override
-	@Transactional(readOnly = false)
 	public List<ProductItem> getProducts(Integer categoryId, Integer start) {
 		return productDao.selectProducts(categoryId, start);
 	}
 
 	@Override
-	@Transactional(readOnly = false)
 	public int getProductCntById(Integer categoryId) {
 		
 		List<CategoryItem> selectAll = categoryDao.selectAll();
