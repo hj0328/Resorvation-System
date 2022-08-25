@@ -17,19 +17,19 @@ import org.springframework.transaction.annotation.TransactionManagementConfigure
 @EnableTransactionManagement
 public class DBConfig implements TransactionManagementConfigurer {
 
-	@Value("#{system['spring.datasource.driver-class-name']}")
+	@Value("#{config['spring.datasource.driver-class-name']}")
 	private String driverClassName;
 
-	@Value("#{system['spring.datasource.url']}")
+	@Value("#{config['spring.datasource.url']}")
 	private String url;
 
-	@Value("#{system['spring.datasource.username']}")
+	@Value("#{config['spring.datasource.username']}")
 	private String username;
 	
-	@Value("#{system['spring.datasource.password']}")
+	@Value("#{config['spring.datasource.password']}")
 	private String password;
 	
-	@Bean(name = "system")
+	@Bean
 	public PropertiesFactoryBean config() {
 		PropertiesFactoryBean propertiesFactoryBean = new PropertiesFactoryBean();
 		ClassPathResource classPathResource = new ClassPathResource("application.properties");
