@@ -13,15 +13,22 @@ import kr.or.connect.reservation.service.ProductService;
 public class ProductServiceImpl implements ProductService {
 
 	private final ProductDao productDao;
-	
+
 	@Autowired
 	public ProductServiceImpl(ProductDao productDao) {
 		this.productDao = productDao;
 	}
-	
+
 	@Override
 	public List<ProductItem> getProducts(int categoryId, int start) {
-		return productDao.selectProducts(categoryId, start);
+		List<ProductItem> products = null;
+		if(categoryId == 0) {
+			products = productDao.selectAllProducts(start);
+		} else {
+			products = productDao.selectProducts(categoryId, start);
+		}
+
+		return products;
 	}
 
 	@Override
