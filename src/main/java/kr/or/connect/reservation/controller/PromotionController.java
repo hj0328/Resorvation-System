@@ -24,7 +24,7 @@ public class PromotionController {
 	@GetMapping(path = "/promotions")
 	public  Map<String, Object> getPromotions() {
 		List<PromotionItem> promotion = promotionService.getPromotions();
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<>();
 		map.put("items", promotion);
 		return map;
 	}

@@ -26,7 +26,7 @@ public class CategoryController {
 	@GetMapping(path = "/categories")
 	public Map<String, Object> getCategories() {
 		List<CategoryItem> categories = categoryService.getCategories();
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<>();
 		map.put("items", categories);
 		return map;
 	}

@@ -30,7 +30,7 @@ public class ProductCategory {
 		List<ProductItem> products = productService.getProducts(categoryId, start);
 		int productCntById = productService.getProductCntById(categoryId);
 		
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<>();
 		map.put("items", products);
 		map.put("totalCount", productCntById);
 		return map;
