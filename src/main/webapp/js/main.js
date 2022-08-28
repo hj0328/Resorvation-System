@@ -17,7 +17,7 @@ function initPromotion() {
     oReq.addEventListener("load", function() {
         if (oReq.status === 200) {
             items = JSON.parse(oReq.responseText).items;
-            
+
             container = document.querySelector("#promotion_container").firstElementChild;
             let templateHtml = document.querySelector("#promotion-template").innerHTML;
             container.innerHTML += templateHtml.replace("{imgUrl}", items[0].productImageUrl);
@@ -29,7 +29,7 @@ function initPromotion() {
 
             requestAnimationFrame(movePromotion);
         } else {
-            alert("Server promotion error occured.");
+            alert("Promotion error occured. Ajax error code: " + oReq.status);
         }
     });
     let url = "./api/promotions";
@@ -54,12 +54,12 @@ function movePromotion(timestamp) {
 
         if (count === container.clientWidth) done = true;
     }
-    
-    if (elapsed < container.clientWidth *10) { 
+
+    if (elapsed < container.clientWidth *10) {
         previousTimeStamp = timestamp;
         if (!done) {
             requestAnimationFrame(movePromotion);
-        } 
+        }
     } else {
         changePromotion();
         start = undefined;
@@ -103,7 +103,7 @@ function initItemCnt() {
 
             document.querySelector(".pink").innerHTML = totalItemCnt + "개";
         } else {
-            alert("Server item count error occured.");
+            alert("Server item count error occured. Ajax error code: " + oReq.status);
         }
     });
     let url = "./api/categories";
@@ -135,12 +135,12 @@ moreBtn.addEventListener("click", function(evt) {
     let categoryId = document.querySelector(".active").parentElement.dataset.category;
     let eventBox = document.querySelectorAll(".lst_event_box");
     let start = eventBox[0].childElementCount + eventBox[1].childElementCount;
-    
+
     addItems(categoryId, start);
 });
 
 /*
-    categoryId와 start에 따른 아이템 추가 
+    categoryId와 start에 따른 아이템 추가
      - 새로운 카테고리 탭 클릭 시 start부터 시작하는 categoryId 아이템 호출
      - 새로운 카테고리 탭을 클릭하기 때문에 카테고리 개수 설정
 */
@@ -151,7 +151,7 @@ function addItems(categoryId, start) {
             let resp = JSON.parse(oReq.responseText);
             products = resp.items;
             document.querySelector(".pink").innerHTML = resp.totalCount + "개";
-            
+
             let eventBox = document.querySelectorAll(".lst_event_box");
             for(key = 0, len = products.length; key < len ; key++) {
                 let template = document.querySelector("#itemList").innerHTML;
@@ -173,7 +173,7 @@ function addItems(categoryId, start) {
                 moreBtn.style.display = 'none';
             }
         } else {
-            alert("Server error occured.");
+            alert("Getting category items error occured. Ajax error code: " + oReq.status);
         }
     });
 
@@ -183,9 +183,9 @@ function addItems(categoryId, start) {
 }
 
 /*
-    다른 카테고리 탭 클릭 시 화면 변경 
-     - event delegation을 이용하여 a 또는 span 가 클릭 시 
-       새 카테고리 아이템 다시 조회 
+    다른 카테고리 탭 클릭 시 화면 변경
+     - event delegation을 이용하여 a 또는 span 가 클릭 시
+       새 카테고리 아이템 다시 조회
      - active class 재설정
 */
 let tabs = document.querySelector(".section_event_tab");
