@@ -193,15 +193,15 @@ tabs.addEventListener("click", function(evt){
     let tab = evt.target;
 
     if(tab.tagName === "A") {
-        document.querySelector(".active").classList.remove("active");
-        tab.classList.add("active");
-        let categoryId = tab.parentElement.dataset.category;
+        document.querySelector(".active").className = "anchor";
+        tab.className += " active";
+        let categoryId = document.querySelector(".active").parentElement.dataset.category;
         initItemList(categoryId);
     } else if(tab.tagName === "SPAN") {
-        document.querySelector(".active").classList.remove("active");
-        tab.parentElement.classList.add("active");
+        document.querySelector(".active").className = "anchor";
+        tab.parentElement.className += " active"
 
-        let categoryId = tab.parentElement.parentElement.dataset.category;
+        let categoryId = document.querySelector(".active").parentElement.dataset.category;
         initItemList(categoryId);
     }
 });
