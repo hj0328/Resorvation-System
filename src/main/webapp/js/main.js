@@ -205,3 +205,11 @@ tabs.addEventListener("click", function(evt){
         initItemList(categoryId);
     }
 });
+
+let lnkTop = document.querySelector(".lnk_top");
+lnkTop.addEventListener("click", function() {
+    window.scrollTo({
+        top:0,
+        left:0,
+        behavior:'smooth'});
+});
