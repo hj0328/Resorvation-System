@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import kr.or.connect.reservation.dto.PromotionItem;
+import kr.or.connect.reservation.dto.PromotionItemDto;
 import kr.or.connect.reservation.service.PromotionService;
 
 @RestController
@@ -23,7 +23,7 @@ public class PromotionController {
 	
 	@GetMapping(path = "/promotions")
 	public  Map<String, Object> getPromotions() {
-		List<PromotionItem> promotion = promotionService.getPromotions();
+		List<PromotionItemDto> promotion = promotionService.getPromotions();
 		Map<String, Object> map = new HashMap<>();
 		map.put("items", promotion);
 		return map;

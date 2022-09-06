@@ -1,10 +1,13 @@
 package kr.or.connect.reservation.service;
 
 import java.util.List;
+import java.util.Map;
 
-import kr.or.connect.reservation.dto.ProductItem;
+import kr.or.connect.reservation.dto.ProductItemDto;
 
 public interface ProductService {
-	List<ProductItem> getProducts(int categoryId, int start);
+	List<ProductItemDto> getProducts(int categoryId, int start);
 	int getProductCntById(int categoryId);
+	Map<String, Object> getDisplayInfo(int displayInfoId);
+
 }

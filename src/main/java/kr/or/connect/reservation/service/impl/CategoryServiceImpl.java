@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.or.connect.reservation.dao.CategoryDao;
-import kr.or.connect.reservation.dto.CategoryItem;
+import kr.or.connect.reservation.dto.CategoryItemDto;
 import kr.or.connect.reservation.service.CategoryService;
 
 @Service
@@ -20,7 +20,7 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 	
 	@Override
-	public List<CategoryItem> getCategories() {
+	public List<CategoryItemDto> getCategories() {
 		return categoryDao.selectAll();
 	}
 }

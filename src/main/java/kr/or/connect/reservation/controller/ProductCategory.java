@@ -6,33 +6,39 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import kr.or.connect.reservation.dto.ProductItem;
+import kr.or.connect.reservation.dto.ProductItemDto;
 import kr.or.connect.reservation.service.ProductService;
 
 @RestController
-@RequestMapping(path="/api")
+@RequestMapping(path="/api/products")
 public class ProductCategory {
-	private final ProductService productService; 
+	private final ProductService productService;
 
 	@Autowired
 	public ProductCategory(ProductService productService) {
 		this.productService = productService;
 	}
-	
-	@GetMapping(path = "/products")
+
+	@GetMapping
 	public Map<String, Object> getProducts(@RequestParam(required = false) int categoryId
 			, @RequestParam(required = false, defaultValue = "0") int start) {
 
-		List<ProductItem> products = productService.getProducts(categoryId, start);
+		List<ProductItemDto> products = productService.getProducts(categoryId, start);
 		int productCntById = productService.getProductCntById(categoryId);
-		
+
 		Map<String, Object> map = new HashMap<>();
 		map.put("items", products);
 		map.put("totalCount", productCntById);
 		return map;
+	}
+
+	@GetMapping(path = "/{displayInfoId}")
+	public Map<String, Object> getDisplayInfo(@PathVariable(required = true) int displayInfoId) {
+		return productService.getDisplayInfo(displayInfoId);
 	}
 }

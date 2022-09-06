@@ -1,6 +1,6 @@
 package kr.or.connect.reservation.dto;
 
-public class ProductItem {
+public class ProductItemDto {
 	private Integer displayInfoId;
 	private String placeName;
 	private String productContent;

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import kr.or.connect.reservation.dto.CategoryItem;
+import kr.or.connect.reservation.dto.CategoryItemDto;
 import kr.or.connect.reservation.service.CategoryService;
 
 @RestController
@@ -25,7 +25,7 @@ public class CategoryController {
 	
 	@GetMapping(path = "/categories")
 	public Map<String, Object> getCategories() {
-		List<CategoryItem> categories = categoryService.getCategories();
+		List<CategoryItemDto> categories = categoryService.getCategories();
 		Map<String, Object> map = new HashMap<>();
 		map.put("items", categories);
 		return map;

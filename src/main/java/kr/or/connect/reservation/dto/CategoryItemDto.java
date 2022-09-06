@@ -1,6 +1,6 @@
 package kr.or.connect.reservation.dto;
 
-public class CategoryItem {
+public class CategoryItemDto {
 	private Integer count;
 	private Integer id;
 	private String name;

@@ -1,6 +1,6 @@
 package kr.or.connect.reservation.dto;
 
-public class PromotionItem {
+public class PromotionItemDto {
 	private int id;
 	private int productId;
 	private String productImageUrl;

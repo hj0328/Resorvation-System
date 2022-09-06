@@ -23,13 +23,13 @@ public class WebMvcContextConfiguration extends WebMvcConfigurerAdapter {
 	/*
 	 *  default servlet handler 사용
 	 *  1. 매핑정보가 없는 정보를 was에게 전달
-	 *  2. was가 static 정보를 읽어서 리턴 
+	 *  2. was가 static 정보를 읽어서 리턴
 	 */
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();
     }
- 
+
     /*
      * 특정 url 정보를 controller 작성없이 매핑
      */
@@ -39,6 +39,7 @@ public class WebMvcContextConfiguration extends WebMvcConfigurerAdapter {
         registry.addViewController("/detail").setViewName("/htmls/detail.html");
         registry.addViewController("/bookinglogin").setViewName("/htmls/bookinglogin.html");
         registry.addViewController("/myreservation").setViewName("/htmls/myreservation.html");
+        registry.addViewController("/review").setViewName("/htmls/review.html");
     }
 }
 
