@@ -32,7 +32,7 @@ public class ReservationDaoSqls {
 												+ "WHERE di.product_id = p.id AND p.id = ruc.product_id AND ri.id = ruc.reservation_info_id "
 												+ "AND di.id = :displayInfoId ";
 
-	public static final String SELECT_COMMENT_AVERAGE_SCORE_BY_DISPLAY_ID = "SELECT avg(ruc.score) AS averageScore "
+	public static final String SELECT_COMMENT_AVERAGE_SCORE_BY_DISPLAY_ID = "SELECT IFNULL(avg(ruc.score), 0.0) AS averageScore "
 												+ "FROM display_info di, product p, reservation_user_comment ruc, reservation_info ri "
 												+ "WHERE di.id = :displayInfoId AND di.product_id = p.id AND p.id = ruc.product_id AND ri.id = ruc.reservation_info_id ";
 

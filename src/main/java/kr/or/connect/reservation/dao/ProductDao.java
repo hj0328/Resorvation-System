@@ -79,9 +79,6 @@ public class ProductDao {
 			params.put("categoryId", categoryId);
 		}
 		Integer productCnt = jdbc.queryForObject(sql, params, Integer.class);
-		if(productCnt == null) {
-			return 0;
-		}
 		return productCnt;
 	}
 
@@ -91,9 +88,6 @@ public class ProductDao {
 		params.put("displayInfoId", displayInfoId);
 
 		Double averageScore = jdbc.queryForObject(sql, params, Double.class);
-		if(averageScore == null) {
-			return 0;
-		}
 		return averageScore;
 	}
 
