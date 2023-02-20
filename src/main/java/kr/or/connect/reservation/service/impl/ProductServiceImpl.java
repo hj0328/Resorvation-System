@@ -13,6 +13,7 @@ import kr.or.connect.reservation.dto.DisplayInfoDto;
 import kr.or.connect.reservation.dto.DisplayInfoImageDto;
 import kr.or.connect.reservation.dto.ProductImageDto;
 import kr.or.connect.reservation.dto.ProductItemDto;
+import kr.or.connect.reservation.dto.ProductPriceDto;
 import kr.or.connect.reservation.service.CommentService;
 import kr.or.connect.reservation.service.ProductService;
 
@@ -47,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public Map<String, Object> getDisplayInfo(int displayInfoId) {
+	public Map<String, Object> getProductDetail(int displayInfoId) {
 		Map<String, Object> displayInfoMap = new HashMap<>();
 
 		DisplayInfoDto displayInfo = productDao.selectDisplayInfo(displayInfoId);
@@ -58,6 +59,9 @@ public class ProductServiceImpl implements ProductService {
 
 		DisplayInfoImageDto displayInfoImage = productDao.selectDisplayInfoImage(displayInfoId);
 		displayInfoMap.put("displayInfoImage", displayInfoImage);
+
+		List<ProductPriceDto> productPriceList = productDao.selectProductPrice(displayInfoId);
+		displayInfoMap.put("productPriceId", productPriceList);
 
 		List<CommentDto> comments = commentService.getComments(displayInfoId);
 		displayInfoMap.put("comments", comments);

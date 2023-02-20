@@ -12,21 +12,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.or.connect.reservation.dto.ProductItemDto;
+import kr.or.connect.reservation.service.CommentService;
 import kr.or.connect.reservation.service.ProductService;
 
 @RestController
-@RequestMapping(path="/api/products")
+@RequestMapping(path = "/api/products")
 public class ProductCategoryController {
 	private final ProductService productService;
 
 	@Autowired
-	public ProductCategoryController(ProductService productService) {
+	public ProductCategoryController(ProductService productService, CommentService commentService) {
 		this.productService = productService;
 	}
 
 	@GetMapping
-	public Map<String, Object> getProducts(@RequestParam(required = false) int categoryId
-			, @RequestParam(required = false, defaultValue = "0") int start) {
+	public Map<String, Object> getProducts(@RequestParam(required = false) int categoryId,
+			@RequestParam(required = false, defaultValue = "0") int start) {
 
 		List<ProductItemDto> products = productService.getProducts(categoryId, start);
 		int productCntById = productService.getProductCountById(categoryId);
@@ -38,7 +39,8 @@ public class ProductCategoryController {
 	}
 
 	@GetMapping(path = "/{displayInfoId}")
-	public Map<String, Object> getDisplayInfo(@PathVariable int displayInfoId) {
-		return productService.getDisplayInfo(displayInfoId);
+	public Map<String, Object> getProductDetail(@PathVariable int displayInfoId) {
+		return productService.getProductDetail(displayInfoId);
 	}
+
 }
