@@ -13,6 +13,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @ComponentScan(basePackages = {"kr.or.connect.reservation.controller"})
 public class WebMvcContextConfiguration extends WebMvcConfigurerAdapter {
 
+	/*
+	 * handler에게 controller외에 다른 url 매핑을 등록
+	 * application root 디렉토리 아래에 있는 폴더에서 리소스를 찾을 수 있게 한다. 
+	 * controller에서 해당 요청(/css.., /img.., /js..)을 하지 않는다. 
+	 */
 	@Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/css/**").addResourceLocations("/css/").setCachePeriod(31556926);
@@ -21,9 +26,9 @@ public class WebMvcContextConfiguration extends WebMvcConfigurerAdapter {
     }
 
 	/*
-	 *  default servlet handler 사용
-	 *  1. 매핑정보가 없는 정보를 was에게 전달
-	 *  2. was가 static 정보를 읽어서 리턴
+	 *  default servlet handler 사용하도록 설정
+	 *   - 매핑정보가 없는 요청을 defaultServletHanlder가 처리하도록 함
+	 *   - static 자원을 리턴
 	 */
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
@@ -31,7 +36,8 @@ public class WebMvcContextConfiguration extends WebMvcConfigurerAdapter {
     }
 
     /*
-     * 특정 url 정보를 controller 작성없이 매핑
+     *  특정 url 요청을 controller 작성없이 바로 view로 볼 수 있게 설정
+     *   - 설정한 view는 내부적으로 viewResolver가 view를 사용할 수 있게 한다. 
      */
     @Override
     public void addViewControllers(final ViewControllerRegistry registry) {
