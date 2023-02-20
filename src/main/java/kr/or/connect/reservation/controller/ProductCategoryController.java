@@ -38,7 +38,7 @@ public class ProductCategoryController {
 	}
 
 	@GetMapping(path = "/{displayInfoId}")
-	public Map<String, Object> getDisplayInfo(@PathVariable(required = true) int displayInfoId) {
+	public Map<String, Object> getDisplayInfo(@PathVariable int displayInfoId) {
 		return productService.getDisplayInfo(displayInfoId);
 	}
 }
