@@ -1,6 +1,14 @@
 package kr.or.connect.reservation.dao;
 
-import static kr.or.connect.reservation.dao.ReservationDaoSqls.*;
+import static kr.or.connect.reservation.dao.ReservationDaoSqls.SELECT_ALL_PRODUCTS;
+import static kr.or.connect.reservation.dao.ReservationDaoSqls.SELECT_COMMENT_AVERAGE_SCORE_BY_DISPLAY_ID;
+import static kr.or.connect.reservation.dao.ReservationDaoSqls.SELECT_COMMENT_IMAGE_BY_COMMENT_ID;
+import static kr.or.connect.reservation.dao.ReservationDaoSqls.SELECT_DISPLAYINFO_BY_DISPLAY_ID;
+import static kr.or.connect.reservation.dao.ReservationDaoSqls.SELECT_DISPLAY_INFO_IMG_BY_DISPLAY_ID;
+import static kr.or.connect.reservation.dao.ReservationDaoSqls.SELECT_PRODUCTS;
+import static kr.or.connect.reservation.dao.ReservationDaoSqls.SELECT_PRODUCTS_COUNT_BY_ID;
+import static kr.or.connect.reservation.dao.ReservationDaoSqls.SELECT_PRODUCT_IMAGE_BY_DISPLAY_ID;
+import static kr.or.connect.reservation.dao.ReservationDaoSqls.SELECT_PRODUCT_PRICE_BY_DISPLAY_ID;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +21,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import kr.or.connect.reservation.dto.CommentDto;
 import kr.or.connect.reservation.dto.CommentImageDto;
 import kr.or.connect.reservation.dto.DisplayInfoDto;
 import kr.or.connect.reservation.dto.DisplayInfoImageDto;
@@ -25,8 +32,6 @@ import kr.or.connect.reservation.dto.ProductPriceDto;
 public class ProductDao {
 	private NamedParameterJdbcTemplate jdbc;
 	private RowMapper<ProductItemDto> rowMapper = BeanPropertyRowMapper.newInstance(ProductItemDto.class);
-	private RowMapper<CommentDto> commentRowMapper = BeanPropertyRowMapper.newInstance(CommentDto.class);
-	private RowMapper<CommentImageDto> commentImageRowMapper = BeanPropertyRowMapper.newInstance(CommentImageDto.class);
 	private RowMapper<DisplayInfoDto> displayInfoRowMapper = BeanPropertyRowMapper.newInstance(DisplayInfoDto.class);
 	private RowMapper<DisplayInfoImageDto> displayInfoImageRowMapper = BeanPropertyRowMapper.newInstance(DisplayInfoImageDto.class);
 	private RowMapper<ProductImageDto> proudcImageRowMapper = BeanPropertyRowMapper.newInstance(ProductImageDto.class);
@@ -80,14 +85,6 @@ public class ProductDao {
 		return productCnt;
 	}
 
-	public List<CommentDto> selectComment(int displayInfoId) {
-		String sql = SELECT_COMMENT_BY_DISPLAY_ID;
-		Map<String, Integer> params = new HashMap<>();
-		params.put("displayInfoId", displayInfoId);
-
-		return jdbc.query(sql, params, commentRowMapper);
-	}
-
 	public double selectAverageScore(int displayInfoId) {
 		String sql = SELECT_COMMENT_AVERAGE_SCORE_BY_DISPLAY_ID;
 		Map<String, Integer> params = new HashMap<>();
@@ -98,15 +95,6 @@ public class ProductDao {
 			return 0;
 		}
 		return averageScore;
-	}
-
-	public List<CommentImageDto> selectCommentImageByCommentId(int commentId) {
-		String sql = SELECT_COMMENT_IMAGE_BY_COMMENT_ID;
-
-		Map<String, Integer> params = new HashMap<>();
-		params.put("commentId", commentId);
-
-		return jdbc.query(sql, params, commentImageRowMapper);
 	}
 
 	public DisplayInfoDto selectDisplayInfo(int displayInfoId){

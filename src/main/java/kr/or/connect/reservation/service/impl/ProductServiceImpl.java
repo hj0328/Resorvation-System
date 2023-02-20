@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 
 import kr.or.connect.reservation.dao.ProductDao;
 import kr.or.connect.reservation.dto.CommentDto;
-import kr.or.connect.reservation.dto.CommentImageDto;
 import kr.or.connect.reservation.dto.DisplayInfoDto;
 import kr.or.connect.reservation.dto.DisplayInfoImageDto;
 import kr.or.connect.reservation.dto.ProductImageDto;
 import kr.or.connect.reservation.dto.ProductItemDto;
+import kr.or.connect.reservation.service.CommentService;
 import kr.or.connect.reservation.service.ProductService;
 
 @Service
@@ -21,15 +21,18 @@ public class ProductServiceImpl implements ProductService {
 
 	private final ProductDao productDao;
 
+	private final CommentService commentService;
+
 	@Autowired
-	public ProductServiceImpl(ProductDao productDao) {
+	public ProductServiceImpl(ProductDao productDao, CommentService commentService) {
 		this.productDao = productDao;
+		this.commentService = commentService;
 	}
 
 	@Override
 	public List<ProductItemDto> getProducts(int categoryId, int start) {
 		List<ProductItemDto> products = null;
-		if(categoryId == 0) {
+		if (categoryId == 0) {
 			products = productDao.selectAllProducts(start);
 		} else {
 			products = productDao.selectProducts(categoryId, start);
@@ -56,21 +59,12 @@ public class ProductServiceImpl implements ProductService {
 		DisplayInfoImageDto displayInfoImage = productDao.selectDisplayInfoImage(displayInfoId);
 		displayInfoMap.put("displayInfoImage", displayInfoImage);
 
-		List<CommentDto> comments = getComments(displayInfoId);
+		List<CommentDto> comments = commentService.getComments(displayInfoId);
 		displayInfoMap.put("comments", comments);
 
 		Double averageScore = productDao.selectAverageScore(displayInfoId);
 		displayInfoMap.put("averageScore", averageScore);
 
 		return displayInfoMap;
-	}
-
-	private List<CommentDto> getComments(int displayInfoId) {
-		List<CommentDto> commentList = productDao.selectComment(displayInfoId);
-		for (CommentDto commentDto : commentList) {
-			List<CommentImageDto> commentImageList = productDao.selectCommentImageByCommentId(commentDto.getCommentId());
-			commentDto.setCommentImages(commentImageList);
-		}
-		return commentList;
 	}
 }
