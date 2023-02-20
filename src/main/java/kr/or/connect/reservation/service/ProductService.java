@@ -7,7 +7,7 @@ import kr.or.connect.reservation.dto.ProductItemDto;
 
 public interface ProductService {
 	List<ProductItemDto> getProducts(int categoryId, int start);
-	int getProductCntById(int categoryId);
+	int getProductCountById(int categoryId);
 	Map<String, Object> getDisplayInfo(int displayInfoId);
 
 }

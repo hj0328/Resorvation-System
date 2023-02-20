@@ -64,8 +64,8 @@ public class ProductDao {
 	}
 
 
-	public int selectProductCntById(int categoryId) {
-		String sql = new String(SELECT_PRODUCTS_CNT_BY_ID);
+	public int selectProductCountById(int categoryId) {
+		String sql = new String(SELECT_PRODUCTS_COUNT_BY_ID);
 		Map<String, Integer> params = new HashMap<>();
 
 		if(categoryId == 0) {
@@ -88,16 +88,16 @@ public class ProductDao {
 		return jdbc.query(sql, params, commentRowMapper);
 	}
 
-	public double selectAvgScore(int displayInfoId) {
-		String sql = SELECT_COMMENT_AVG_SCORE_BY_DISPLAY_ID;
+	public double selectAverageScore(int displayInfoId) {
+		String sql = SELECT_COMMENT_AVERAGE_SCORE_BY_DISPLAY_ID;
 		Map<String, Integer> params = new HashMap<>();
 		params.put("displayInfoId", displayInfoId);
 
-		Double avgScore = jdbc.queryForObject(sql, params, Double.class);
-		if(avgScore == null) {
+		Double averageScore = jdbc.queryForObject(sql, params, Double.class);
+		if(averageScore == null) {
 			return 0;
 		}
-		return avgScore;
+		return averageScore;
 	}
 
 	public List<CommentImageDto> selectCommentImageByCommentId(int commentId) {

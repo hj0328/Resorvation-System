@@ -16,11 +16,11 @@ import kr.or.connect.reservation.service.ProductService;
 
 @RestController
 @RequestMapping(path="/api/products")
-public class ProductCategory {
+public class ProductCategoryController {
 	private final ProductService productService;
 
 	@Autowired
-	public ProductCategory(ProductService productService) {
+	public ProductCategoryController(ProductService productService) {
 		this.productService = productService;
 	}
 
@@ -29,7 +29,7 @@ public class ProductCategory {
 			, @RequestParam(required = false, defaultValue = "0") int start) {
 
 		List<ProductItemDto> products = productService.getProducts(categoryId, start);
-		int productCntById = productService.getProductCntById(categoryId);
+		int productCntById = productService.getProductCountById(categoryId);
 
 		Map<String, Object> map = new HashMap<>();
 		map.put("items", products);

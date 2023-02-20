@@ -14,7 +14,6 @@ import kr.or.connect.reservation.dto.DisplayInfoDto;
 import kr.or.connect.reservation.dto.DisplayInfoImageDto;
 import kr.or.connect.reservation.dto.ProductImageDto;
 import kr.or.connect.reservation.dto.ProductItemDto;
-import kr.or.connect.reservation.dto.ProductPriceDto;
 import kr.or.connect.reservation.service.ProductService;
 
 @Service
@@ -40,8 +39,8 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public int getProductCntById(int categoryId) {
-		return productDao.selectProductCntById(categoryId);
+	public int getProductCountById(int categoryId) {
+		return productDao.selectProductCountById(categoryId);
 	}
 
 	@Override
@@ -60,8 +59,8 @@ public class ProductServiceImpl implements ProductService {
 		List<CommentDto> comments = getComments(displayInfoId);
 		displayInfoMap.put("comments", comments);
 
-		Double avgScore = productDao.selectAvgScore(displayInfoId);
-		displayInfoMap.put("averageScore", avgScore);
+		Double averageScore = productDao.selectAverageScore(displayInfoId);
+		displayInfoMap.put("averageScore", averageScore);
 
 		return displayInfoMap;
 	}

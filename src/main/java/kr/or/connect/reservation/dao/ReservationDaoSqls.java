@@ -21,7 +21,7 @@ public class ReservationDaoSqls {
 												+ "AND image.type = 'th' AND product.id = image.product_id AND image.file_id = finfo.id "
 												+ "LIMIT :start, 4 ";
 
-	public static final String SELECT_PRODUCTS_CNT_BY_ID = "SELECT count(*) "
+	public static final String SELECT_PRODUCTS_COUNT_BY_ID = "SELECT count(*) "
 												+ "FROM category, product, display_info info , product_image image, file_info finfo "
 												+ "WHERE category.id = :categoryId AND category.id = product.category_id  AND product.id = info.product_id "
 												+ "AND image.type = 'th' AND product.id = image.product_id AND image.file_id = finfo.id ";
@@ -32,7 +32,7 @@ public class ReservationDaoSqls {
 												+ "WHERE di.product_id = p.id AND p.id = ruc.product_id AND ri.id = ruc.reservation_info_id "
 												+ "AND di.id = :displayInfoId ";
 
-	public static final String SELECT_COMMENT_AVG_SCORE_BY_DISPLAY_ID = "SELECT avg(ruc.score) AS averageScore "
+	public static final String SELECT_COMMENT_AVERAGE_SCORE_BY_DISPLAY_ID = "SELECT avg(ruc.score) AS averageScore "
 												+ "FROM display_info di, product p, reservation_user_comment ruc, reservation_info ri "
 												+ "WHERE di.id = :displayInfoId AND di.product_id = p.id AND p.id = ruc.product_id AND ri.id = ruc.reservation_info_id ";
 
