@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function() {
 const btnBackSetter = {
     setBtnBack : function() {
         let btn = document.querySelector(".btn_back");
-        btn.setAttribute("href","./review?id=" + getParam("id"));
+        btn.setAttribute("href","./detail?id=" + getParam("id"));
     }
 }
 
