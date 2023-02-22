@@ -60,9 +60,9 @@ const SlideSetter = {
     },
     // 슬라이드 움직임 기능 구현, prev와 nxt 버튼 구현
     setSlideMovingImage : function() {
+        const slideWidth = 414;
         let images = document.querySelector(".visual_img");
         let totalSlideCnt = images.childElementCount;
-        let slideWidth = 414;
         let prevBtn = document.querySelector(".prev");
         let nxtBtn = document.querySelector(".nxt");
         let pagination = document.querySelector(".figure_pagination");
