@@ -1,23 +1,23 @@
 
 document.addEventListener("DOMContentLoaded", function() {
-    pageUploader.uploadDetailPage();
-    btnBackSetter.setBtnBack();
+    PageUploader.uploadDetailPage();
+    BtnBackSetter.setBtnBack();
 });
 
-const btnBackSetter = {
+const BtnBackSetter = {
     setBtnBack : function() {
         let btn = document.querySelector(".btn_back");
         btn.setAttribute("href","./detail?id=" + getParam("id"));
     }
 }
 
-const pageUploader = {
+const PageUploader = {
     uploadDetailPage : function() {
         let oReq = new XMLHttpRequest();
         oReq.addEventListener("load", function() {
             if (oReq.status === 200) {
                 let displayInfoSet = JSON.parse(oReq.responseText);
-                reviewSetter.setReview(displayInfoSet);
+                ReviewSetter.setReview(displayInfoSet);
             }
         });
 
@@ -28,7 +28,7 @@ const pageUploader = {
     }
 };
 
-const reviewSetter = {
+const ReviewSetter = {
     setReview : function(displayInfoSet){
         this.updateReviewHeader(displayInfoSet);
         this.updateReview(displayInfoSet);

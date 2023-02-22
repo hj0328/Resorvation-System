@@ -1,11 +1,11 @@
 
 document.addEventListener("DOMContentLoaded", function() {
-    pageUploader.uploadDetailPage();
-    reviewMoreBtnSetter.setReviewMoreBtn();
+    PageUploader.uploadDetailPage();
+    ReviewMoreBtnSetter.setReviewMoreBtn();
 });
 
 // '예매자 한줄평 더보기' 클릭 시 현재 url의 id 파라미터 전달하도록 속성 설정
-const reviewMoreBtnSetter = {
+const ReviewMoreBtnSetter = {
     setReviewMoreBtn : function() {
         let btn = document.querySelector(".btn_review_more");
         btn.setAttribute("href","./review?id=" + getParam("id"));
@@ -19,17 +19,17 @@ const reviewMoreBtnSetter = {
      - 상세보기 탭 세팅
      - 리뷰어 정보 로딩
 */
-const pageUploader = {
+const PageUploader = {
     uploadDetailPage : function() {
         let oReq = new XMLHttpRequest();
         oReq.addEventListener("load", function() {
             if (oReq.status === 200) {
                 let displayInfoSet = JSON.parse(oReq.responseText);
 
-                slideSetter.loadSlide(displayInfoSet);
-                detailTabs.loadDetailTabs(displayInfoSet);
-                detailBtn.setDetail(displayInfoSet);
-                reviewSetter.setReview(displayInfoSet);
+                SlideSetter.loadSlide(displayInfoSet);
+                DetailTabs.loadDetailTabs(displayInfoSet);
+                DetailBtn.setDetail(displayInfoSet);
+                ReviewSetter.setReview(displayInfoSet);
             }
         });
 
@@ -40,7 +40,7 @@ const pageUploader = {
     }
 };
 
-const slideSetter = {
+const SlideSetter = {
     loadSlide : function(displayInfoSet) {
         this.setSlideImages(displayInfoSet);
         this.setSlideMovingImage();
@@ -83,7 +83,7 @@ const slideSetter = {
 
             images.style.transform = "translate(-" + (slideWidth * (currentPage-1)) + "px,0)";
 
-            let pagination = slideSetter.setPagination.bind(this.setPagination, "prev");
+            let pagination = SlideSetter.setPagination.bind(this.setPagination, "prev");
             pagination();
         });
 
@@ -94,7 +94,7 @@ const slideSetter = {
             }
             images.style.transform = "translate(-" + (slideWidth * currentPage) + "px,0)";
 
-            let pagination = slideSetter.setPagination.bind(this.setPagination, "nxt");
+            let pagination = SlideSetter.setPagination.bind(this.setPagination, "nxt");
             pagination();
         });
     },
@@ -127,7 +127,7 @@ const slideSetter = {
 
 // 펼쳐보기 기능 
 //  - 새로고침 없이 동작할 수 있도록 구현 
-const detailBtn = {
+const DetailBtn = {
     setDetail : function(displayInfoSet) {
         let dsc = document.querySelector(".dsc");
         dsc.innerHTML = displayInfoSet.displayInfo.productContent;
@@ -155,8 +155,7 @@ const detailBtn = {
 }
 
 // 3명 리뷰어 코멘트 등록
-// 
-const reviewSetter = {
+const ReviewSetter = {
     setReview : function(displayInfoSet){
         this.updateReviewHeader(displayInfoSet);
         this.updateReview(displayInfoSet);
@@ -220,7 +219,7 @@ const reviewSetter = {
      - setActive: 상세정보, 오시는 길 탭 눌렀을 때 반응 처리
      - setProductContent: 상세정보 탭의 소개 내용 추가
 */
-const detailTabs = {
+const DetailTabs = {
     loadDetailTabs : function(displayInfoSet) {
         this.setActive(displayInfoSet);
         this.setProductContent(displayInfoSet);

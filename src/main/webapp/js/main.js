@@ -2,8 +2,8 @@
 
 
 document.addEventListener("DOMContentLoaded", function() {
-    promotionLoader.setPromotion();
-    categoryLoader.init();
+    PromotionLoader.setPromotion();
+    CategoryLoader.init();
   });
 
 /*
@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
      - 2개 이미지란 프로모션 메인 이미지와 다음에 보여질 이미지
 */
 
-const promotionLoader = {
+const PromotionLoader = {
     setPromotion : function(){
         let oReq = new XMLHttpRequest();
         oReq.addEventListener("load", function() {
@@ -29,7 +29,7 @@ const promotionLoader = {
                 }
 
 
-                requestAnimationFrame(promotionLoader.movePromotion.bind(promotionLoader));
+                requestAnimationFrame(PromotionLoader.movePromotion.bind(PromotionLoader));
             } else {
                 alert("Promotion error occured. Ajax error code: " + oReq.status);
             }
@@ -87,12 +87,12 @@ const promotionLoader = {
     }
 }
 
-const categoryLoader = {
+const CategoryLoader = {
     init : function() {
-        categoryLoader.initItemList(0);
-        categoryLoader.initItemCnt();
-        categoryLoader.initClickMoreBtn();
-        categoryLoader.initClickOtherCategory();
+        CategoryLoader.initItemList(0);
+        CategoryLoader.initItemCnt();
+        CategoryLoader.initClickMoreBtn();
+        CategoryLoader.initClickOtherCategory();
     },
     /*
         product item을 카테고리에 따라 4개씩 보이도록 초기화
@@ -107,7 +107,7 @@ const categoryLoader = {
         let moreBtn = document.querySelector(".more").firstElementChild;
         moreBtn.style.display = "";
     
-        categoryServce.addItems(categoryId, 0);
+        CategoryService.addItems(categoryId, 0);
     }, 
     /*
         메인페이지 접속 시 카테고리 개수 표시
@@ -142,7 +142,7 @@ const categoryLoader = {
             let eventBox = document.querySelectorAll(".lst_event_box");
             let start = eventBox[0].childElementCount + eventBox[1].childElementCount;
         
-            categoryServce.addItems(categoryId, start);
+            CategoryService.addItems(categoryId, start);
         });
     },
 
@@ -161,19 +161,19 @@ const categoryLoader = {
                 document.querySelector(".active").className = "anchor";
                 tab.className += " active";
                 let categoryId = document.querySelector(".active").parentElement.dataset.category;
-                categoryLoader.initItemList(categoryId);
+                CategoryLoader.initItemList(categoryId);
             } else if(tab.tagName === "SPAN") {
                 document.querySelector(".active").className = "anchor";
                 tab.parentElement.className += " active"
         
                 let categoryId = document.querySelector(".active").parentElement.dataset.category;
-                categoryLoader.initItemList(categoryId);
+                CategoryLoader.initItemList(categoryId);
             }
         });
     }
 }
 
-const categoryServce = {
+const CategoryService = {
 
     /*
         categoryId와 start에 따른 아이템 추가
