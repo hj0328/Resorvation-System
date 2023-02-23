@@ -1,14 +1,20 @@
 
 document.addEventListener("DOMContentLoaded", function() {
     PageUploader.uploadDetailPage();
-    ReviewMoreBtnSetter.setReviewMoreBtn();
+    BtnUrlSetter.setReviewMoreBtn();
+    BtnUrlSetter.setReserveBtn();
 });
 
-// '예매자 한줄평 더보기' 클릭 시 현재 url의 id 파라미터 전달하도록 속성 설정
-const ReviewMoreBtnSetter = {
+// 버튼 클릭 시 현재 url의 id 파라미터 전달하도록 속성 설정
+// 대상 버튼: '예매자 한줄평 더보기', '예매하기'
+const BtnUrlSetter = {
     setReviewMoreBtn : function() {
         let btn = document.querySelector(".btn_review_more");
         btn.setAttribute("href","./review?id=" + getParam("id"));
+    },
+    setReserveBtn : function() {
+        let btn = document.querySelector(".bk_btn");
+        btn.setAttribute("onclick", "location.href='./reserve?id=" + getParam("id") + "'");
     }
 }
 

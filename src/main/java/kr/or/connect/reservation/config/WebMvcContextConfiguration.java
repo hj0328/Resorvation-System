@@ -46,6 +46,7 @@ public class WebMvcContextConfiguration extends WebMvcConfigurerAdapter {
         registry.addViewController("/bookinglogin").setViewName("/htmls/bookinglogin.html");
         registry.addViewController("/myreservation").setViewName("/htmls/myreservation.html");
         registry.addViewController("/review").setViewName("/htmls/review.html");
+        registry.addViewController("/reserve").setViewName("/htmls/reserve.html");
     }
 }
 
