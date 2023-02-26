@@ -180,7 +180,7 @@
 									</label>
 									<div class="inline_control">
 										<input type="text" name="name" id="name" class="text"
-											placeholder="네이버" maxlength="17" required>
+											placeholder="네이버" maxlength="17" required>	
 									</div>
 								</div>
 								<div class="inline_form">
@@ -219,7 +219,8 @@
 					</div>
 					<div class="section_booking_agreement">
 						<div class="agreement all">
-							<input type="checkbox" id="chk3" class="chk_agree"> <label
+							<input type="checkbox" id="chk3" class="chk_agree"> 
+							<label
 								for="chk3" class="label chk_txt_label"> <span>이용자
 									약관 전체동의</span>
 							</label>
@@ -231,7 +232,7 @@
 						<div class="agreement">
 							<span class="chk_txt_span"> <i
 								class="spr_book ico_arr_ipc2"></i> <span>개인정보 수집 및 이용 동의</span>
-							</span> <a href="#" class="btn_agreement"> <span class="btn_text">보기</span>
+							</span> <a href="javascript:void(0)" class="btn_agreement"> <span class="btn_text">보기</span>
 								<i class="fn fn-down2"></i>
 							</a>
 							<div class="useragreement_details">
@@ -249,7 +250,7 @@
 						<div class="agreement">
 							<span class="chk_txt_span"> <i
 								class="spr_book ico_arr_ipc2"></i> <span>개인정보 제3자 제공 동의</span>
-							</span> <a href="#" class="btn_agreement"> <span class="btn_text">보기</span>
+							</span> <a href="javascript:void(0)" class="btn_agreement"> <span class="btn_text">보기</span>
 								<i class="fn fn-down2"></i>
 							</a>
 							<div class="useragreement_details custom_details_wrap">

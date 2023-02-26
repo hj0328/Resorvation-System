@@ -14,7 +14,7 @@ const BtnUrlSetter = {
     },
     setReserveBtn : function() {
         let btn = document.querySelector(".bk_btn");
-        btn.setAttribute("onclick", "location.href='./reserve?id=" + getParam("id") + "'");
+        btn.setAttribute("onclick", "location.href='./ticketing?id=" + getParam("id") + "'");
     }
 }
 
