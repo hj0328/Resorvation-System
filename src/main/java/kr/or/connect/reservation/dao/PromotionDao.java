@@ -1,6 +1,6 @@
 package kr.or.connect.reservation.dao;
 
-import static kr.or.connect.reservation.dao.ReservationDaoSqls.SELECT_PROMOTION;
+import static kr.or.connect.reservation.dao.sql.PromotionDaoSqls.SELECT_PROMOTION;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class PromotionDao {
     	jdbc = new NamedParameterJdbcTemplate(dataSource);
     }
     
-    public List<PromotionItemDto> selectPromotions() {
-    	return jdbc.query(SELECT_PROMOTION, rowMapper);
+	public List<PromotionItemDto> selectPromotions() {
+		return jdbc.query(SELECT_PROMOTION, rowMapper);
     }
 }

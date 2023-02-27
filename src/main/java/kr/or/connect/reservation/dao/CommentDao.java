@@ -1,7 +1,7 @@
 package kr.or.connect.reservation.dao;
 
-import static kr.or.connect.reservation.dao.ReservationDaoSqls.SELECT_COMMENT_BY_DISPLAY_ID;
-import static kr.or.connect.reservation.dao.ReservationDaoSqls.SELECT_COMMENT_IMAGE_BY_COMMENT_ID;
+import static kr.or.connect.reservation.dao.sql.CommentDaoSqls.SELECT_COMMENT_BY_DISPLAY_ID;
+import static kr.or.connect.reservation.dao.sql.CommentDaoSqls.SELECT_COMMENT_IMAGE_BY_COMMENT_ID;
 
 import java.util.HashMap;
 import java.util.List;

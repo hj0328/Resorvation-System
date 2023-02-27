@@ -1,14 +1,13 @@
 package kr.or.connect.reservation.dao;
 
-import static kr.or.connect.reservation.dao.ReservationDaoSqls.SELECT_ALL_PRODUCTS;
-import static kr.or.connect.reservation.dao.ReservationDaoSqls.SELECT_COMMENT_AVERAGE_SCORE_BY_DISPLAY_ID;
-import static kr.or.connect.reservation.dao.ReservationDaoSqls.SELECT_COMMENT_IMAGE_BY_COMMENT_ID;
-import static kr.or.connect.reservation.dao.ReservationDaoSqls.SELECT_DISPLAYINFO_BY_DISPLAY_ID;
-import static kr.or.connect.reservation.dao.ReservationDaoSqls.SELECT_DISPLAY_INFO_IMG_BY_DISPLAY_ID;
-import static kr.or.connect.reservation.dao.ReservationDaoSqls.SELECT_PRODUCTS;
-import static kr.or.connect.reservation.dao.ReservationDaoSqls.SELECT_PRODUCTS_COUNT_BY_ID;
-import static kr.or.connect.reservation.dao.ReservationDaoSqls.SELECT_PRODUCT_IMAGE_BY_DISPLAY_ID;
-import static kr.or.connect.reservation.dao.ReservationDaoSqls.SELECT_PRODUCT_PRICE_BY_DISPLAY_ID;
+import static kr.or.connect.reservation.dao.sql.ProductDaoSqls.SELECT_ALL_PRODUCTS;
+import static kr.or.connect.reservation.dao.sql.ProductDaoSqls.SELECT_COMMENT_AVERAGE_SCORE_BY_DISPLAY_ID;
+import static kr.or.connect.reservation.dao.sql.ProductDaoSqls.SELECT_DISPLAYINFO_BY_DISPLAY_ID;
+import static kr.or.connect.reservation.dao.sql.ProductDaoSqls.SELECT_DISPLAY_INFO_IMG_BY_DISPLAY_ID;
+import static kr.or.connect.reservation.dao.sql.ProductDaoSqls.SELECT_PRODUCTS;
+import static kr.or.connect.reservation.dao.sql.ProductDaoSqls.SELECT_PRODUCTS_COUNT_BY_ID;
+import static kr.or.connect.reservation.dao.sql.ProductDaoSqls.SELECT_PRODUCT_IMAGE_BY_DISPLAY_ID;
+import static kr.or.connect.reservation.dao.sql.ProductDaoSqls.SELECT_PRODUCT_PRICE_BY_DISPLAY_ID;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +20,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import kr.or.connect.reservation.dto.CommentImageDto;
 import kr.or.connect.reservation.dto.DisplayInfoDto;
 import kr.or.connect.reservation.dto.DisplayInfoImageDto;
 import kr.or.connect.reservation.dto.ProductImageDto;
@@ -68,12 +66,11 @@ public class ProductDao {
 		return productList;
 	}
 
-
 	public int selectProductCountById(int categoryId) {
 		String sql = new String(SELECT_PRODUCTS_COUNT_BY_ID);
 		Map<String, Integer> params = new HashMap<>();
 
-		if(categoryId == 0) {
+		if (categoryId == 0) {
 			sql = sql.replace("category.id = :categoryId AND", "");
 		} else {
 			params.put("categoryId", categoryId);
@@ -91,7 +88,7 @@ public class ProductDao {
 		return averageScore;
 	}
 
-	public DisplayInfoDto selectDisplayInfo(int displayInfoId){
+	public DisplayInfoDto selectDisplayInfo(int displayInfoId) {
 		String sql = SELECT_DISPLAYINFO_BY_DISPLAY_ID;
 		Map<String, Integer> params = new HashMap<>();
 		params.put("displayInfoId", displayInfoId);
