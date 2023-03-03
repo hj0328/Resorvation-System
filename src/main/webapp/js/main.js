@@ -191,11 +191,12 @@ const CategoryService = {
                 let eventBox = document.querySelectorAll(".lst_event_box");
                 for(key = 0, len = products.length; key < len ; key++) {
                     let template = document.querySelector("#itemList").innerHTML;
-                    template = template.replace("${id}", products[key].productId)
+                    template = template.replace("${productId}", products[key].productId)
                                 .replaceAll("${description}", products[key].productDescription)
                                 .replace("${placeName}", products[key].placeName)
                                 .replace("${content}", products[key].productContent)
-                                .replace("${imgUrl}", products[key].productImageUrl);
+                                .replace("${imgUrl}", products[key].productImageUrl)
+                                .replace("${displayInfoId}",products[key].displayInfoId);
     
                     if((key&1) === 0) {
                         eventBox[0].innerHTML += template;

@@ -10,11 +10,11 @@ document.addEventListener("DOMContentLoaded", function() {
 const BtnUrlSetter = {
     setReviewMoreBtn : function() {
         let btn = document.querySelector(".btn_review_more");
-        btn.setAttribute("href","./review?id=" + getParam("id"));
+        btn.setAttribute("href","./review?productId=" + getParam("productId") + "&displayInfoId=" + getParam("displayInfoId"));
     },
     setReserveBtn : function() {
         let btn = document.querySelector(".bk_btn");
-        btn.setAttribute("onclick", "location.href='./booking?id=" + getParam("id") + "'");
+        btn.setAttribute("onclick", "location.href='./booking?productId=" + getParam("productId") + "&displayInfoId=" + getParam("displayInfoId") + "'");
     }
 }
 
@@ -39,8 +39,8 @@ const PageUploader = {
             }
         });
 
-        let displayId = getParam("id");
-        url = "./api/products/" + displayId;
+        let displayInfoId = getParam("displayInfoId");
+        url = "./api/products/" + displayInfoId;
         oReq.open("GET", url);
         oReq.send();
     }

@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
 const ButtonBackSetter = {
     setButtonBack: function () {
         let button = document.querySelector('.btn_back');
-        button.setAttribute('href', './detail?id=' + getParam('id'));
+        button.setAttribute('href', './detail?productId=' + getParam('productId') + "&displayInfoId=" + getParam("displayInfoId"));
     }
 }
 
@@ -190,27 +190,25 @@ const Reserve = {
     setSendPost: function () {
         document.querySelector('.bk_btn_wrap').addEventListener('click', function () {
             if (!document.querySelector('.bk_btn_wrap').classList.contains('disable')) {
-    
-                let form = document.querySelector('.form_horizontal');
-                form.setAttribute('method', 'post');
-                form.setAttribute('action', './api/ticketing');
-    
-                let id = getParam('id');
-                let totalCount = document.querySelector('#totalCount').innerHTML;
-    
-                let postField = document.createElement('input');
-                postField.setAttribute('type', 'hidden');
-                postField.setAttribute('name', 'id');
-                postField.setAttribute('value', id);
-                form.appendChild(postField);
-    
-                postField = document.createElement('input');
-                postField.setAttribute('type', 'hidden');
-                postField.setAttribute('name', 'totalCount');
-                postField.setAttribute('value', totalCount);
-                form.appendChild(postField);
-    
-                form.submit();
+
+                let date = new Date();
+                let prices = [
+                    { "count": 1, productPriceId: 1, "reservationInfoId": 1, "reservationInfoPriceId": 16 }
+                ];
+                let reqJson = {
+                    'productId': getParam("productId"),
+                    'displayInfoId': getParam("displayInfoId"),
+                    "reservationEmail": "crong@naver.com",
+                    "reservationName": document.querySelector('#name').value,
+                    "reservationTelephone": document.querySelector('#tel').value,
+                    "reservationYearMonthDay": date.getFullYear() + '.' + date.getMonth() + '.' + date.getDate(),
+                    "prices": prices
+                };
+
+                let httpRequest = new XMLHttpRequest();
+                httpRequest.open('POST', './api/reservations', true);
+                httpRequest.setRequestHeader('Content-Type', 'application/json');
+                httpRequest.send(JSON.stringify(reqJson));
             }
         });
     }

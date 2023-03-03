@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function() {
 const BtnBackSetter = {
     setBtnBack : function() {
         let btn = document.querySelector(".btn_back");
-        btn.setAttribute("href","./detail?id=" + getParam("id"));
+        btn.setAttribute("href","./detail?productId=" + getParam("productId") + "&displayInfoId=" + getParam("displayInfoId"));
     }
 }
 
@@ -21,7 +21,7 @@ const PageUploader = {
             }
         });
 
-        let displayId = getParam("id");
+        let displayId = getParam("productId");
         url = "./api/products/" + displayId;
         oReq.open("GET", url);
         oReq.send();
