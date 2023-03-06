@@ -1,9 +1,15 @@
 package kr.or.connect.reservation.dao;
 
+import static kr.or.connect.reservation.dao.sql.MyReservationSqls.INSERT_RESERVATION_INFO;
+import static kr.or.connect.reservation.dao.sql.MyReservationSqls.INSERT_RESERVATION_INFO_PRICE;
 import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_DISPLAY_INFO_BY_EMAIL;
 import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_RESERVATION_INFO_BY_EMAIL;
 import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_TOTAL_PRICE_BY_EMAIL;
+import static kr.or.connect.reservation.dao.sql.MyReservationSqls.UPDATE_RESERVATION_CANCEL;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +23,8 @@ import org.springframework.stereotype.Repository;
 
 import kr.or.connect.reservation.dto.DisplayInfoDto;
 import kr.or.connect.reservation.dto.ReservationInfoDto;
+import kr.or.connect.reservation.dto.ReservationPriceDto;
+import kr.or.connect.reservation.dto.reqeust.ReservationRequestDto;
 
 @Repository
 public class MyReservationDao {
@@ -53,5 +61,40 @@ public class MyReservationDao {
 
 		Integer totalPrice = jdbc.queryForObject(SELECT_TOTAL_PRICE_BY_EMAIL, params, Integer.class);
 		return totalPrice;
+	}
+
+	public void insertReservationInfo(ReservationRequestDto reservationRequestDto) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("productId", reservationRequestDto.getProductId());
+		params.put("displayInfoId", reservationRequestDto.getDisplayInfoId());
+		params.put("reservationName", reservationRequestDto.getReservationName());
+		params.put("reservationTelephone", reservationRequestDto.getReservationTelephone());
+		params.put("reservationEmail", reservationRequestDto.getReservationEmail());
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+		LocalDateTime dateTime = LocalDate.parse(reservationRequestDto.getReservationYearMonthDay(), formatter)
+				.atStartOfDay();
+		params.put("reservationTime", dateTime);
+
+		jdbc.update(INSERT_RESERVATION_INFO, params);
+	}
+
+	public void insertReservationInfoPrice(ReservationRequestDto reservationRequestDto) {
+		List<ReservationPriceDto> prices = reservationRequestDto.getPrices();
+		for (ReservationPriceDto price : prices) {
+			Map<String, Object> params = new HashMap<>();
+			params.put("count", price.getCount());
+			params.put("productPriceId", price.getProductPriceId());
+			params.put("reservationInfoId", price.getReservationInfoId());
+
+			jdbc.update(INSERT_RESERVATION_INFO_PRICE, params);
+		}
+	}
+	
+	public void cancelReservation(int reservationInfoId) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("reservationInfoId", reservationInfoId);
+		
+		jdbc.update(UPDATE_RESERVATION_CANCEL, params);
 	}
 }

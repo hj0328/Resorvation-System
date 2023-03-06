@@ -21,4 +21,13 @@ public class MyReservationSqls {
 			+ "FROM reservation_info ri, reservation_info_price rip, product_price pp "
 			+ "WHERE ri.reservation_email  = :reservationEmail "
 			+ "AND ri.id = rip.reservation_info_id AND rip.product_price_id = pp.id ";
+
+	public static final String INSERT_RESERVATION_INFO = "INSERT INTO reservation_info "
+			+ "VALUES( ((SELECT max(ri.id) FROM reservation_info ri) +1), "
+			+ ":productId, :displayInfoId, :reservationName, :reservationTelephone, :reservationEmail, :reservationTime, 0, now(), now()) ";
+
+	public static final String INSERT_RESERVATION_INFO_PRICE = "INSERT INTO reservation_info_price "
+			+ "VALUES (((SELECT max(rip.id) FROM reservation_info_price rip) +1), :count, :productPriceId, :reservationInfoId) ";
+
+	public static final String UPDATE_RESERVATION_CANCEL = "UPDATE reservation_info SET cancel_flag = 1 WHERE id = :reservationInfoId ";
 }

@@ -3,14 +3,23 @@ package kr.or.connect.reservation.controller;
 import java.io.IOException;
 import java.util.Map;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import kr.or.connect.reservation.dto.reqeust.ReservationRequestDto;
+import kr.or.connect.reservation.dto.response.ReservationResponseDto;
 import kr.or.connect.reservation.service.ReservationService;
 
 @RestController
@@ -24,22 +33,31 @@ public class ReservationController {
 	}
 
 	@GetMapping("/reservations")
-	public Map<String, Object> getMyReservations(@RequestParam String reservationEmail) {
+	public Map<String, Object> getMyReservations(@RequestParam String reservationEmail, HttpSession session,
+			HttpServletResponse response) throws ServletException, IOException {
 		Map<String, Object> reservations = reservationService.getReservations(reservationEmail);
+		Integer size = (Integer) reservations.get("size");
+		if (size > 0) {
+			session.setAttribute("reservationEmail", reservationEmail);
+		}
+
 		return reservations;
 	}
 
-	/* 
-	 *  개인적으로 추가로 넣은 코드입니다.
-	 *  기획에서 '예약하기' 이후 디비에 저장되지 않지만, 
-	 *  '예약확인'기능을 바로 확인하고자 Post, Redirect, Get 패턴으로 메인화면으로 이동하도록 하였습니다.
+	/*
+	 * [PJT-5] 예약취소는 실제 DB 에 적용된 값이 아닌, Random으로 생성된 예약 객체를 반환한다.
 	 */
-	@PostMapping("/ticketing")
-	public void setReservation(HttpServletResponse response) {
-		try {
-			response.sendRedirect("/reservation");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	@PostMapping("/reservations")
+	public ReservationResponseDto setReservation(@RequestBody ReservationRequestDto reservationRequestDto,
+			HttpServletResponse httpServletResponse) {
+		return reservationService.createReservations(reservationRequestDto);
+	}
+
+	/*
+	 * [PJT-5] 예약취소는 실제 DB 에 적용된 값이 아닌, Random으로 생성된 예약 객체를 반환한다.
+	 */
+	@PutMapping("/reservations/{reservationId}")
+	public ReservationResponseDto deleteReservation(@PathVariable int reservationId) {
+		return reservationService.cancelReservation(reservationId);
 	}
 }
