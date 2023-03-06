@@ -29,8 +29,15 @@
 					class="spr_bi ico_bk_logo">예약</span>
 				</a>
 			</h1>
-			<a href="#" class="btn_my"> <span title="예약확인">예약확인</span>
-			</a> </header>
+                <% if (session.getAttribute("reservationEmail") == null) { %> 
+	                <a href="./bookinglogin" class="btn_my"> 
+					<span class="viewReservation" title="예약확인">예약확인</span>
+				<% } else { %>
+	                <a href="./myreservation" class="btn_my"> 
+					<span class="viewReservation" title=${reservationEmail}>${reservationEmail}</span>
+                <% } %>
+                </a> 
+			</header>
 		</div>
 		<div class="ct">
 			<div class="ct_wrap">

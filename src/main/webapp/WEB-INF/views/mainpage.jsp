@@ -1,5 +1,6 @@
-
-<!DOCTYPE html>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="ko">
 
 <head>
@@ -17,10 +18,17 @@
         <div class="header">
             <header class="header_tit">
                 <h1 class="logo">
-                    <a href="https://m.naver.com/" class="lnk_logo" title="네이버"> <span class="spr_bi ico_n_logo">네이버</span> </a>
-                    <a href="./myreservation" class="lnk_logo" title="예약"> <span class="spr_bi ico_bk_logo">예약</span> </a>
+                    <a href="./" class="lnk_logo" title="네이버"> <span class="spr_bi ico_n_logo">네이버</span> </a>
+                    <a href="./" class="lnk_logo" title="예약"> <span class="spr_bi ico_bk_logo">예약</span> </a>
                 </h1>
-                <a href="./bookinglogin" class="btn_my"> <span class="viewReservation" title="예약확인">예약확인</span> </a>
+                <% if (session.getAttribute("reservationEmail") == null) { %> 
+	                <a href="./bookinglogin" class="btn_my"> 
+					<span class="viewReservation" title="예약확인">예약확인</span>
+				<% } else { %>
+	                <a href="./myreservation" class="btn_my"> 
+					<span class="viewReservation" title=${reservationEmail}>${reservationEmail}</span>
+                <% } %>
+                </a>
             </header>
         </div>
         <hr>
@@ -108,14 +116,14 @@
 
     <script type="rv-template" id="itemList">
         <li class="item">
-            <a href="detail?productId=${productId}&displayInfoId=${displayInfoId}" class="item_book">
+            <a href="detail?productId={productId}&displayInfoId={displayInfoId}" class="item_book">
                 <div class="item_preview">
-                    <img alt="${description}" class="img_thumb" src="/reservation/${imgUrl}">
+                    <img alt="{description}" class="img_thumb" src="/reservation/{imgUrl}">
                     <span class="img_border"></span>
                 </div>
                 <div class="event_txt">
-                    <h4 class="event_txt_tit"> <span>${description}</span> <small class="sm">${placeName}</small> </h4>
-                    <p class="event_txt_dsc">${content}</p>
+                    <h4 class="event_txt_tit"> <span>{description}</span> <small class="sm">{placeName}</small> </h4>
+                    <p class="event_txt_dsc">{content}</p>
                 </div>
             </a>
         </li>

@@ -13,7 +13,7 @@ const ButtonMyBooking = {
                 return;
             }
 
-            document.querySelector('form').action = './myreservation';
+            document.querySelector('form').action = './bookinglogin';
         });
     },
     isValidEmail: function (bookEmail) {
