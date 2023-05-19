@@ -201,7 +201,7 @@ const Reserve = {
                     "reservationEmail": "crong@naver.com",
                     "reservationName": document.querySelector('#name').value,
                     "reservationTelephone": document.querySelector('#tel').value,
-                    "reservationYearMonthDay": date.getFullYear() + '.' + date.getMonth() + '.' + date.getDate(),
+                    "reservationYearMonthDay": Reserve.formatDate(date, 'yyyy.mm.dd'),
                     "prices": prices
                 };
 
@@ -211,6 +211,11 @@ const Reserve = {
                 httpRequest.send(JSON.stringify(reqJson));
             }
         });
+    },
+    formatDate: function(date, format) {
+        return format.replace('mm', String(date.getMonth() + 1).padStart(2, '0'))
+            .replace('yyyy', date.getFullYear())
+            .replace('dd', String(date.getDate()).padStart(2, '0'));
     }
 }
 

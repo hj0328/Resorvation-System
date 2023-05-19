@@ -3,10 +3,7 @@ package kr.or.connect.reservation.controller;
 import java.io.IOException;
 import java.util.Map;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,8 +30,7 @@ public class ReservationController {
 	}
 
 	@GetMapping("/reservations")
-	public Map<String, Object> getMyReservations(@RequestParam String reservationEmail, HttpSession session,
-			HttpServletResponse response) throws ServletException, IOException {
+	public Map<String, Object> getMyReservations(@RequestParam String reservationEmail, HttpSession session) throws ServletException, IOException {
 		Map<String, Object> reservations = reservationService.getReservations(reservationEmail);
 		Integer size = (Integer) reservations.get("size");
 		if (size > 0) {
@@ -48,8 +44,7 @@ public class ReservationController {
 	 * [PJT-5] 예약취소는 실제 DB 에 적용된 값이 아닌, Random으로 생성된 예약 객체를 반환한다.
 	 */
 	@PostMapping("/reservations")
-	public ReservationResponseDto setReservation(@RequestBody ReservationRequestDto reservationRequestDto,
-			HttpServletResponse httpServletResponse) {
+	public ReservationResponseDto setReservation(@RequestBody ReservationRequestDto reservationRequestDto) {
 		return reservationService.createReservations(reservationRequestDto);
 	}
 
