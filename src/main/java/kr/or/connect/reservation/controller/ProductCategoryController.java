@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.or.connect.reservation.dto.ProductItemDto;
-import kr.or.connect.reservation.service.CommentService;
 import kr.or.connect.reservation.service.ProductService;
 
 @RestController
@@ -21,7 +20,7 @@ public class ProductCategoryController {
 	private final ProductService productService;
 
 	@Autowired
-	public ProductCategoryController(ProductService productService, CommentService commentService) {
+	public ProductCategoryController(ProductService productService) {
 		this.productService = productService;
 	}
 
