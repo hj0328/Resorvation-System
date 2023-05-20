@@ -198,7 +198,7 @@ const Reserve = {
                 let reqJson = {
                     'productId': getParam("productId"),
                     'displayInfoId': getParam("displayInfoId"),
-                    "reservationEmail": "crong@naver.com",
+                    "reservationEmail": document.querySelector('#email').value,
                     "reservationName": document.querySelector('#name').value,
                     "reservationTelephone": document.querySelector('#tel').value,
                     "reservationYearMonthDay": Reserve.formatDate(date, 'yyyy.mm.dd'),
