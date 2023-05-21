@@ -37,4 +37,10 @@ public class ReservationPriceDto {
 	public void setReservationInfoPriceId(int reservationInfoPriceId) {
 		this.reservationInfoPriceId = reservationInfoPriceId;
 	}
+
+	@Override
+	public String toString() {
+		return "ReservationPriceDto [count=" + count + ", productPriceId=" + productPriceId + ", reservationInfoId="
+				+ reservationInfoId + ", reservationInfoPriceId=" + reservationInfoPriceId + "]";
+	}
 }

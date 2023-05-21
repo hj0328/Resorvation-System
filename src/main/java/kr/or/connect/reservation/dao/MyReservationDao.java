@@ -4,7 +4,9 @@ import static kr.or.connect.reservation.dao.sql.MyReservationSqls.INSERT_RESERVA
 import static kr.or.connect.reservation.dao.sql.MyReservationSqls.INSERT_RESERVATION_INFO_PRICE;
 import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_DISPLAY_INFO_BY_EMAIL;
 import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_RESERVATION_INFO_BY_EMAIL;
+import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_RESERVATION_INFO_BY_ID;
 import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_RESERVATION_INFO_MAX_ID;
+import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_RESERVATION_INFO_PRICE_BY_ID;
 import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_TOTAL_PRICE_BY_EMAIL;
 import static kr.or.connect.reservation.dao.sql.MyReservationSqls.UPDATE_RESERVATION_CANCEL;
 
@@ -26,6 +28,7 @@ import kr.or.connect.reservation.dto.DisplayInfoDto;
 import kr.or.connect.reservation.dto.ReservationInfoDto;
 import kr.or.connect.reservation.dto.ReservationPriceDto;
 import kr.or.connect.reservation.dto.reqeust.ReservationRequestDto;
+import kr.or.connect.reservation.dto.response.ReservationResponseDto;
 
 @Repository
 public class MyReservationDao {
@@ -34,6 +37,10 @@ public class MyReservationDao {
 	private RowMapper<DisplayInfoDto> displayInfoRowMapper = BeanPropertyRowMapper.newInstance(DisplayInfoDto.class);
 	private RowMapper<ReservationInfoDto> reservationInfoRowMapper = BeanPropertyRowMapper
 			.newInstance(ReservationInfoDto.class);
+	private RowMapper<ReservationResponseDto> reservationResponseRowMapper = BeanPropertyRowMapper
+			.newInstance(ReservationResponseDto.class);
+	private RowMapper<ReservationPriceDto> reservationPriceDtoRowMapper = BeanPropertyRowMapper
+			.newInstance(ReservationPriceDto.class);
 
 	public MyReservationDao(DataSource dataSource) {
 		this.jdbc = new NamedParameterJdbcTemplate(dataSource);
@@ -80,21 +87,43 @@ public class MyReservationDao {
 		jdbc.update(INSERT_RESERVATION_INFO, params);
 	}
 
-	public int selectReservationInfo() {
-		Integer maxId = jdbc.queryForObject(SELECT_RESERVATION_INFO_MAX_ID, new HashMap<>(), Integer.class);
-		return maxId;
+	public int selectReservationInfoMaxId() {
+		Integer reservationInfoId = jdbc.queryForObject(SELECT_RESERVATION_INFO_MAX_ID, new HashMap<>(), Integer.class);
+		return reservationInfoId;
 	}
 
-	public void insertReservationInfoPrice(ReservationRequestDto reservationRequestDto, int maxId) {
+	public int selectReservationInfoPriceMaxId() {
+		Integer reservationInfoPriceId = jdbc.queryForObject(SELECT_RESERVATION_INFO_MAX_ID, new HashMap<>(),
+				Integer.class);
+		return reservationInfoPriceId;
+	}
+
+	public void insertReservationInfoPrice(ReservationRequestDto reservationRequestDto, int reservationInfoId) {
 		List<ReservationPriceDto> prices = reservationRequestDto.getPrices();
 		for (ReservationPriceDto price : prices) {
 			Map<String, Object> params = new HashMap<>();
 			params.put("count", price.getCount());
 			params.put("productPriceId", price.getProductPriceId());
-			params.put("reservationInfoId", maxId);
+			params.put("reservationInfoId", reservationInfoId);
 
 			jdbc.update(INSERT_RESERVATION_INFO_PRICE, params);
 		}
+	}
+
+	public ReservationResponseDto selectReservationResponseDto(int reservationInfoId) {
+		Map<String, Integer> params = new HashMap<>();
+		params.put("reservationInfoId", reservationInfoId);
+
+		ReservationResponseDto reservationResponseDto = jdbc.queryForObject(SELECT_RESERVATION_INFO_BY_ID, params,
+				reservationResponseRowMapper);
+		return reservationResponseDto;
+	}
+
+	public List<ReservationPriceDto> selectReservationInfoPriceDtoList(int reservationInfoPriceId) {
+		Map<String, Integer> params = new HashMap<>();
+		params.put("reservationInfoPriceId", reservationInfoPriceId);
+
+		return jdbc.query(SELECT_RESERVATION_INFO_PRICE_BY_ID, params, reservationPriceDtoRowMapper);
 	}
 
 	public void cancelReservation(int reservationInfoId) {

@@ -104,4 +104,13 @@ public class ReservationResponseDto {
 	public void setReservationTelephone(String reservationTelephone) {
 		this.reservationTelephone = reservationTelephone;
 	}
+
+	@Override
+	public String toString() {
+		return "ReservationResponseDto [cancelYn=" + cancelYn + ", createDate=" + createDate + ", displayInfoId="
+				+ displayInfoId + ", modifyDate=" + modifyDate + ", prices=" + prices + ", productId=" + productId
+				+ ", reservationDate=" + reservationDate + ", reservationEmail=" + reservationEmail
+				+ ", reservationInfoId=" + reservationInfoId + ", reservationName=" + reservationName
+				+ ", reservationTelephone=" + reservationTelephone + "]";
+	}
 }

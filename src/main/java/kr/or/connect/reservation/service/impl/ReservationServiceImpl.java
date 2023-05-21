@@ -1,7 +1,5 @@
 package kr.or.connect.reservation.service.impl;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,44 +47,33 @@ public class ReservationServiceImpl implements ReservationService {
 	@Override
 	public ReservationResponseDto createReservations(ReservationRequestDto reservationRequestDto) {
 		myReservationDao.insertReservationInfo(reservationRequestDto);
-		int maxId = myReservationDao.selectReservationInfo();
-		myReservationDao.insertReservationInfoPrice(reservationRequestDto, maxId);
+		int reservationInfoId = myReservationDao.selectReservationInfoMaxId();
+		myReservationDao.insertReservationInfoPrice(reservationRequestDto, reservationInfoId);
 
-		// [PJT-5] 예약취소는 실제 DB 에 적용된 값이 아닌, Random으로 생성된 예약 객체를 반환한다.
-		return this.getRandomValueReservationResponseDto();
+		// insert 값을 리턴하도록 수정
+		ReservationResponseDto reservationResponseDto = myReservationDao
+				.selectReservationResponseDto(reservationInfoId);
+
+		int reservationInfoPriceMaxId = myReservationDao.selectReservationInfoPriceMaxId();
+		List<ReservationPriceDto> prices = myReservationDao
+				.selectReservationInfoPriceDtoList(reservationInfoPriceMaxId);
+		reservationResponseDto.setPrices(prices);
+
+		return reservationResponseDto;
 	}
 
 	@Override
 	public ReservationResponseDto cancelReservation(int reservationInfoId) {
 		myReservationDao.cancelReservation(reservationInfoId);
 
-		// [PJT-5] 예약취소는 실제 DB 에 적용된 값이 아닌, Random으로 생성된 예약 객체를 반환한다.
-		return this.getRandomValueReservationResponseDto();
+		// cancel 값을 리턴하도록 수정
+		ReservationResponseDto reservationResponseDto = myReservationDao
+				.selectReservationResponseDto(reservationInfoId);
+
+		int reservationInfoPriceMaxId = myReservationDao.selectReservationInfoPriceMaxId();
+		List<ReservationPriceDto> prices = myReservationDao
+				.selectReservationInfoPriceDtoList(reservationInfoPriceMaxId);
+		reservationResponseDto.setPrices(prices);
+		return reservationResponseDto;
 	}
-
-	private ReservationResponseDto getRandomValueReservationResponseDto() {
-		ReservationResponseDto reservationResponse = new ReservationResponseDto();
-		reservationResponse.setCancelYn(false);
-		reservationResponse.setCreateDate(LocalDateTime.now().toString());
-		reservationResponse.setDisplayInfoId((int) Math.random() * 10);
-
-		ReservationPriceDto reservationPriceDto = new ReservationPriceDto();
-		reservationPriceDto.setCount(1);
-		reservationPriceDto.setProductPriceId(0);
-		reservationPriceDto.setReservationInfoId(0);
-		reservationPriceDto.setReservationInfoPriceId(0);
-		List<ReservationPriceDto> reservationPriceDtoList = new ArrayList<>();
-		reservationPriceDtoList.add(reservationPriceDto);
-		reservationResponse.setPrices(reservationPriceDtoList);
-
-		reservationResponse.setModifyDate(LocalDateTime.now().toString());
-		reservationResponse.setProductId((int) Math.random() * 10);
-		reservationResponse.setReservationDate(LocalDateTime.now().toString());
-		reservationResponse.setReservationEmail("crong@naver.com");
-		reservationResponse.setReservationInfoId((int) Math.random() * 10);
-		reservationResponse.setReservationName("crong");
-		reservationResponse.setReservationTelephone("010-0101-0101");
-		return reservationResponse;
-	}
-
 }
