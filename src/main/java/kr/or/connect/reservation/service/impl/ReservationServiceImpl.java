@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import kr.or.connect.reservation.dao.MyReservationDao;
 import kr.or.connect.reservation.dto.DisplayInfoDto;
@@ -44,10 +45,12 @@ public class ReservationServiceImpl implements ReservationService {
 		return reservationMap;
 	}
 
+	@Transactional
 	@Override
 	public ReservationResponseDto createReservations(ReservationRequestDto reservationRequestDto) {
 		myReservationDao.insertReservationInfo(reservationRequestDto);
-		myReservationDao.insertReservationInfoPrice(reservationRequestDto);
+		int maxId = myReservationDao.selectReservationInfo();
+		myReservationDao.insertReservationInfoPrice(reservationRequestDto, maxId);
 
 		// [PJT-5] 예약취소는 실제 DB 에 적용된 값이 아닌, Random으로 생성된 예약 객체를 반환한다.
 		return this.getRandomValueReservationResponseDto();

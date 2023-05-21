@@ -25,3 +25,21 @@ function getParam(key) {
 
     return value;
 }
+
+function setCookie(cookieName, value) {
+    document.cookie = cookieName + '=' + value;
+}
+
+function getCookie(cookieName) {
+    var x, y;
+    var val = document.cookie.split(';');
+
+    for (var i = 0; i < val.length; i++) {
+      x = val[i].substring(0, val[i].indexOf('='));
+      y = val[i].substring(val[i].indexOf('=') + 1);
+      x = x.replace(/^\s+|\s+$/g, ''); // 앞과 뒤의 공백 제거하기
+      if (x == cookieName) {
+        return decodeURI(y); // unescape로 디코딩 후 값 리턴
+      }
+    }
+  }

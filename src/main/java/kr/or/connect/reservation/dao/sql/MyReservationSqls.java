@@ -26,6 +26,8 @@ public class MyReservationSqls {
 			+ "VALUES( ((SELECT max(ri.id) FROM reservation_info ri) +1), "
 			+ ":productId, :displayInfoId, :reservationName, :reservationTelephone, :reservationEmail, :reservationTime, 0, now(), now()) ";
 
+	public static final String SELECT_RESERVATION_INFO_MAX_ID = "SELECT max(ri.id) FROM reservation_info ri";
+
 	public static final String INSERT_RESERVATION_INFO_PRICE = "INSERT INTO reservation_info_price "
 			+ "VALUES (((SELECT max(rip.id) FROM reservation_info_price rip) +1), :count, :productPriceId, :reservationInfoId) ";
 

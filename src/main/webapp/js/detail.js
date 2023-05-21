@@ -14,7 +14,7 @@ const BtnUrlSetter = {
     },
     setReserveBtn : function() {
         let btn = document.querySelector(".bk_btn");
-        btn.setAttribute("onclick", "location.href='./booking?productId=" + getParam("productId") + "&displayInfoId=" + getParam("displayInfoId") + "'");
+		btn.setAttribute("onclick", "location.href='./booking?productId=" + getParam("productId") + "&displayInfoId=" + getParam("displayInfoId") + "'");
     }
 }
 
@@ -36,6 +36,8 @@ const PageUploader = {
                 DetailTabs.loadDetailTabs(displayInfoSet);
                 DetailBtn.setDetail(displayInfoSet);
                 ReviewSetter.setReview(displayInfoSet);
+
+                PageUploader.setProductCookie(displayInfoSet);
             }
         });
 
@@ -43,6 +45,12 @@ const PageUploader = {
         url = "./api/products/" + displayInfoId;
         oReq.open("GET", url);
         oReq.send();
+    },
+    setProductCookie : function(displayInfoSet) {
+        setCookie('productId', displayInfoSet.productPriceId[0].productId);
+        setCookie('productPriceId', displayInfoSet.productPriceId[0].productPriceId);
+        setCookie('displayInfoId', displayInfoSet.displayInfo.displayInfoId);
+
     }
 };
 

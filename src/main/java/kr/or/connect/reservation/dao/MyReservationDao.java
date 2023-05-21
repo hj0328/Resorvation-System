@@ -4,6 +4,7 @@ import static kr.or.connect.reservation.dao.sql.MyReservationSqls.INSERT_RESERVA
 import static kr.or.connect.reservation.dao.sql.MyReservationSqls.INSERT_RESERVATION_INFO_PRICE;
 import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_DISPLAY_INFO_BY_EMAIL;
 import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_RESERVATION_INFO_BY_EMAIL;
+import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_RESERVATION_INFO_MAX_ID;
 import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_TOTAL_PRICE_BY_EMAIL;
 import static kr.or.connect.reservation.dao.sql.MyReservationSqls.UPDATE_RESERVATION_CANCEL;
 
@@ -79,22 +80,27 @@ public class MyReservationDao {
 		jdbc.update(INSERT_RESERVATION_INFO, params);
 	}
 
-	public void insertReservationInfoPrice(ReservationRequestDto reservationRequestDto) {
+	public int selectReservationInfo() {
+		Integer maxId = jdbc.queryForObject(SELECT_RESERVATION_INFO_MAX_ID, new HashMap<>(), Integer.class);
+		return maxId;
+	}
+
+	public void insertReservationInfoPrice(ReservationRequestDto reservationRequestDto, int maxId) {
 		List<ReservationPriceDto> prices = reservationRequestDto.getPrices();
 		for (ReservationPriceDto price : prices) {
 			Map<String, Object> params = new HashMap<>();
 			params.put("count", price.getCount());
 			params.put("productPriceId", price.getProductPriceId());
-			params.put("reservationInfoId", price.getReservationInfoId());
+			params.put("reservationInfoId", maxId);
 
 			jdbc.update(INSERT_RESERVATION_INFO_PRICE, params);
 		}
 	}
-	
+
 	public void cancelReservation(int reservationInfoId) {
 		Map<String, Object> params = new HashMap<>();
 		params.put("reservationInfoId", reservationInfoId);
-		
+
 		jdbc.update(UPDATE_RESERVATION_CANCEL, params);
 	}
 }

@@ -139,12 +139,12 @@ AgreeButton.prototype = {
     '예약하기 버튼' 활성화 기능
      - input 태그 변화 감지할 때마다 유효성 점검
      - isPass(): 유효성 통과 못하면 '예약하기 버튼' 비활성화
-                 유효성 통과하면, 활성화 
+                 유효성 통과하면, 활성화
      - 유효여부: 사용자 모든 입력값 정상 입력(이메일도 유효성 체크), 예매 수 최소 1매, 이용자 약과 동의 버튼 체크 활성화
 
-    setSendPost() 기능 
+    setSendPost() 기능
     개인적으로 추가로 넣은 코드입니다.
-    기획에서 '예약하기' 이후 디비에 저장되지 않지만, 
+    기획에서 '예약하기' 이후 디비에 저장되지 않지만,
     '예약확인'기능을 바로 확인하고자 Post, Redirect, Get 패턴으로 메인화면으로 이동하도록 하였습니다.
 */
 const Reserve = {
@@ -193,11 +193,16 @@ const Reserve = {
 
                 let date = new Date();
                 let prices = [
-                    { "count": 1, productPriceId: 1, "reservationInfoId": 1, "reservationInfoPriceId": 16 }
+                    {
+                        "count": Number(document.querySelector('#totalCount').innerText),
+                        productPriceId: getCookie('productPriceId'),
+                        "reservationInfoId": 1,
+                        "reservationInfoPriceId": 16
+                    }
                 ];
                 let reqJson = {
-                    'productId': getParam("productId"),
-                    'displayInfoId': getParam("displayInfoId"),
+                    'productId': getCookie('productId'),
+                    'displayInfoId': getCookie('displayInfoId'),
                     "reservationEmail": document.querySelector('#email').value,
                     "reservationName": document.querySelector('#name').value,
                     "reservationTelephone": document.querySelector('#tel').value,
