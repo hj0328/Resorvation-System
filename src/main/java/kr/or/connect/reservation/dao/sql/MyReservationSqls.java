@@ -10,16 +10,16 @@ public class MyReservationSqls {
 			+ ", reservation_date 'reservationDate', create_date 'createDate', modify_date 'modifyDate' "
 			+ "FROM reservation_info ri " + "WHERE ri.reservation_email  = :reservationEmail ";
 
-	public static final String SELECT_DISPLAY_INFO_BY_EMAIL = "SELECT c.id 'categoryId', c.name 'categoryName', di.create_date 'createDate', di.id 'displayInfoId', di.email, di.homepage, "
+	public static final String SELECT_DISPLAY_INFO_BY_ID = "SELECT c.id 'categoryId', c.name 'categoryName', di.create_date 'createDate', di.id 'displayInfoId', di.email, di.homepage, "
 			+ "di.modify_date 'modifyDate', di.opening_hours 'openingHours', di.place_lot 'placeLot', "
 			+ "di.place_name 'placeName', di.place_street 'placeStreet', "
 			+ "p.content 'productContent', p.description 'productDescription', p.event 'productEvent', p.id 'productId', di.tel 'telephone' "
 			+ "FROM reservation_info ri, display_info di, product p, category c "
-			+ "WHERE ri.reservation_email = :reservationEmail AND ri.display_info_id = di.id AND ri.product_id = p.id AND di.product_id = p.id AND p.category_id = c.id ";
+			+ "WHERE ri.id = :reservationInfoId AND di.id = :displayInfoId AND ri.display_info_id = di.id AND ri.product_id = p.id AND di.product_id = p.id AND p.category_id = c.id ";
 
-	public static final String SELECT_TOTAL_PRICE_BY_EMAIL = "SELECT SUM(pp.price) 'totalPrice' "
+	public static final String SELECT_TOTAL_PRICE_BY_ID = "SELECT SUM(pp.price) 'totalPrice' "
 			+ "FROM reservation_info ri, reservation_info_price rip, product_price pp "
-			+ "WHERE ri.reservation_email  = :reservationEmail "
+			+ "WHERE ri.id  = :reservationInfoId "
 			+ "AND ri.id = rip.reservation_info_id AND rip.product_price_id = pp.id ";
 
 	public static final String INSERT_RESERVATION_INFO = "INSERT INTO reservation_info "

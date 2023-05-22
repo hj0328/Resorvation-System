@@ -1,14 +1,6 @@
 package kr.or.connect.reservation.dao;
 
-import static kr.or.connect.reservation.dao.sql.MyReservationSqls.INSERT_RESERVATION_INFO;
-import static kr.or.connect.reservation.dao.sql.MyReservationSqls.INSERT_RESERVATION_INFO_PRICE;
-import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_DISPLAY_INFO_BY_EMAIL;
-import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_RESERVATION_INFO_BY_EMAIL;
-import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_RESERVATION_INFO_BY_ID;
-import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_RESERVATION_INFO_MAX_ID;
-import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_RESERVATION_INFO_PRICE_BY_ID;
-import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_TOTAL_PRICE_BY_EMAIL;
-import static kr.or.connect.reservation.dao.sql.MyReservationSqls.UPDATE_RESERVATION_CANCEL;
+import static kr.or.connect.reservation.dao.sql.MyReservationSqls.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -55,19 +47,20 @@ public class MyReservationDao {
 		return reservationInfos;
 	}
 
-	public DisplayInfoDto selectDisplayInfoByEmail(String reservationEmail) {
-		Map<String, String> params = new HashMap<>();
-		params.put("reservationEmail", reservationEmail);
+	public DisplayInfoDto selectDisplayInfoById(Integer reservationInfoId, Integer displayInfoId) {
+		Map<String, Integer> params = new HashMap<>();
+		params.put("displayInfoId", displayInfoId);
+		params.put("reservationInfoId", reservationInfoId);
 
-		DisplayInfoDto displayInfoDto = jdbc.queryForObject(SELECT_DISPLAY_INFO_BY_EMAIL, params, displayInfoRowMapper);
+		DisplayInfoDto displayInfoDto = jdbc.queryForObject(SELECT_DISPLAY_INFO_BY_ID, params, displayInfoRowMapper);
 		return displayInfoDto;
 	}
 
-	public Integer selectTotalPriceByEmail(String reservationEmail) {
-		Map<String, String> params = new HashMap<>();
-		params.put("reservationEmail", reservationEmail);
+	public Integer selectTotalPriceById(Integer reservationInfoId) {
+		Map<String, Integer> params = new HashMap<>();
+		params.put("reservationInfoId", reservationInfoId);
 
-		Integer totalPrice = jdbc.queryForObject(SELECT_TOTAL_PRICE_BY_EMAIL, params, Integer.class);
+		Integer totalPrice = jdbc.queryForObject(SELECT_TOTAL_PRICE_BY_ID, params, Integer.class);
 		return totalPrice;
 	}
 

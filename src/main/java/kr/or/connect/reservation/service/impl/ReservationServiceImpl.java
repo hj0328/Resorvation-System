@@ -29,10 +29,13 @@ public class ReservationServiceImpl implements ReservationService {
 		List<ReservationInfoDto> reservationInfos = myReservationDao.selectReservationInfoByEmail(reservationEmail);
 
 		for (ReservationInfoDto reservationInfo : reservationInfos) {
-			DisplayInfoDto displayInfo = myReservationDao.selectDisplayInfoByEmail(reservationEmail);
+			Integer reservationInfoId = reservationInfo.getReservationInfoId();
+			Integer displayInfoId = reservationInfo.getDisplayInfoId();
+
+			DisplayInfoDto displayInfo = myReservationDao.selectDisplayInfoById(reservationInfoId, displayInfoId);
 			reservationInfo.setDisplayInfoDto(displayInfo);
 
-			Integer totalPriceByEmail = myReservationDao.selectTotalPriceByEmail(reservationEmail);
+			Integer totalPriceByEmail = myReservationDao.selectTotalPriceById(reservationInfoId);
 			reservationInfo.setTotalPrice(totalPriceByEmail);
 		}
 
