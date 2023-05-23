@@ -6,6 +6,7 @@
 <html lang="ko" class="no-js" >
    <head>
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <script defer src="./js/common.js"></script>
       <style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>
       <!--<base href="/">-->
       <base href=".">

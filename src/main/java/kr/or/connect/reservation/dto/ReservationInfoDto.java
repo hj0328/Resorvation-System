@@ -13,7 +13,7 @@ public class ReservationInfoDto {
 	private String reservationTelephone;
 	private Integer totalPrice;
 
-	private DisplayInfoDto displayInfoDto;
+	private DisplayInfo displayInfo;
 
 	public Boolean getCancelYn() {
 		return cancelYn;
@@ -103,11 +103,11 @@ public class ReservationInfoDto {
 		this.totalPrice = totalPrice;
 	}
 
-	public DisplayInfoDto getDisplayInfoDto() {
-		return displayInfoDto;
+	public DisplayInfo getDisplayInfo() {
+		return displayInfo;
 	}
 
-	public void setDisplayInfoDto(DisplayInfoDto displayInfoDto) {
-		this.displayInfoDto = displayInfoDto;
+	public void setDisplayInfo(DisplayInfo displayInfo) {
+		this.displayInfo = displayInfo;
 	}
 }

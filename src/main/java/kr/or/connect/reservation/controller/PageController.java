@@ -13,7 +13,7 @@ public class PageController {
 	@GetMapping("/")
 	public String getMainPage(HttpSession session, ModelMap model) {
 		String reservationEmail = (String) session.getAttribute("reservationEmail");
-		if(reservationEmail != null) {
+		if(reservationEmail != null && reservationEmail.contains("=")) {
 			model.addAttribute("reservationEmail", reservationEmail.split("=")[1].replaceAll("%40", "@"));
 		}
 
@@ -23,7 +23,7 @@ public class PageController {
 	@GetMapping("/detail")
 	public String getDetailPage(HttpSession session, ModelMap model) {
 		String reservationEmail = (String) session.getAttribute("reservationEmail");
-		if(reservationEmail != null) {
+		if(reservationEmail != null && reservationEmail.contains("=")) {
 			model.addAttribute("reservationEmail", reservationEmail.split("=")[1].replaceAll("%40", "@"));
 		}
 
@@ -47,8 +47,12 @@ public class PageController {
 
 	@PostMapping("/bookinglogin")
 	public String postBookinglogin(@RequestBody String reservationEmail, HttpSession session) {
+		String[] split = reservationEmail.split("reservationEmail=");
+		if(split.length < 2) {
+			return "redirect:/";
+		}
+		
 		session.setAttribute("reservationEmail", reservationEmail);
-
 		return "redirect:/myreservation";
 	}
 	

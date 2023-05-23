@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import kr.or.connect.reservation.dao.ProductDao;
 import kr.or.connect.reservation.dto.CommentDto;
-import kr.or.connect.reservation.dto.DisplayInfoDto;
+import kr.or.connect.reservation.dto.DisplayInfo;
 import kr.or.connect.reservation.dto.DisplayInfoImageDto;
 import kr.or.connect.reservation.dto.ProductImageDto;
 import kr.or.connect.reservation.dto.ProductItemDto;
@@ -51,7 +51,7 @@ public class ProductServiceImpl implements ProductService {
 	public Map<String, Object> getProductDetail(int displayInfoId) {
 		Map<String, Object> displayInfoMap = new HashMap<>();
 
-		DisplayInfoDto displayInfo = productDao.selectDisplayInfo(displayInfoId);
+		DisplayInfo displayInfo = productDao.selectDisplayInfo(displayInfoId);
 		displayInfoMap.put("displayInfo", displayInfo);
 
 		List<ProductImageDto> productImageList = productDao.selectProductImage(displayInfoId);

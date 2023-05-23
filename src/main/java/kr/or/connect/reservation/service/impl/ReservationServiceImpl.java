@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.or.connect.reservation.dao.MyReservationDao;
-import kr.or.connect.reservation.dto.DisplayInfoDto;
+import kr.or.connect.reservation.dto.DisplayInfo;
 import kr.or.connect.reservation.dto.ReservationInfoDto;
 import kr.or.connect.reservation.dto.ReservationPriceDto;
 import kr.or.connect.reservation.dto.reqeust.ReservationRequestDto;
@@ -32,8 +32,8 @@ public class ReservationServiceImpl implements ReservationService {
 			Integer reservationInfoId = reservationInfo.getReservationInfoId();
 			Integer displayInfoId = reservationInfo.getDisplayInfoId();
 
-			DisplayInfoDto displayInfo = myReservationDao.selectDisplayInfoById(reservationInfoId, displayInfoId);
-			reservationInfo.setDisplayInfoDto(displayInfo);
+			DisplayInfo displayInfo = myReservationDao.selectDisplayInfoById(reservationInfoId, displayInfoId);
+			reservationInfo.setDisplayInfo(displayInfo);
 
 			Integer totalPriceByEmail = myReservationDao.selectTotalPriceById(reservationInfoId);
 			reservationInfo.setTotalPrice(totalPriceByEmail);

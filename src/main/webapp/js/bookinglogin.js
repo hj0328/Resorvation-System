@@ -13,6 +13,7 @@ const ButtonMyBooking = {
                 return;
             }
 
+            setCookie('reservationEmail', email)
             document.querySelector('form').action = './bookinglogin';
         });
     },

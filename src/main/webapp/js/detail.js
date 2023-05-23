@@ -50,7 +50,6 @@ const PageUploader = {
         setCookie('productId', displayInfoSet.productPriceId[0].productId);
         setCookie('productPriceId', displayInfoSet.productPriceId[0].productPriceId);
         setCookie('displayInfoId', displayInfoSet.displayInfo.displayInfoId);
-
     }
 };
 

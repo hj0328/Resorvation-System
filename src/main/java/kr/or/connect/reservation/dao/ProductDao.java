@@ -20,7 +20,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import kr.or.connect.reservation.dto.DisplayInfoDto;
+import kr.or.connect.reservation.dto.DisplayInfo;
 import kr.or.connect.reservation.dto.DisplayInfoImageDto;
 import kr.or.connect.reservation.dto.ProductImageDto;
 import kr.or.connect.reservation.dto.ProductItemDto;
@@ -30,7 +30,7 @@ import kr.or.connect.reservation.dto.ProductPriceDto;
 public class ProductDao {
 	private NamedParameterJdbcTemplate jdbc;
 	private RowMapper<ProductItemDto> rowMapper = BeanPropertyRowMapper.newInstance(ProductItemDto.class);
-	private RowMapper<DisplayInfoDto> displayInfoRowMapper = BeanPropertyRowMapper.newInstance(DisplayInfoDto.class);
+	private RowMapper<DisplayInfo> displayInfoRowMapper = BeanPropertyRowMapper.newInstance(DisplayInfo.class);
 	private RowMapper<DisplayInfoImageDto> displayInfoImageRowMapper = BeanPropertyRowMapper.newInstance(DisplayInfoImageDto.class);
 	private RowMapper<ProductImageDto> proudcImageRowMapper = BeanPropertyRowMapper.newInstance(ProductImageDto.class);
 	private RowMapper<ProductPriceDto> proudcPriceRowMapper = BeanPropertyRowMapper.newInstance(ProductPriceDto.class);
@@ -88,7 +88,7 @@ public class ProductDao {
 		return averageScore;
 	}
 
-	public DisplayInfoDto selectDisplayInfo(int displayInfoId) {
+	public DisplayInfo selectDisplayInfo(int displayInfoId) {
 		String sql = SELECT_DISPLAYINFO_BY_DISPLAY_ID;
 		Map<String, Integer> params = new HashMap<>();
 		params.put("displayInfoId", displayInfoId);

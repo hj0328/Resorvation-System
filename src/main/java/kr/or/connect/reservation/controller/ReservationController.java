@@ -40,9 +40,6 @@ public class ReservationController {
 		return reservations;
 	}
 
-	/*
-	 * [PJT-5] 예약취소는 실제 DB 에 적용된 값이 아닌, Random으로 생성된 예약 객체를 반환한다.
-	 */
 	@PostMapping("/reservations")
 	public ReservationResponseDto setReservation(@RequestBody ReservationRequestDto reservationRequestDto) {
 		return reservationService.createReservations(reservationRequestDto);

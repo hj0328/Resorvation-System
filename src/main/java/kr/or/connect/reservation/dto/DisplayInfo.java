@@ -1,6 +1,6 @@
 package kr.or.connect.reservation.dto;
 
-public class DisplayInfoDto {
+public class DisplayInfo {
 	private int categoryId;
 	private String categoryName;
 	private String createDate;

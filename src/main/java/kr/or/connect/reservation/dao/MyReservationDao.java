@@ -1,6 +1,14 @@
 package kr.or.connect.reservation.dao;
 
-import static kr.or.connect.reservation.dao.sql.MyReservationSqls.*;
+import static kr.or.connect.reservation.dao.sql.MyReservationSqls.INSERT_RESERVATION_INFO;
+import static kr.or.connect.reservation.dao.sql.MyReservationSqls.INSERT_RESERVATION_INFO_PRICE;
+import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_DISPLAY_INFO_BY_ID;
+import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_RESERVATION_INFO_BY_EMAIL;
+import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_RESERVATION_INFO_BY_ID;
+import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_RESERVATION_INFO_MAX_ID;
+import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_RESERVATION_INFO_PRICE_BY_ID;
+import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_TOTAL_PRICE_BY_ID;
+import static kr.or.connect.reservation.dao.sql.MyReservationSqls.UPDATE_RESERVATION_CANCEL;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,7 +24,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import kr.or.connect.reservation.dto.DisplayInfoDto;
+import kr.or.connect.reservation.dto.DisplayInfo;
 import kr.or.connect.reservation.dto.ReservationInfoDto;
 import kr.or.connect.reservation.dto.ReservationPriceDto;
 import kr.or.connect.reservation.dto.reqeust.ReservationRequestDto;
@@ -26,7 +34,7 @@ import kr.or.connect.reservation.dto.response.ReservationResponseDto;
 public class MyReservationDao {
 	private NamedParameterJdbcTemplate jdbc;
 
-	private RowMapper<DisplayInfoDto> displayInfoRowMapper = BeanPropertyRowMapper.newInstance(DisplayInfoDto.class);
+	private RowMapper<DisplayInfo> displayInfoRowMapper = BeanPropertyRowMapper.newInstance(DisplayInfo.class);
 	private RowMapper<ReservationInfoDto> reservationInfoRowMapper = BeanPropertyRowMapper
 			.newInstance(ReservationInfoDto.class);
 	private RowMapper<ReservationResponseDto> reservationResponseRowMapper = BeanPropertyRowMapper
@@ -47,12 +55,12 @@ public class MyReservationDao {
 		return reservationInfos;
 	}
 
-	public DisplayInfoDto selectDisplayInfoById(Integer reservationInfoId, Integer displayInfoId) {
+	public DisplayInfo selectDisplayInfoById(Integer reservationInfoId, Integer displayInfoId) {
 		Map<String, Integer> params = new HashMap<>();
 		params.put("displayInfoId", displayInfoId);
 		params.put("reservationInfoId", reservationInfoId);
 
-		DisplayInfoDto displayInfoDto = jdbc.queryForObject(SELECT_DISPLAY_INFO_BY_ID, params, displayInfoRowMapper);
+		DisplayInfo displayInfoDto = jdbc.queryForObject(SELECT_DISPLAY_INFO_BY_ID, params, displayInfoRowMapper);
 		return displayInfoDto;
 	}
 

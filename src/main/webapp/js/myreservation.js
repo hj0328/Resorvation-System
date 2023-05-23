@@ -1,75 +1,182 @@
-document.addEventListener('DOMContentLoaded', function () {
-    ConfirmedCard.init();
-});
+window.addEventListener('DOMContentLoaded', initialize);
 
-const ConfirmedCard = {
-    init: function () {
-        // 취소 클릭하면 팝업 레이더 표시
-        let confirmedCardContainer = document.querySelectorAll('.confirmed .card_item');;
-        confirmedCardContainer.forEach(confirmedCard => {
-            confirmedCard.addEventListener('click', function (evt) {
-                if (evt.target.className === 'btn') {
-                    let canCelpopup = document.querySelector('.popup_booking_wrapper');
-                    canCelpopup.style.display = 'block';
+function initialize() {
+	fetchReservation();
+}
 
-                    // 클릭했던 card에 clicked 표식 남기기
-                    evt.currentTarget.classList.add('clicked');
-                }
-            });
-        });
+function fetchReservation() {
+	httpRequest('GET', '/reservations?reservationEmail=' + getCookie('reservationEmail'), onLoadHandler);
+}
 
-        // 팝업에서 예약취소 'x'버튼 클릭 수행
-        ConfirmedCard.addCloseEvent();
+function onLoadHandler(responseString) {
+	const { size, reservations } = JSON.parse(responseString);
 
-        // 팝업에서 '예'버튼 클릭 수행
-        ConfirmedCard.addCancelEvent();
-    },
-    addCloseEvent: function () {
-        let closeBtn = document.querySelector('.popup_btn_close');
-        closeBtn.addEventListener('click', function (evt) {
-            let canCelpopup = document.querySelector('.popup_booking_wrapper');
-            canCelpopup.style.display = 'none';
+	if(size === 0) {
+		document.querySelector('.err').style.display = '';
+		return;
+	}
+	const classifiedReservations = classifyReservations();
+	renderStatus();
+	renderReservations();
+	renderReservationCount();
+	hideWithNoContent();
+	setEventListeners();
 
-            // clicked 표식 제거
-            clickedCard.classList.remove('clicked');
-        });
-    },
-    addCancelEvent: function () {
-        let greenBtn = document.querySelector('.btn_green');
-        greenBtn.addEventListener("click", function (evt) {
-            // 취소 팝업에서 '예' 클릭 시, '카드를 취소된 예약' 으로 이동
-            let canCelpopup = document.querySelector('.popup_booking_wrapper');
-            canCelpopup.style.display = 'none';
+	function classifyReservations() {
+		const classifiedReservations = { checked: [], used: [], canceled: [] };
 
-            let clickedCard = document.querySelector('.clicked');
-            document.querySelector('.cancel').appendChild(clickedCard);
+		reservations.forEach(reservation => {
+			let status = 'checked';
+			if(reservation.cancelYn) {
+				status = 'canceled';
+			} else if(isCompletedReservation(reservation.reservationDate)) {
+				status = 'used';
+			}
 
-            let cancelButton = document.querySelector('.clicked .booking_cancel');
-            cancelButton.remove();
+			classifiedReservations[status].push(reservation);
+		});
 
-            let shareButton = document.querySelector('.clicked .fn-share1');
-            shareButton.remove();
+		return classifiedReservations;
+	}
 
-			// '이용예정' 개수 감소
-			let count = document.querySelectorAll('.link_summary_board')[1].lastElementChild.innerHTML;
-			document.querySelectorAll('.link_summary_board')[1].lastElementChild.innerHTML = Number(count) - 1; 
+	function isCompletedReservation({ year, monthValue, dayOfMonth, hour, minute, second }) {
+		const reservedDate = new Date(`${year}-${monthValue}-${dayOfMonth} ${hour}:${minute}:${second}`);
+		return reservedDate < new Date();
+	}
 
-			// '취소환불' 숫자 증가
-			count = document.querySelectorAll('.link_summary_board')[3].lastElementChild.innerHTML;
-			document.querySelectorAll('.link_summary_board')[3].lastElementChild.innerHTML = Number(count) + 1; 
+	function renderStatus() {
+		const template = document.getElementById('cardItem').textContent;
+		const listCards = document.querySelector('.list_cards');
+		const status = [
+			{
+				statusText: '예약 확정',
+				statusIcon: 'ico_check2',
+				status: 'confirmed'
+			},
+			{
+				statusText: '이용 완료',
+				statusIcon: 'ico_check2',
+				status: 'used'
+			},
+			{
+				statusText: '취소된 예약',
+				statusIcon: 'ico_cancel',
+				status: 'used'
+			}
+		];
 
+		listCards.innerHTML = status.reduce((acc, cur) => {
+			const { status, statusText, statusIcon } = cur;
 
-            // clicked 표식 제거
-            clickedCard.classList.remove('clicked');
-        });
+			return acc + template.replace("{status}", status)
+					.replace("{statusText}", statusText)
+					.replace("{statusIcon}", statusIcon)
+		}, '');
+	}
 
-        let grayBtn = document.querySelector('.btn_gray');
-        grayBtn.addEventListener("click", function (evt) {
-            let canCelpopup = document.querySelector('.popup_booking_wrapper');
-            canCelpopup.style.display = 'none';
+	function renderReservations() {
+		const statusCards = document.querySelectorAll('.list_cards > li');
+		const template = document.getElementById('reservationItem').textContent;
 
-            // clicked 표식 제거
-            clickedCard.classList.remove('clicked');
-        });
-    }
+		for(const status in classifiedReservations) {
+			const reservationList = classifiedReservations[status];
+
+			statusCards[getIndex(status)].innerHTML += reservationList.reduce((acc, cur) => {
+				const {
+					reservationInfoId,
+					reservationDate,
+					totalPrice,
+					displayInfo
+				} = cur;
+
+				return acc + template.replace(/\{reservationInfoId\}/g, reservationInfoId)
+									 .replace("{reservationDate}", reservationDate)
+									 .replace("{productDescription}", displayInfo.productDescription)
+									 .replace("{placeStreet}", displayInfo.placeStreet)
+									 .replace("{productContent}", displayInfo.productContent)
+									 .replace("{totalPrice}", totalPrice.toLocaleString())
+									 .replace("{homepage}", displayInfo.homepage)
+									 .replace("{buttonClass}", getButtonClass(status))
+									 .replace("{buttonText}", getButtonText(status));
+			}, '');
+		}
+	}
+
+	function renderReservationCount() {
+		renderCount('.total', size);
+		for(const status in classifiedReservations) {
+			renderCount(`.${status}`, classifiedReservations[status].length);
+		}
+		function renderCount(status, count) {
+			const figure = document.querySelector(`.link_summary_board${status} .figure`)
+			if(figure) {
+				figure.textContent = count;
+			}
+		}
+	}
+
+	function hideWithNoContent() {
+		for(const status in classifiedReservations) {
+			if(classifiedReservations[status].length === 0) {
+				const index = getIndex(status);
+				const statusCards = document.querySelectorAll('.list_cards > li');
+				statusCards[index].style.display = 'none';
+			}
+		}
+	}
+
+	function getIndex(status) {
+		if(status === 'checked') {
+			return 0;
+		} else if(status === 'used') {
+			return 1;
+		}
+		return 2;
+	}
+
+	function getButtonText(status) {
+		if(status === 'checked') {
+			return '취소';
+		} else if(status === 'used') {
+			return '예매자 리뷰 남기기';
+		}
+		return '이용 완료';
+	}
+
+	function getButtonClass(status) {
+		if(status === 'checked') {
+			return 'cancel';
+		} else if(status === 'used') {
+			return 'comment';
+		}
+		return 'disable';
+	}
+
+	function setEventListeners() {
+		moveCommentPage();
+		cancelReservation();
+
+		function moveCommentPage() {
+			document.querySelectorAll('.btn.comment').forEach(btn => {
+				btn.addEventListener('click', function() {
+					localStorage.setItem('reservationInfoId', this.dataset.reservationinfoid);
+					location.href="./reviewWrite";
+				});
+			});
+		}
+
+		function cancelReservation() {
+			document.querySelectorAll('.btn.cancel').forEach(btn => {
+				btn.addEventListener('click', function(evt) {
+                    if (confirm('취소하시겠습니까?')) {
+                        httpRequest("PUT", `/reservations/${this.dataset.reservationinfoid}`, changeReservation);
+                    }
+				});
+			});
+		}
+
+        function changeReservation() {
+            location.reload();
+        }
+	}
 }
