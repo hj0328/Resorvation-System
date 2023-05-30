@@ -9,7 +9,7 @@ function fetchReservation() {
 }
 
 function onLoadHandler(responseString) {
-	const { size, reservations } = JSON.parse(responseString);
+const { size, reservations } = JSON.parse(responseString);
 
 	if(size === 0) {
 		document.querySelector('.err').style.display = '';
@@ -23,10 +23,10 @@ function onLoadHandler(responseString) {
 	setEventListeners();
 
 	function classifyReservations() {
-		const classifiedReservations = { checked: [], used: [], canceled: [] };
+		const classifiedReservations = { confirmed: [], used: [], canceled: [] };
 
 		reservations.forEach(reservation => {
-			let status = 'checked';
+			let status = 'confirmed';
 			if(reservation.cancelYn) {
 				status = 'canceled';
 			} else if(isCompletedReservation(reservation.reservationDate)) {
@@ -39,8 +39,8 @@ function onLoadHandler(responseString) {
 		return classifiedReservations;
 	}
 
-	function isCompletedReservation({ year, monthValue, dayOfMonth, hour, minute, second }) {
-		const reservedDate = new Date(`${year}-${monthValue}-${dayOfMonth} ${hour}:${minute}:${second}`);
+	function isCompletedReservation(reservationDate) {
+		const reservedDate = new Date(reservationDate);
 		return reservedDate < new Date();
 	}
 
@@ -50,7 +50,7 @@ function onLoadHandler(responseString) {
 		const status = [
 			{
 				statusText: '예약 확정',
-				statusIcon: 'ico_check2',
+				statusIcon: 'ico_clock',
 				status: 'confirmed'
 			},
 			{
@@ -61,7 +61,7 @@ function onLoadHandler(responseString) {
 			{
 				statusText: '취소된 예약',
 				statusIcon: 'ico_cancel',
-				status: 'used'
+				status: 'canceled'
 			}
 		];
 
@@ -126,7 +126,7 @@ function onLoadHandler(responseString) {
 	}
 
 	function getIndex(status) {
-		if(status === 'checked') {
+		if(status === 'confirmed') {
 			return 0;
 		} else if(status === 'used') {
 			return 1;
@@ -135,7 +135,7 @@ function onLoadHandler(responseString) {
 	}
 
 	function getButtonText(status) {
-		if(status === 'checked') {
+		if(status === 'confirmed') {
 			return '취소';
 		} else if(status === 'used') {
 			return '예매자 리뷰 남기기';
@@ -144,7 +144,7 @@ function onLoadHandler(responseString) {
 	}
 
 	function getButtonClass(status) {
-		if(status === 'checked') {
+		if(status === 'confirmed') {
 			return 'cancel';
 		} else if(status === 'used') {
 			return 'comment';
@@ -167,7 +167,7 @@ function onLoadHandler(responseString) {
 
 		function cancelReservation() {
 			document.querySelectorAll('.btn.cancel').forEach(btn => {
-				btn.addEventListener('click', function(evt) {
+				btn.addEventListener('click', function() {
                     if (confirm('취소하시겠습니까?')) {
                         httpRequest("PUT", `/reservations/${this.dataset.reservationinfoid}`, changeReservation);
                     }

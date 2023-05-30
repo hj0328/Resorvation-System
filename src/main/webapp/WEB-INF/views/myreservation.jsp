@@ -39,7 +39,7 @@
 							</a>
 						</li>
 						<li class="item">
-							<a href="#" class="link_summary_board"> 
+							<a href="#" class="link_summary_board confirmed"> 
 								<i class="spr_book2 ico_book_ss"></i> 
 								<em class="tit">이용예정</em> 
 								<span class="figure">0</span> 
