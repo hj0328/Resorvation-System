@@ -49,17 +49,15 @@ public class ReservationServiceImpl implements ReservationService {
 	@Transactional
 	@Override
 	public ReservationResponseDto createReservations(ReservationRequestDto reservationRequestDto) {
-		myReservationDao.insertReservationInfo(reservationRequestDto);
-		int reservationInfoId = myReservationDao.selectReservationInfoMaxId();
+		long reservationInfoId = myReservationDao.insertReservationInfo(reservationRequestDto);
 		myReservationDao.insertReservationInfoPrice(reservationRequestDto, reservationInfoId);
 
 		// insert 값을 리턴하도록 수정
 		ReservationResponseDto reservationResponseDto = myReservationDao
 				.selectReservationResponseDto(reservationInfoId);
 
-		int reservationInfoPriceMaxId = myReservationDao.selectReservationInfoPriceMaxId();
 		List<ReservationPriceDto> prices = myReservationDao
-				.selectReservationInfoPriceDtoList(reservationInfoPriceMaxId);
+				.selectReservationInfoPriceDtoList(reservationInfoId);
 		reservationResponseDto.setPrices(prices);
 
 		return reservationResponseDto;
@@ -73,9 +71,8 @@ public class ReservationServiceImpl implements ReservationService {
 		ReservationResponseDto reservationResponseDto = myReservationDao
 				.selectReservationResponseDto(reservationInfoId);
 
-		int reservationInfoPriceMaxId = myReservationDao.selectReservationInfoPriceMaxId();
 		List<ReservationPriceDto> prices = myReservationDao
-				.selectReservationInfoPriceDtoList(reservationInfoPriceMaxId);
+				.selectReservationInfoPriceDtoList(reservationInfoId);
 		reservationResponseDto.setPrices(prices);
 		return reservationResponseDto;
 	}

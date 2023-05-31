@@ -23,7 +23,7 @@ public class MyReservationSqls {
 			+ "AND ri.id = rip.reservation_info_id AND rip.product_price_id = pp.id ";
 
 	public static final String INSERT_RESERVATION_INFO = "INSERT INTO reservation_info "
-			+ "VALUES( ((SELECT max(ri.id) FROM reservation_info ri) +1), "
+			+ "(product_id, display_info_id, reservation_name, reservation_tel, reservation_email, reservation_date, cancel_flag, create_date, modify_date) VALUES( "
 			+ ":productId, :displayInfoId, :reservationName, :reservationTelephone, :reservationEmail, :reservationTime, 0, now(), now()) ";
 
 	public static final String SELECT_RESERVATION_INFO_MAX_ID = "SELECT max(ri.id) FROM reservation_info ri";
@@ -31,14 +31,14 @@ public class MyReservationSqls {
 	public static final String SELECT_RESERVATION_INFO_PRICE_MAX_ID = "SELECT max(ri.id) FROM reservation_info_price ri";
 
 	public static final String INSERT_RESERVATION_INFO_PRICE = "INSERT INTO reservation_info_price "
-			+ "VALUES (((SELECT max(rip.id) FROM reservation_info_price rip) +1), :reservationInfoId, :productPriceId, :count) ";
+			+ "(reservation_info_id, product_price_id, count) VALUES (:reservationInfoId, :productPriceId, :count) ";
 
 	public static final String SELECT_RESERVATION_INFO_BY_ID = "SELECT id 'reservationInfoId', product_id 'productId', display_info_id 'displayInfoId', reservation_name 'reservationName', "
 			+ "reservation_tel 'reservationTelephone', reservation_email 'reservationEmail', reservation_date 'reservationDate', cancel_flag 'cancelYn', create_date 'createDate', modify_date 'modifyDate' "
 			+ "FROM reservation_info ri WHERE ri.id  = :reservationInfoId; ";
 
 	public static final String SELECT_RESERVATION_INFO_PRICE_BY_ID = "SELECT id 'reservationInfoPriceId', reservation_info_id 'reservationInfoId', product_price_id 'productPriceId', count "
-			+ "FROM reservation_info_price rip " + "WHERE rip.id = :reservationInfoPriceId ; ";
+			+ "FROM reservation_info_price rip " + "WHERE rip.reservation_info_id = :reservationInfoId ; ";
 
 	public static final String UPDATE_RESERVATION_CANCEL = "UPDATE reservation_info SET cancel_flag = 1 WHERE id = :reservationInfoId ";
 }

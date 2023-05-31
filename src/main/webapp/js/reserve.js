@@ -210,10 +210,17 @@ const Reserve = {
                     "prices": prices
                 };
 
-                let httpRequest = new XMLHttpRequest();
-                httpRequest.open('POST', './api/reservations', true);
-                httpRequest.setRequestHeader('Content-Type', 'application/json');
-                httpRequest.send(JSON.stringify(reqJson));
+                let oReq = new XMLHttpRequest();
+                oReq.addEventListener("load", function(response) {
+                    if (oReq.status === 200) {
+                        window.location.href = "./myreservation";
+                    }
+                });
+
+                url = "./myreservation";
+                oReq.open("POST", url);
+                oReq.setRequestHeader('Content-Type', 'application/json');
+                oReq.send(JSON.stringify(reqJson));
             }
         });
     },
