@@ -30,14 +30,14 @@ public class ReservationController {
 	}
 
 	@GetMapping("/reservations")
-	public Map<String, Object> getMyReservations(@RequestParam String reservationEmail, HttpSession session) throws ServletException, IOException {
-		Map<String, Object> reservations = reservationService.getReservations(reservationEmail);
-		Integer size = (Integer) reservations.get("size");
+	public Map<String, Object> getMyReservations(@RequestParam String reservationEmail, HttpSession session)
+			throws ServletException, IOException {
+		Integer size = (Integer) session.getAttribute("size");
 		if (size > 0) {
 			session.setAttribute("reservationEmail", reservationEmail);
 		}
 
-		return reservations;
+		return reservationService.getReservations(reservationEmail);
 	}
 
 	@PostMapping("/reservations")
