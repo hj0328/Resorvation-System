@@ -191,7 +191,7 @@ const Reserve = {
         document.querySelector('.bk_btn_wrap').addEventListener('click', function () {
             if (!document.querySelector('.bk_btn_wrap').classList.contains('disable')) {
 
-                let date = new Date();
+                let date = document.querySelector('.inline_txt.selected').innerText.split(' ')[0];
                 let prices = [
                     {
                         "count": Number(document.querySelector('#totalCount').innerText),
@@ -206,7 +206,7 @@ const Reserve = {
                     "reservationEmail": document.querySelector('#email').value,
                     "reservationName": document.querySelector('#name').value,
                     "reservationTelephone": document.querySelector('#tel').value,
-                    "reservationYearMonthDay": Reserve.formatDate(date, 'yyyy.mm.dd'),
+                    "reservationYearMonthDay": date,
                     "prices": prices
                 };
 
