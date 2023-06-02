@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
     ButtonBackSetter.setButtonBack();
 
-    const ticketTypeCount = 4;
+    const TICKET_TYPE_COUNT = 4;
     let quantityList = document.querySelectorAll('.qty');
-    for (let i = 0; i < ticketTypeCount; i++) {
+    for (let i = 0; i < TICKET_TYPE_COUNT; i++) {
         quantityList[i].addEventListener('click', function (evt) {
             CountButton.countTicket(evt);
             Reserve.isPass();
