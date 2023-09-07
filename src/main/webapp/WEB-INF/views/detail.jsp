@@ -10,12 +10,12 @@
 	content="네이버 예약, 네이버 예약이 연동된 곳 어디서나 바로 예약하고, 네이버 예약 홈(나의예약)에서 모두 관리할 수 있습니다.">
 <meta name="viewport"
 	content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-<script defer src="./js/common.js"></script>
-<script defer src="./js/detail.js"></script>
+<script defer src="/static/js/common.js"></script>
+<script defer src="/static/js/detail.js"></script>
 <script defer
 	src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
 <title>네이버 예약</title>
-<link href="./css/style.css" rel="stylesheet">
+<link href="/static/css/style.css" rel="stylesheet">
 <style>
 .container_visual {
 	height: 414px;
@@ -28,9 +28,9 @@
 		<div class="header fade">
 			<header class="header_tit">
 			<h1 class="logo">
-				<a href="/reservation" class="lnk_logo" title="네이버"> <span
+				<a href="/" class="lnk_logo" title="네이버"> <span
 					class="spr_bi ico_n_logo">네이버</span>
-				</a> <a href="/reservation" class="lnk_logo" title="예약"> <span
+				</a> <a href="/" class="lnk_logo" title="예약"> <span
 					class="spr_bi ico_bk_logo">예약</span>
 				</a>
 			</h1>
@@ -42,9 +42,9 @@
 				<div class="section_visual">
 					<header>
 					<h1 class="logo">
-						<a href="/reservation" class="lnk_logo" title="네이버"> <span
+						<a href="/" class="lnk_logo" title="네이버"> <span
 							class="spr_bi ico_n_logo">네이버</span>
-						</a> <a href="/reservation" class="lnk_logo" title="예약"> <span
+						</a> <a href="/" class="lnk_logo" title="예약"> <span
 							class="spr_bi ico_bk_logo">예약</span>
 						</a>
 					</h1>
@@ -244,7 +244,7 @@
 
 	<script id="detail-slide-template" type="myTemplate">
         {{#each productImages}}
-        <li class="item" style="width: 414px;"> <img alt="상세페이지 메인 이미지" class="img_thumb" src="./{{this.saveFileName}}"> <span class="img_bg"></span>
+        <li class="item" style="width: 414px;"> <img alt="상세페이지 메인 이미지" class="img_thumb" src="/static/{{this.saveFileName}}"> <span class="img_bg"></span>
             <div class="visual_txt">
                 <div class="visual_txt_inn">
                     <h2 class="visual_txt_tit"> <span>{{../productDescription}}</span> </h2>

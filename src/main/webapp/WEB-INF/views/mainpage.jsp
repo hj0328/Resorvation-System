@@ -7,10 +7,10 @@
     <meta charset="utf-8">
     <meta name="description" content="네이버 예약, 네이버 예약이 연동된 곳 어디서나 바로 예약하고, 네이버 예약 홈(나의예약)에서 모두 관리할 수 있습니다.">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
-    <script defer src="./js/main.js"></script>
-    <script defer src="./js/common.js"></script>
+    <script defer src="/static/js/main.js"></script>
+    <script defer src="/static/js/common.js"></script>
     <title>네이버 예약</title>
-    <link href="/reservation/css/style.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
 </head>
 
 <body>
@@ -118,7 +118,7 @@
         <li class="item">
             <a href="detail?productId={productId}&displayInfoId={displayInfoId}" class="item_book">
                 <div class="item_preview">
-                    <img alt="{description}" class="img_thumb" src="/reservation/{imgUrl}">
+                    <img alt="{description}" class="img_thumb" src="/static/{imgUrl}">
                     <span class="img_border"></span>
                 </div>
                 <div class="event_txt">
@@ -130,7 +130,7 @@
     </script>
 
     <script type="rv-template" id="promotion-template">
-        <li class="item" style="background-image: url(/reservation/{imgUrl}); width:100%">
+        <li class="item" style="background-image: url(/static/{imgUrl}); width:100%">
             <a href="#"> <span class="img_btm_border"></span> <span class="img_right_border"></span> <span class="img_bg_gra"></span>
                 <div class="event_txt">
                     <h4 class="event_txt_tit"></h4>
