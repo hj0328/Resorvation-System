@@ -1,30 +1,17 @@
 package kr.or.connect.reservation.dao;
 
-import static kr.or.connect.reservation.dao.sql.ProductDaoSqls.SELECT_ALL_PRODUCTS;
-import static kr.or.connect.reservation.dao.sql.ProductDaoSqls.SELECT_COMMENT_AVERAGE_SCORE_BY_DISPLAY_ID;
-import static kr.or.connect.reservation.dao.sql.ProductDaoSqls.SELECT_DISPLAYINFO_BY_DISPLAY_ID;
-import static kr.or.connect.reservation.dao.sql.ProductDaoSqls.SELECT_DISPLAY_INFO_IMG_BY_DISPLAY_ID;
-import static kr.or.connect.reservation.dao.sql.ProductDaoSqls.SELECT_PRODUCTS;
-import static kr.or.connect.reservation.dao.sql.ProductDaoSqls.SELECT_PRODUCTS_COUNT_BY_ID;
-import static kr.or.connect.reservation.dao.sql.ProductDaoSqls.SELECT_PRODUCT_IMAGE_BY_DISPLAY_ID;
-import static kr.or.connect.reservation.dao.sql.ProductDaoSqls.SELECT_PRODUCT_PRICE_BY_DISPLAY_ID;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.sql.DataSource;
-
+import kr.or.connect.reservation.dto.*;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import kr.or.connect.reservation.dto.DisplayInfo;
-import kr.or.connect.reservation.dto.DisplayInfoImageDto;
-import kr.or.connect.reservation.dto.ProductImageDto;
-import kr.or.connect.reservation.dto.ProductItemDto;
-import kr.or.connect.reservation.dto.ProductPriceDto;
+import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static kr.or.connect.reservation.dao.sql.ProductDaoSqls.*;
 
 @Repository
 public class ProductDao {
@@ -40,10 +27,10 @@ public class ProductDao {
 	}
 
 	/*
-	 * categoryId 인 상품에 대해 조회
+	 * categoryId 상품에 대해 조회
 	 */
 	public List<ProductItemDto> selectProducts(Integer categoryId, Integer start) {
-		String sql = new String(SELECT_PRODUCTS);
+		String sql = SELECT_PRODUCTS;
 
 		Map<String, Integer> params = new HashMap<>();
 		params.put("categoryId", categoryId);
@@ -57,7 +44,7 @@ public class ProductDao {
 	 * 전체 상품에 대해 조회 (categoryId = 0)
 	 */
 	public List<ProductItemDto> selectAllProducts(Integer start) {
-		String sql = new String(SELECT_ALL_PRODUCTS);
+		String sql = SELECT_ALL_PRODUCTS;
 
 		Map<String, Integer> params = new HashMap<>();
 		params.put("start", start);
@@ -67,7 +54,7 @@ public class ProductDao {
 	}
 
 	public int selectProductCountById(int categoryId) {
-		String sql = new String(SELECT_PRODUCTS_COUNT_BY_ID);
+		String sql = SELECT_PRODUCTS_COUNT_BY_ID;
 		Map<String, Integer> params = new HashMap<>();
 
 		if (categoryId == 0) {

@@ -16,24 +16,30 @@ import kr.or.connect.reservation.service.ProductService;
 
 @RestController
 @RequestMapping(path = "/api/products")
-public class ProductCategoryController {
+public class ProductController {
 	private final ProductService productService;
 
 	@Autowired
-	public ProductCategoryController(ProductService productService) {
+	public ProductController(ProductService productService) {
 		this.productService = productService;
 	}
 
+	/**
+	 * categoryId 상품의 start 기준 4건 상품목록과 categoryId의 전체 상품 수를 조회
+	 * 만약, categoryId가 없다면 전체 상품을 대상으로 조회한다.
+	 * @param categoryId 카테고리 아이디
+	 * @param start 조회 시작 위치
+	 */
 	@GetMapping
-	public Map<String, Object> getProducts(@RequestParam(required = false) int categoryId,
-			@RequestParam(required = false, defaultValue = "0") int start) {
+	public Map<String, Object> getProducts(@RequestParam(required = false) Integer categoryId,
+			@RequestParam(required = false, defaultValue = "0") Integer start) {
 
 		List<ProductItemDto> products = productService.getProducts(categoryId, start);
-		int productCntById = productService.getProductCountById(categoryId);
+		int totalProductCount = productService.getProductTotalCountById(categoryId);
 
 		Map<String, Object> map = new HashMap<>();
 		map.put("items", products);
-		map.put("totalCount", productCntById);
+		map.put("totalCount", totalProductCount);
 		return map;
 	}
 

@@ -1,9 +1,8 @@
 package kr.or.connect.reservation.service.impl;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import kr.or.connect.reservation.utils.UtilConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +15,11 @@ import kr.or.connect.reservation.dto.ProductItemDto;
 import kr.or.connect.reservation.dto.ProductPriceDto;
 import kr.or.connect.reservation.service.CommentService;
 import kr.or.connect.reservation.service.ProductService;
+import org.springframework.util.StringUtils;
+
+import javax.swing.*;
+
+import static kr.or.connect.reservation.utils.UtilConstant.ALL_PRODUCTS;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -31,9 +35,9 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<ProductItemDto> getProducts(int categoryId, int start) {
-		List<ProductItemDto> products = null;
-		if (categoryId == 0) {
+	public List<ProductItemDto> getProducts(Integer categoryId, Integer start) {
+		List<ProductItemDto> products = Collections.emptyList();
+		if (ALL_PRODUCTS.equals(categoryId)) {
 			products = productDao.selectAllProducts(start);
 		} else {
 			products = productDao.selectProducts(categoryId, start);
@@ -43,7 +47,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public int getProductCountById(int categoryId) {
+	public int getProductTotalCountById(int categoryId) {
 		return productDao.selectProductCountById(categoryId);
 	}
 

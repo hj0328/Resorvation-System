@@ -1,18 +1,21 @@
 package kr.or.connect.reservation.dao.sql;
 
+import static kr.or.connect.reservation.utils.UtilConstant.MAX_PRODUCT_SELECT_COUNT;
+
 // 상품 DAO용 쿼리문
 public class ProductDaoSqls {
 	public static final String SELECT_ALL_PRODUCTS = "SELECT info.id AS displayInfoId, info.place_name,content AS productContent ,description AS productDescription, product.id AS productId, finfo.save_file_name AS productImageUrl "
 			+ "FROM category, product, display_info info , product_image image, file_info finfo "
 			+ "WHERE category.id = product.category_id  AND product.id = info.product_id "
 			+ "AND image.type = 'th' AND product.id = image.product_id AND image.file_id = finfo.id "
-			+ "LIMIT :start, 4 ";
+			+ "LIMIT :start, " + MAX_PRODUCT_SELECT_COUNT;
 
 	public static final String SELECT_PRODUCTS = "SELECT info.id AS displayInfoId, info.place_name,content AS productContent ,description AS productDescription, product.id AS productId, finfo.save_file_name AS productImageUrl "
 			+ "FROM category, product, display_info info , product_image image, file_info finfo "
 			+ "WHERE category.id = :categoryId AND category.id = product.category_id  AND product.id = info.product_id "
 			+ "AND image.type = 'th' AND product.id = image.product_id AND image.file_id = finfo.id "
-			+ "LIMIT :start, 4 ";
+			+ "LIMIT :start, " + MAX_PRODUCT_SELECT_COUNT;
+	// 4 고치기
 
 	public static final String SELECT_PRODUCTS_COUNT_BY_ID = "SELECT count(*) "
 			+ "FROM category, product, display_info info , product_image image, file_info finfo "
