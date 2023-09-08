@@ -43,8 +43,12 @@ public class ProductController {
 		return map;
 	}
 
+	/**
+	 * displayInfoId 상품전시 정보 조회
+	 * @param displayInfoId
+	 */
 	@GetMapping(path = "/{displayInfoId}")
-	public Map<String, Object> getProductDetail(@PathVariable int displayInfoId) {
+	public Map<String, Object> getProductDetail(@PathVariable Integer displayInfoId) {
 		return productService.getProductDetail(displayInfoId);
 	}
 

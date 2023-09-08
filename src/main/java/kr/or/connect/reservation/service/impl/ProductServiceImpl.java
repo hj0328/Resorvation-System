@@ -52,7 +52,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public Map<String, Object> getProductDetail(int displayInfoId) {
+	public Map<String, Object> getProductDetail(Integer displayInfoId) {
 		Map<String, Object> displayInfoMap = new HashMap<>();
 
 		DisplayInfo displayInfo = productDao.selectDisplayInfo(displayInfoId);

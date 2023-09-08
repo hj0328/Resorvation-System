@@ -15,7 +15,6 @@ public class ProductDaoSqls {
 			+ "WHERE category.id = :categoryId AND category.id = product.category_id  AND product.id = info.product_id "
 			+ "AND image.type = 'th' AND product.id = image.product_id AND image.file_id = finfo.id "
 			+ "LIMIT :start, " + MAX_PRODUCT_SELECT_COUNT;
-	// 4 고치기
 
 	public static final String SELECT_PRODUCTS_COUNT_BY_ID = "SELECT count(*) "
 			+ "FROM category, product, display_info info , product_image image, file_info finfo "

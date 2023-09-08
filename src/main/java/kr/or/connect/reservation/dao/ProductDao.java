@@ -26,9 +26,6 @@ public class ProductDao {
 		jdbc = new NamedParameterJdbcTemplate(dataSource);
 	}
 
-	/*
-	 * categoryId 상품에 대해 조회
-	 */
 	public List<ProductItemDto> selectProducts(Integer categoryId, Integer start) {
 		String sql = SELECT_PRODUCTS;
 
@@ -40,9 +37,6 @@ public class ProductDao {
 		return productList;
 	}
 
-	/*
-	 * 전체 상품에 대해 조회 (categoryId = 0)
-	 */
 	public List<ProductItemDto> selectAllProducts(Integer start) {
 		String sql = SELECT_ALL_PRODUCTS;
 
