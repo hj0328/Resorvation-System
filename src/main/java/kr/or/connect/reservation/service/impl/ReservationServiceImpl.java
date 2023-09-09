@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import kr.or.connect.reservation.utils.UtilConstant;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,9 +41,8 @@ public class ReservationServiceImpl implements ReservationService {
 		}
 
 		HashMap<String, Object> reservationMap = new HashMap<>();
-		reservationMap.put("reservations", reservationInfos);
-		reservationMap.put("size", reservationInfos.size());
-
+		reservationMap.put(UtilConstant.RESERVATIONS, reservationInfos);
+		reservationMap.put(UtilConstant.SIZE, reservationInfos.size());
 		return reservationMap;
 	}
 

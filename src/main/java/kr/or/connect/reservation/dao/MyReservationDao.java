@@ -16,6 +16,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import kr.or.connect.reservation.utils.UtilConstant;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -49,7 +50,7 @@ public class MyReservationDao {
 
 	public List<ReservationInfoDto> selectReservationInfoByEmail(String reservationEmail) {
 		Map<String, String> params = new HashMap<>();
-		params.put("reservationEmail", reservationEmail);
+		params.put(UtilConstant.RESERVATION_EMAIL, reservationEmail);
 		List<ReservationInfoDto> reservationInfos = jdbc.query(SELECT_RESERVATION_INFO_BY_EMAIL, params,
 				reservationInfoRowMapper);
 
@@ -58,8 +59,8 @@ public class MyReservationDao {
 
 	public DisplayInfo selectDisplayInfoById(Integer reservationInfoId, Integer displayInfoId) {
 		Map<String, Integer> params = new HashMap<>();
-		params.put("displayInfoId", displayInfoId);
-		params.put("reservationInfoId", reservationInfoId);
+		params.put(UtilConstant.DISPLAY_INFO_ID, displayInfoId);
+		params.put(UtilConstant.RESERVATION_INFO_ID, reservationInfoId);
 
 		DisplayInfo displayInfoDto = jdbc.queryForObject(SELECT_DISPLAY_INFO_BY_ID, params, displayInfoRowMapper);
 		return displayInfoDto;
@@ -67,7 +68,7 @@ public class MyReservationDao {
 
 	public Integer selectTotalPriceById(Integer reservationInfoId) {
 		Map<String, Integer> params = new HashMap<>();
-		params.put("reservationInfoId", reservationInfoId);
+		params.put(UtilConstant.RESERVATION_INFO_ID, reservationInfoId);
 
 		Integer totalPrice = jdbc.queryForObject(SELECT_TOTAL_PRICE_BY_ID, params, Integer.class);
 		return totalPrice;

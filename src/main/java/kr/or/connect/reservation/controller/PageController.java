@@ -48,14 +48,12 @@ public class PageController {
 
 	@GetMapping("/myreservation")
 	public String getMyReservation(HttpSession session) {
-		String reservationEmail = (String) session.getAttribute("reservationEmail");
-		if (reservationEmail == null) {
-			return "redirect:/";
-		}
 
-		Map<String, Object> reservations = reservationService.getReservations(reservationEmail);
-		Integer size = (Integer) reservations.get("size");
-		session.setAttribute("size", size);
+		// 로그인이 되어 있어야 예약가능, 그렇지 않으면 로그인 화면으로 이동
+		Object loginMember = session.getAttribute("loginMember");
+		if (loginMember == null) {
+			return "bookinglogin";
+		}
 
 		return "myreservation";
 	}

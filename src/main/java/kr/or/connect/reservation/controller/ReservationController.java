@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Map;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +22,7 @@ import kr.or.connect.reservation.dto.response.ReservationResponseDto;
 import kr.or.connect.reservation.service.ReservationService;
 
 @RestController
-@RequestMapping(path = "/api")
+@RequestMapping(path = "/api/reservations")
 public class ReservationController {
 
 	private final ReservationService reservationService;
@@ -29,18 +31,18 @@ public class ReservationController {
 		this.reservationService = reservationService;
 	}
 
-	@GetMapping("/reservations")
-	public Map<String, Object> getMyReservations(@RequestParam String reservationEmail, HttpSession session)
+	/**
+	 * 예약정보조회
+	 * @param reservationEmail
+	 * @param session
+	 */
+	@GetMapping
+	public Map<String, Object> getMyReservations(@RequestParam String reservationEmail)
 			throws ServletException, IOException {
-		Integer size = (Integer) session.getAttribute("size");
-		if (size > 0) {
-			session.setAttribute("reservationEmail", reservationEmail);
-		}
-
 		return reservationService.getReservations(reservationEmail);
 	}
 
-	@PostMapping("/reservations")
+	@PostMapping
 	public ReservationResponseDto setReservation(@RequestBody ReservationRequestDto reservationRequestDto) {
 		return reservationService.createReservations(reservationRequestDto);
 	}
@@ -48,7 +50,7 @@ public class ReservationController {
 	/*
 	 * [PJT-5] 예약취소는 실제 DB 에 적용된 값이 아닌, Random으로 생성된 예약 객체를 반환한다.
 	 */
-	@PutMapping("/reservations/{reservationId}")
+	@PutMapping("/{reservationId}")
 	public ReservationResponseDto deleteReservation(@PathVariable int reservationId) {
 		return reservationService.cancelReservation(reservationId);
 	}
