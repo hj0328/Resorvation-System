@@ -1,21 +1,10 @@
 package kr.or.connect.reservation.dao;
 
-import static kr.or.connect.reservation.dao.sql.MyReservationSqls.INSERT_RESERVATION_INFO;
-import static kr.or.connect.reservation.dao.sql.MyReservationSqls.INSERT_RESERVATION_INFO_PRICE;
-import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_DISPLAY_INFO_BY_ID;
-import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_RESERVATION_INFO_BY_EMAIL;
-import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_RESERVATION_INFO_BY_ID;
-import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_RESERVATION_INFO_MAX_ID;
-import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_RESERVATION_INFO_PRICE_BY_ID;
-import static kr.or.connect.reservation.dao.sql.MyReservationSqls.SELECT_TOTAL_PRICE_BY_ID;
-import static kr.or.connect.reservation.dao.sql.MyReservationSqls.UPDATE_RESERVATION_CANCEL;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.sql.DataSource;
-
+import kr.or.connect.reservation.dto.DisplayInfo;
+import kr.or.connect.reservation.dto.ReservationInfoDto;
+import kr.or.connect.reservation.dto.ReservationPriceDto;
+import kr.or.connect.reservation.dto.reqeust.ReservationRequestDto;
+import kr.or.connect.reservation.dto.response.ReservationResponseDto;
 import kr.or.connect.reservation.utils.UtilConstant;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
@@ -26,11 +15,12 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import kr.or.connect.reservation.dto.DisplayInfo;
-import kr.or.connect.reservation.dto.ReservationInfoDto;
-import kr.or.connect.reservation.dto.ReservationPriceDto;
-import kr.or.connect.reservation.dto.reqeust.ReservationRequestDto;
-import kr.or.connect.reservation.dto.response.ReservationResponseDto;
+import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static kr.or.connect.reservation.dao.sql.MyReservationSqls.*;
 
 @Repository
 public class MyReservationDao {
@@ -115,7 +105,7 @@ public class MyReservationDao {
 
 	public ReservationResponseDto selectReservationResponseDto(long reservationInfoId) {
 		Map<String, Long> params = new HashMap<>();
-		params.put("reservationInfoId", reservationInfoId);
+		params.put(UtilConstant.RESERVATION_INFO_ID, reservationInfoId);
 
 		ReservationResponseDto reservationResponseDto = jdbc.queryForObject(SELECT_RESERVATION_INFO_BY_ID, params,
 				reservationResponseRowMapper);
@@ -124,14 +114,14 @@ public class MyReservationDao {
 
 	public List<ReservationPriceDto> selectReservationInfoPriceDtoList(long reservationInfoId) {
 		Map<String, Long> params = new HashMap<>();
-		params.put("reservationInfoId", reservationInfoId);
+		params.put(UtilConstant.RESERVATION_INFO_ID, reservationInfoId);
 
 		return jdbc.query(SELECT_RESERVATION_INFO_PRICE_BY_ID, params, reservationPriceDtoRowMapper);
 	}
 
 	public void cancelReservation(int reservationInfoId) {
 		SqlParameterSource params = new MapSqlParameterSource()
-				.addValue("reservationInfoId", reservationInfoId);
+				.addValue(UtilConstant.RESERVATION_INFO_ID, reservationInfoId);
 
 		jdbc.update(UPDATE_RESERVATION_CANCEL, params);
 	}

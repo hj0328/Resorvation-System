@@ -1,13 +1,5 @@
 package kr.or.connect.reservation.service.impl;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import kr.or.connect.reservation.utils.UtilConstant;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import kr.or.connect.reservation.dao.MyReservationDao;
 import kr.or.connect.reservation.dto.DisplayInfo;
 import kr.or.connect.reservation.dto.ReservationInfoDto;
@@ -15,6 +7,13 @@ import kr.or.connect.reservation.dto.ReservationPriceDto;
 import kr.or.connect.reservation.dto.reqeust.ReservationRequestDto;
 import kr.or.connect.reservation.dto.response.ReservationResponseDto;
 import kr.or.connect.reservation.service.ReservationService;
+import kr.or.connect.reservation.utils.UtilConstant;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class ReservationServiceImpl implements ReservationService {
@@ -36,8 +35,8 @@ public class ReservationServiceImpl implements ReservationService {
 			DisplayInfo displayInfo = myReservationDao.selectDisplayInfoById(reservationInfoId, displayInfoId);
 			reservationInfo.setDisplayInfo(displayInfo);
 
-			Integer totalPriceByEmail = myReservationDao.selectTotalPriceById(reservationInfoId);
-			reservationInfo.setTotalPrice(totalPriceByEmail);
+			Integer totalPrice = myReservationDao.selectTotalPriceById(reservationInfoId);
+			reservationInfo.setTotalPrice(totalPrice);
 		}
 
 		HashMap<String, Object> reservationMap = new HashMap<>();
@@ -52,7 +51,7 @@ public class ReservationServiceImpl implements ReservationService {
 		long reservationInfoId = myReservationDao.insertReservationInfo(reservationRequestDto);
 		myReservationDao.insertReservationInfoPrice(reservationRequestDto, reservationInfoId);
 
-		// insert 값을 리턴하도록 수정
+		// 응답 데이터 생성
 		ReservationResponseDto reservationResponseDto = myReservationDao
 				.selectReservationResponseDto(reservationInfoId);
 
@@ -63,11 +62,11 @@ public class ReservationServiceImpl implements ReservationService {
 		return reservationResponseDto;
 	}
 
+	@Transactional
 	@Override
 	public ReservationResponseDto cancelReservation(int reservationInfoId) {
 		myReservationDao.cancelReservation(reservationInfoId);
 
-		// cancel 값을 리턴하도록 수정
 		ReservationResponseDto reservationResponseDto = myReservationDao
 				.selectReservationResponseDto(reservationInfoId);
 

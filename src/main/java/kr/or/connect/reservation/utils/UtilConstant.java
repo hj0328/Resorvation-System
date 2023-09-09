@@ -12,6 +12,8 @@ public class UtilConstant {
     public static final String DISPLAY_INFO_ID = "displayInfoId";
     public static final String RESERVATION_INFO_ID = "reservationInfoId";
 
+    public static final Integer CANCEL_FLAG_Y = 1;
+
     private UtilConstant() {
     }
 }

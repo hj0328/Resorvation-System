@@ -1,5 +1,7 @@
 package kr.or.connect.reservation.dao.sql;
 
+import kr.or.connect.reservation.utils.UtilConstant;
+
 /*
  *  '나의 예매내역 확인' 페이지 관련 sql문
  */
@@ -40,5 +42,6 @@ public class MyReservationSqls {
 	public static final String SELECT_RESERVATION_INFO_PRICE_BY_ID = "SELECT id 'reservationInfoPriceId', reservation_info_id 'reservationInfoId', product_price_id 'productPriceId', count "
 			+ "FROM reservation_info_price rip " + "WHERE rip.reservation_info_id = :reservationInfoId ; ";
 
-	public static final String UPDATE_RESERVATION_CANCEL = "UPDATE reservation_info SET cancel_flag = 1 WHERE id = :reservationInfoId ";
+	public static final String UPDATE_RESERVATION_CANCEL = "UPDATE reservation_info SET cancel_flag = "
+			+ UtilConstant.CANCEL_FLAG_Y + " WHERE id = :reservationInfoId ";
 }
