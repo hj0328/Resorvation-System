@@ -1,19 +1,17 @@
 package kr.or.connect.reservation.controller;
 
+import kr.or.connect.reservation.dto.ProductItemDto;
+import kr.or.connect.reservation.service.ProductService;
+import kr.or.connect.reservation.utils.UtilConstant;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import kr.or.connect.reservation.dto.ProductItemDto;
-import kr.or.connect.reservation.service.ProductService;
-
+@Slf4j
 @RestController
 @RequestMapping(path = "/api/products")
 public class ProductController {
@@ -38,8 +36,8 @@ public class ProductController {
 		int totalProductCount = productService.getProductTotalCountById(categoryId);
 
 		Map<String, Object> map = new HashMap<>();
-		map.put("items", products);
-		map.put("totalCount", totalProductCount);
+		map.put(UtilConstant.ITMES, products);
+		map.put(UtilConstant.TOTAL_COUNT, totalProductCount);
 		return map;
 	}
 

@@ -4,8 +4,7 @@ import kr.or.connect.reservation.dao.ProductDao;
 import kr.or.connect.reservation.dto.*;
 import kr.or.connect.reservation.service.CommentService;
 import kr.or.connect.reservation.service.ProductService;
-import kr.or.connect.reservation.utils.UtilConstant;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -13,23 +12,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static kr.or.connect.reservation.utils.UtilConstant.ALL_PRODUCTS;
+
 @Service
+@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
-	private final ProductDao productDao;
-
 	private final CommentService commentService;
-
-	@Autowired
-	public ProductServiceImpl(ProductDao productDao, CommentService commentService) {
-		this.productDao = productDao;
-		this.commentService = commentService;
-	}
+	private final ProductDao productDao;
 
 	@Override
 	public List<ProductItemDto> getProducts(Integer categoryId, Integer start) {
 		List<ProductItemDto> products = Collections.emptyList();
-		if (UtilConstant.ALL_PRODUCTS.equals(categoryId)) {
+		if (ALL_PRODUCTS.equals(categoryId)) {
 			products = productDao.selectAllProducts(start);
 		} else {
 			products = productDao.selectProducts(categoryId, start);
