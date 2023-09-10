@@ -10,6 +10,7 @@ import kr.or.connect.reservation.dto.response.ReservationResponseDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -26,12 +27,13 @@ class ReservationServiceImplTest {
     @Mock
     private MyReservationDao myReservationDao;
 
+    @InjectMocks
+    private ReservationServiceImpl reservationService;
+
     @DisplayName("예약 조회 기능 테스트")
     @Test
     void getReservationsTest() {
         // given
-        ReservationServiceImpl reservationService = new ReservationServiceImpl(myReservationDao);
-
         List<ReservationInfoDto> list = new ArrayList<>();
 
         ReservationInfoDto reservationInfo = new ReservationInfoDto();
@@ -68,8 +70,6 @@ class ReservationServiceImplTest {
     @Test
     void createReservationsTest() {
         // given
-        ReservationServiceImpl reservationService = new ReservationServiceImpl(myReservationDao);
-
         ReservationResponseDto reservationResponse = new ReservationResponseDto();
         reservationResponse.setPrices(getReservationPriceDtoList());
         Mockito.when(myReservationDao.selectReservationInfoPriceDtoList(0))
@@ -91,8 +91,6 @@ class ReservationServiceImplTest {
     @Test
     void cancelReservationsTest() {
         // given
-        ReservationServiceImpl reservationService = new ReservationServiceImpl(myReservationDao);
-
         ReservationResponseDto reservationResponse = new ReservationResponseDto();
         reservationResponse.setCancelYn(true);
         Mockito.when(myReservationDao.selectReservationResponseDto(0))

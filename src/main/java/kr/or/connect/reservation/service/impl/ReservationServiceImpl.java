@@ -8,6 +8,7 @@ import kr.or.connect.reservation.dto.reqeust.ReservationRequestDto;
 import kr.or.connect.reservation.dto.response.ReservationResponseDto;
 import kr.or.connect.reservation.service.ReservationService;
 import kr.or.connect.reservation.utils.UtilConstant;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,19 +17,16 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class ReservationServiceImpl implements ReservationService {
 
 	private final MyReservationDao myReservationDao;
 
-	public ReservationServiceImpl(MyReservationDao myReservationDao) {
-		this.myReservationDao = myReservationDao;
-	}
-
 	@Override
 	public Map<String, Object> getReservations(String reservationEmail) {
-		List<ReservationInfoDto> reservationInfos = myReservationDao.selectReservationInfoByEmail(reservationEmail);
+		List<ReservationInfoDto> reservationInfoList = myReservationDao.selectReservationInfoByEmail(reservationEmail);
 
-		for (ReservationInfoDto reservationInfo : reservationInfos) {
+		for (ReservationInfoDto reservationInfo : reservationInfoList) {
 			Integer reservationInfoId = reservationInfo.getReservationInfoId();
 			Integer displayInfoId = reservationInfo.getDisplayInfoId();
 
@@ -40,8 +38,8 @@ public class ReservationServiceImpl implements ReservationService {
 		}
 
 		HashMap<String, Object> reservationMap = new HashMap<>();
-		reservationMap.put(UtilConstant.RESERVATIONS, reservationInfos);
-		reservationMap.put(UtilConstant.SIZE, reservationInfos.size());
+		reservationMap.put(UtilConstant.RESERVATIONS, reservationInfoList);
+		reservationMap.put(UtilConstant.SIZE, reservationInfoList.size());
 		return reservationMap;
 	}
 
