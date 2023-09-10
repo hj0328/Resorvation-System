@@ -31,10 +31,10 @@
 				</a>
 			</h1>
                 <% if (session.getAttribute("reservationEmail") == null) { %> 
-	                <a href="./bookinglogin" class="btn_my"> 
+	                <a href="./booking-login" class="btn_my"> 
 					<span class="viewReservation" title="예약확인">예약확인</span>
 				<% } else { %>
-	                <a href="./myreservation" class="btn_my"> 
+	                <a href="./my-reservation" class="btn_my"> 
 					<span class="viewReservation" title=${reservationEmail}>${reservationEmail}</span>
                 <% } %>
                 </a> 

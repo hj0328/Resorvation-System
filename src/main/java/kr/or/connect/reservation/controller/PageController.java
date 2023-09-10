@@ -1,25 +1,15 @@
 package kr.or.connect.reservation.controller;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpSession;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import kr.or.connect.reservation.service.ReservationService;
+import javax.servlet.http.HttpSession;
 
 @Controller
 public class PageController {
-
-	private final ReservationService reservationService;
-
-	public PageController(ReservationService reservationService) {
-		this.reservationService = reservationService;
-	}
 
 	@GetMapping("/")
 	public String getMainPage(HttpSession session, ModelMap model) {
@@ -46,7 +36,7 @@ public class PageController {
 		return "review";
 	}
 
-	@GetMapping("/myreservation")
+	@GetMapping("/my-reservation")
 	public String getMyReservation(HttpSession session) {
 
 		// 로그인이 되어 있어야 예약가능, 그렇지 않으면 로그인 화면으로 이동
@@ -58,20 +48,20 @@ public class PageController {
 		return "myreservation";
 	}
 
-	@GetMapping("/bookinglogin")
+	@GetMapping("/booking-login")
 	public String getBookinglogin() {
 		return "bookinglogin";
 	}
 
-	@PostMapping("/bookinglogin")
-	public String postBookinglogin(@RequestBody String reservationEmail, HttpSession session) {
+	@PostMapping("/booking-login")
+	public String postBookingLogin(@RequestBody String reservationEmail, HttpSession session) {
 		String[] split = reservationEmail.split("reservationEmail=");
 		if (split.length < 2) {
 			return "redirect:/";
 		}
 
 		session.setAttribute("reservationEmail", reservationEmail);
-		return "redirect:/myreservation";
+		return "redirect:/my-reservation";
 	}
 
 	@GetMapping("/booking")

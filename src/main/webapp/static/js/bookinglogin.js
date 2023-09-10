@@ -14,7 +14,7 @@ const ButtonMyBooking = {
             }
 
             setCookie('reservationEmail', email)
-            document.querySelector('form').action = './bookinglogin';
+            document.querySelector('form').action = './booking-login';
         });
     },
     isValidEmail: function (bookEmail) {

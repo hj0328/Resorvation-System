@@ -213,11 +213,11 @@ const Reserve = {
                 let oReq = new XMLHttpRequest();
                 oReq.addEventListener("load", function(response) {
                     if (oReq.status === 200) {
-                        window.location.href = "./myreservation";
+                        window.location.href = "./my-reservation";
                     }
                 });
 
-                url = "./myreservation";
+                url = "./my-reservation";
                 oReq.open("POST", url);
                 oReq.setRequestHeader('Content-Type', 'application/json');
                 oReq.send(JSON.stringify(reqJson));
