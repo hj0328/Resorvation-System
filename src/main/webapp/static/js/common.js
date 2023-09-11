@@ -45,7 +45,7 @@ function getCookie(cookieName) {
   }
 
   function httpRequest(method, url, callback, payload) {
-    const baseURL = 'http://localhost:8080/reservation/api';
+    const baseURL = 'http://localhost:8080/api';
      const xhr = new XMLHttpRequest();
 
     xhr.onload = function() {

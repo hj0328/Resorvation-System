@@ -32,7 +32,6 @@ public class ReservationController {
 
 	/**
 	 * 예약하기
-	 *
 	 * @param reservationRequestDto
 	 */
 	@PostMapping

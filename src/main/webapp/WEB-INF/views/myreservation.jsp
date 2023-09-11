@@ -195,6 +195,6 @@
 
 
 <script src="/static/js/common.js"></script>
-<script src="/static/js/my-reservation.js"></script>
+<script src="/static/js/myreservation.js"></script>
 </body>
 </html>
