@@ -17,8 +17,8 @@ public class PageController {
 	public String getMainPage(HttpSession session, ModelMap model) {
 		log.info("GET /");
 		String reservationEmail = (String) session.getAttribute("reservationEmail");
-		if (reservationEmail != null && reservationEmail.contains("=")) {
-			model.addAttribute("reservationEmail", reservationEmail.split("=")[1].replaceAll("%40", "@"));
+		if (reservationEmail != null) {
+			model.addAttribute("reservationEmail", reservationEmail);
 		}
 
 		return "mainpage";
@@ -27,10 +27,9 @@ public class PageController {
 	@GetMapping("/detail")
 	public String getDetailPage(HttpSession session, ModelMap model) {
 		log.info("GET /detail");
-
 		String reservationEmail = (String) session.getAttribute("reservationEmail");
 		if (reservationEmail != null) {
-			model.addAttribute("reservationEmail", reservationEmail.replaceAll("%40", "@"));
+			model.addAttribute("reservationEmail", reservationEmail);
 		}
 
 		return "detail";

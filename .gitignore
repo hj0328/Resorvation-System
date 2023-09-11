@@ -3,7 +3,7 @@ target
 .project
 .settings
 
-.gitignore
+.DS_Store
 
 .idea
 .vscode

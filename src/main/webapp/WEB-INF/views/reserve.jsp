@@ -33,7 +33,7 @@
 	                <a href="./booking-login" class="btn_my"> 
 					<span class="viewReservation" title="예약확인">예약확인</span>
 				<% } else { %>
-	                <a href="./my-reservation" class="btn_my"> 
+	                <a href="/api/reservations" class="btn_my">
 					<span class="viewReservation" title=${reservationEmail}>${reservationEmail}</span>
                 <% } %>
                 </a> 
@@ -180,7 +180,7 @@
 							<div class="agreement_nessasary help_txt">
 								<span class="spr_book ico_nessasary"></span> <span>필수입력</span>
 							</div>
-							<form class="form_horizontal">
+							<form action="/api/reservations" id="reserveForm" class="form_horizontal">
 								<div class="inline_form">
 									<label class="label" for="name"> <span
 										class="spr_book ico_nessasary">필수</span> <span>예매자</span>
@@ -205,7 +205,7 @@
 										class="spr_book ico_nessasary">필수</span> <span>이메일</span>
 									</label>
 									<div class="inline_control">
-										<input type="email" name="email" id="email" class="email"
+										<input type="email" name="reservationEmail" id="email" class="email"
 											value="" placeholder="crong@codesquad.kr" maxlength="50"
 											required>
 									</div>
@@ -278,7 +278,7 @@
 				<div class="box_bk_btn">
 					<!-- [D] 약관 전체 동의가 되면 disable 제거 -->
 					<div class="bk_btn_wrap disable">
-						<button type="button" class="bk_btn">
+						<button type="submit" form="reserveForm" class="bk_btn">
 							<i class="spr_book ico_naver_s"></i> <span>예약하기</span>
 						</button>
 					</div>
