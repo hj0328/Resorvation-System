@@ -2,8 +2,11 @@ package kr.or.connect.reservation.utils;
 
 public class UtilConstant {
 
+    public static final String LOGIN_ID = "loginId";
+    public static final Integer VVIP_RESERVATION_COUNT = 20;
+    public static final Integer VIP_RESERVATION_COUNT = 10;
+
     public static final Integer ALL_PRODUCTS = 0;
-    public static final Integer MAX_CATEGORY_COUNT = 5;
     public static final Integer MAX_PRODUCT_SELECT_COUNT = 4;
 
     public static final String ITMES = "items";

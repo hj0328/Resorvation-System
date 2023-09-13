@@ -56,6 +56,19 @@ public class PageController {
 		return "myreservation";
 	}
 
+	@PostMapping("/my-reservation")
+	public String postMyReservation(HttpSession session) {
+		log.info("POST /my-reservation, reservationEmail={}", session.getAttribute("reservationEmail"));
+
+		// 로그인이 되어 있어야 예약가능, 그렇지 않으면 로그인 화면으로 이동
+		Object reservationEmail = session.getAttribute("reservationEmail");
+		if (reservationEmail == null) {
+			return "bookinglogin";
+		}
+
+		return "forward:/api/reservations";
+	}
+
 	@GetMapping("/booking-login")
 	public String getBookinglogin() {
 		log.info("GET /booking-login");

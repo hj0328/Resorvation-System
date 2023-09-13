@@ -39,7 +39,7 @@ public class ReservationDao {
 	public List<ReservationInfoDto> selectReservationInfoByEmail(String reservationEmail) {
 		Map<String, String> params = new HashMap<>();
 		params.put(UtilConstant.RESERVATION_EMAIL, reservationEmail);
-		List<ReservationInfoDto> reservationInfos = jdbc.query(ReservationSqls.SELECT_RESERVATION_INFO_BY_EMAIL, params,
+		List<ReservationInfoDto> reservationInfos = jdbc.query(ReservationSql.SELECT_RESERVATION_INFO_BY_EMAIL, params,
 				reservationInfoRowMapper);
 
 		return reservationInfos;
@@ -50,7 +50,7 @@ public class ReservationDao {
 		params.put(UtilConstant.DISPLAY_INFO_ID, displayInfoId);
 		params.put(UtilConstant.RESERVATION_INFO_ID, reservationInfoId);
 
-		DisplayInfo displayInfoDto = jdbc.queryForObject(ReservationSqls.SELECT_DISPLAY_INFO_BY_ID, params, displayInfoRowMapper);
+		DisplayInfo displayInfoDto = jdbc.queryForObject(ReservationSql.SELECT_DISPLAY_INFO_BY_ID, params, displayInfoRowMapper);
 		return displayInfoDto;
 	}
 
@@ -58,35 +58,23 @@ public class ReservationDao {
 		Map<String, Integer> params = new HashMap<>();
 		params.put(UtilConstant.RESERVATION_INFO_ID, reservationInfoId);
 
-		Integer totalPrice = jdbc.queryForObject(ReservationSqls.SELECT_TOTAL_PRICE_BY_ID, params, Integer.class);
+		Integer totalPrice = jdbc.queryForObject(ReservationSql.SELECT_TOTAL_PRICE_BY_ID, params, Integer.class);
 		return totalPrice;
 	}
 
 	public long insertReservationInfo(ReservationRequestDto reservationRequestDto) {
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 
-		SqlParameterSource params = new MapSqlParameterSource()
-				.addValue("productId", reservationRequestDto.getProductId())
-				.addValue("displayInfoId", reservationRequestDto.getDisplayInfoId())
-				.addValue("reservationName", reservationRequestDto.getReservationName())
-				.addValue("reservationTelephone", reservationRequestDto.getReservationTelephone())
-				.addValue("reservationEmail", reservationRequestDto.getReservationEmail())
-				.addValue("reservationTime", reservationRequestDto.getReservationYearMonthDay());
+		Map<String, Object> params = new HashMap<>();
+		params.put("productId", reservationRequestDto.getProductId());
+		params.put("displayInfoId", reservationRequestDto.getDisplayInfoId());
+		params.put("reservationName", reservationRequestDto.getReservationName());
+		params.put("reservationTelephone", reservationRequestDto.getReservationTelephone());
+		params.put("reservationEmail", reservationRequestDto.getReservationEmail());
+		params.put("reservationTime", reservationRequestDto.getReservationYearMonthDay());
 
-		jdbc.update(ReservationSqls.INSERT_RESERVATION_INFO, params, keyHolder);
-
+		jdbc.update(ReservationSql.INSERT_RESERVATION_INFO, new MapSqlParameterSource(params), keyHolder);
 		return (long) keyHolder.getKey();
-	}
-
-	public int selectReservationInfoMaxId() {
-		Integer reservationInfoId = jdbc.queryForObject(ReservationSqls.SELECT_RESERVATION_INFO_MAX_ID, new HashMap<>(), Integer.class);
-		return reservationInfoId;
-	}
-
-	public int selectReservationInfoPriceMaxId() {
-		Integer reservationInfoPriceId = jdbc.queryForObject(ReservationSqls.SELECT_RESERVATION_INFO_MAX_ID, new HashMap<>(),
-				Integer.class);
-		return reservationInfoPriceId;
 	}
 
 	public void insertReservationInfoPrice(ReservationRequestDto reservationRequestDto, long reservationInfoId) {
@@ -97,7 +85,7 @@ public class ReservationDao {
 			params.put("productPriceId", price.getProductPriceId());
 			params.put("reservationInfoId", reservationInfoId);
 
-			jdbc.update(ReservationSqls.INSERT_RESERVATION_INFO_PRICE, params);
+			jdbc.update(ReservationSql.INSERT_RESERVATION_INFO_PRICE, params);
 		}
 	}
 
@@ -105,7 +93,7 @@ public class ReservationDao {
 		Map<String, Long> params = new HashMap<>();
 		params.put(UtilConstant.RESERVATION_INFO_ID, reservationInfoId);
 
-		ReservationResponseDto reservationResponseDto = jdbc.queryForObject(ReservationSqls.SELECT_RESERVATION_INFO_BY_ID, params,
+		ReservationResponseDto reservationResponseDto = jdbc.queryForObject(ReservationSql.SELECT_RESERVATION_INFO_BY_ID, params,
 				reservationResponseRowMapper);
 		return reservationResponseDto;
 	}
@@ -114,13 +102,13 @@ public class ReservationDao {
 		Map<String, Long> params = new HashMap<>();
 		params.put(UtilConstant.RESERVATION_INFO_ID, reservationInfoId);
 
-		return jdbc.query(ReservationSqls.SELECT_RESERVATION_INFO_PRICE_BY_ID, params, reservationPriceDtoRowMapper);
+		return jdbc.query(ReservationSql.SELECT_RESERVATION_INFO_PRICE_BY_ID, params, reservationPriceDtoRowMapper);
 	}
 
 	public void cancelReservation(int reservationInfoId) {
 		SqlParameterSource params = new MapSqlParameterSource()
 				.addValue(UtilConstant.RESERVATION_INFO_ID, reservationInfoId);
 
-		jdbc.update(ReservationSqls.UPDATE_RESERVATION_CANCEL, params);
+		jdbc.update(ReservationSql.UPDATE_RESERVATION_CANCEL, params);
 	}
 }

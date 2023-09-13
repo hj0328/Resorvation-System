@@ -23,7 +23,7 @@ public class ReservationController {
 	 * @param reservationEmail
 	 */
 	@GetMapping
-	public Map<String, Object> getMyReservations(@RequestParam String reservationEmail)
+	public Map<String, Object> getReservations(@RequestParam String reservationEmail)
 			throws ServletException, IOException {
 		log.info("GET /api/reservation, reservationEmail={}", reservationEmail);
 		return reservationService.getReservations(reservationEmail);
@@ -49,4 +49,5 @@ public class ReservationController {
 		log.info("PUT /api/reservation, reservationId={}", reservationId);
 		return reservationService.cancelReservation(reservationId);
 	}
+
 }
