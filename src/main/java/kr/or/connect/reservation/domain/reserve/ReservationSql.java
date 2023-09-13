@@ -5,7 +5,7 @@ import kr.or.connect.reservation.utils.UtilConstant;
 /*
  *  '나의 예매내역 확인' 페이지 관련 sql문
  */
-public class ReservationSqls {
+public class ReservationSql {
 	public static final String SELECT_RESERVATION_INFO_BY_EMAIL = "SELECT id AS 'reservationInfoId', product_id 'productId', display_info_id 'displayInfoId', "
 			+ "reservation_name 'reservationName', reservation_tel 'reservationTelephone', reservation_email 'reservationEmail' "
 			+ ", IF(cancel_flag = 0, 'false', 'true') AS 'cancelYn' "
@@ -29,8 +29,6 @@ public class ReservationSqls {
 			+ ":productId, :displayInfoId, :reservationName, :reservationTelephone, :reservationEmail, :reservationTime, 0, now(), now()) ";
 
 	public static final String SELECT_RESERVATION_INFO_MAX_ID = "SELECT max(ri.id) FROM reservation_info ri";
-
-	public static final String SELECT_RESERVATION_INFO_PRICE_MAX_ID = "SELECT max(ri.id) FROM reservation_info_price ri";
 
 	public static final String INSERT_RESERVATION_INFO_PRICE = "INSERT INTO reservation_info_price "
 			+ "(reservation_info_id, product_price_id, count) VALUES (:reservationInfoId, :productPriceId, :count) ";

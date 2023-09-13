@@ -7,7 +7,7 @@
   <groupId>kr.or.connect</groupId>
   <artifactId>reservation</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <packaging>war</packaging>
+  <packaging>jar</packaging>
 
   <name>reservation Maven Webapp</name>
   <!-- FIXME change it to the project's website -->
@@ -34,6 +34,10 @@
     <dependency>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-jdbc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
     </dependency>
 	<dependency>
 		<groupId>mysql</groupId>

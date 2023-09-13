@@ -180,7 +180,7 @@
 							<div class="agreement_nessasary help_txt">
 								<span class="spr_book ico_nessasary"></span> <span>필수입력</span>
 							</div>
-							<form action="/api/reservations" id="reserveForm" class="form_horizontal">
+							<form action="./my-reservation" id="reserveForm" class="form_horizontal">
 								<div class="inline_form">
 									<label class="label" for="name"> <span
 										class="spr_book ico_nessasary">필수</span> <span>예매자</span>
@@ -278,7 +278,7 @@
 				<div class="box_bk_btn">
 					<!-- [D] 약관 전체 동의가 되면 disable 제거 -->
 					<div class="bk_btn_wrap disable">
-						<button type="submit" form="reserveForm" class="bk_btn">
+						<button type="button" class="bk_btn">
 							<i class="spr_book ico_naver_s"></i> <span>예약하기</span>
 						</button>
 					</div>
