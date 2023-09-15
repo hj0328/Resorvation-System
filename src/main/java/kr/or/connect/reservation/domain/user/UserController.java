@@ -1,8 +1,8 @@
 package kr.or.connect.reservation.domain.user;
 
-import kr.or.connect.reservation.domain.user.dto.UserDto;
 import kr.or.connect.reservation.domain.user.dto.UserRequestDto;
 import kr.or.connect.reservation.domain.user.dto.UserResponseDto;
+import kr.or.connect.reservation.domain.user.repository.User;
 import kr.or.connect.reservation.utils.UtilConstant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,7 @@ public class UserController {
     @PostMapping("/login")
     public UserResponseDto login(HttpServletRequest request, UserRequestDto userRequestDto) {
 
-        UserDto user = userService.login(userRequestDto.getEmail(), userRequestDto.getPassword());
+        User user = userService.login(userRequestDto.getEmail(), userRequestDto.getPassword());
         if (user.getEmail() == null) {
             throw new IllegalArgumentException("아이디 또는 비밀번호를 확인해주세요.");
         }

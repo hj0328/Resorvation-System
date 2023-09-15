@@ -1,8 +1,9 @@
 package kr.or.connect.reservation.domain.user;
 
-import kr.or.connect.reservation.domain.user.dto.UserDto;
 import kr.or.connect.reservation.domain.user.dto.UserRequestDto;
 import kr.or.connect.reservation.domain.user.dto.UserResponseDto;
+import kr.or.connect.reservation.domain.user.repository.User;
+import kr.or.connect.reservation.domain.user.repository.UserRepository;
 import kr.or.connect.reservation.utils.UtilConstant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,17 +14,20 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserDao userDao;
+    // private final UserDao userDao;
+    private final UserRepository userRepository;
     private final PasswordEncoder pwEncoder;
 
     @Override
-    public UserDto login(String email, String password) {
-        String encodePwd = userDao.selectUserPassword(email);
+    public User login(String email, String password) {
+        User user = userRepository.findByEmail(email);
+        String encodePwd = user.getPassword();
+
         if (!pwEncoder.matches(password, encodePwd)) {
             throw new IllegalArgumentException("아이디 또는 비밀번호를 잘못입력하였습니다.");
         }
 
-        return userDao.selectUserByEmail(email);
+        return user;
     }
 
     @Transactional
@@ -31,14 +35,16 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto register(UserRequestDto userRequestDto) {
         String encodePwd = pwEncoder.encode(userRequestDto.getPassword());
 
-        UserDto userDto = new UserDto();
+        User userDto = new User();
         userDto.setName(userRequestDto.getName());
         userDto.setEmail(userRequestDto.getEmail());
         userDto.setPassword(encodePwd);
         userDto.setType(UserType.BASIC);
         userDto.setTotalReservationCount(0);
 
-        userDao.insertUser(userDto);
+//        userDao.insertUser(userDto);
+
+        userRepository.save(userDto);
         UserResponseDto newUserRequest = new UserResponseDto();
         newUserRequest.setEmail(userDto.getEmail());
         newUserRequest.setName(userDto.getName());
@@ -60,17 +66,21 @@ public class UserServiceImpl implements UserService {
         }
         Integer newReservationCount = reservedCount + addReservationCount;
 
-        UserType userType = userDao.selectUserTypeByEmail(email);
+        UserType userType = userRepository.findTypeByEmail(email);
+        // UserType userType = userDao.selectUserTypeByEmail(email);
         if(newReservationCount >= UtilConstant.VVIP_RESERVATION_COUNT) {
             userType = UserType.VVIP;
         } else if(newReservationCount >= UtilConstant.VIP_RESERVATION_COUNT) {
             userType = userType.VIP;
         }
 
-        userDao.updateTypeAndTotalReservationCount(email, userType, newReservationCount);
+//        userDao.updateTypeAndTotalReservationCount(email, userType, newReservationCount);
+        userRepository.update(email, userType, newReservationCount);
     }
 
     private Integer getUserTotalReservationCount(String email) {
-        return userDao.selectUserTotalReservationCount(email);
+
+        return userRepository.findTotalReservationCountByEmail(email);
+//        return userDao.selectUserTotalReservationCount(email);
     }
 }
