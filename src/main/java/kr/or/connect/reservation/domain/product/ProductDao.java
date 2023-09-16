@@ -14,6 +14,10 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
+import static kr.or.connect.reservation.domain.product.ProductDaoSqls.*;
+import static kr.or.connect.reservation.domain.product.ProductDaoSqls.SELECT_PRODUCTS;
 
 @Repository
 public class ProductDao {
@@ -29,73 +33,64 @@ public class ProductDao {
 	}
 
 	public List<ProductItemDto> selectProducts(Integer categoryId, Integer start) {
-		String sql = ProductDaoSqls.SELECT_PRODUCTS;
-
 		Map<String, Integer> params = new HashMap<>();
 		params.put("categoryId", categoryId);
 		params.put("start", start);
 
-		List<ProductItemDto> productList = jdbc.query(sql, params, rowMapper);
-		return productList;
+		return jdbc.query(SELECT_PRODUCTS, params, rowMapper);
 	}
 
 	public List<ProductItemDto> selectAllProducts(Integer start) {
-		String sql = ProductDaoSqls.SELECT_ALL_PRODUCTS;
-
 		Map<String, Integer> params = new HashMap<>();
 		params.put("start", start);
 
-		List<ProductItemDto> productList = jdbc.query(sql, params, rowMapper);
-		return productList;
+		return jdbc.query(SELECT_ALL_PRODUCTS, params, rowMapper);
 	}
 
-	public int selectProductCountById(int categoryId) {
-		String sql = ProductDaoSqls.SELECT_PRODUCTS_COUNT_BY_ID;
+	public Optional<Integer> selectProductCountById(int categoryId) {
 		Map<String, Integer> params = new HashMap<>();
+		String sql = SELECT_PRODUCTS_COUNT_BY_ID;
 
 		if (categoryId == 0) {
-			sql = sql.replace("category.id = :categoryId AND", "");
+			sql = SELECT_PRODUCTS_COUNT_BY_ID.replace("category.id = :categoryId AND", "");
 		} else {
 			params.put("categoryId", categoryId);
 		}
 		Integer productCnt = jdbc.queryForObject(sql, params, Integer.class);
-		return productCnt;
+		return Optional.of(productCnt);
 	}
 
-	public double selectAverageScore(int displayInfoId) {
-		String sql = ProductDaoSqls.SELECT_COMMENT_AVERAGE_SCORE_BY_DISPLAY_ID;
+	public Optional<Double> selectAverageScore(int displayInfoId) {
 		Map<String, Integer> params = new HashMap<>();
 		params.put("displayInfoId", displayInfoId);
 
-		Double averageScore = jdbc.queryForObject(sql, params, Double.class);
-		return averageScore;
+		Double averageScore = jdbc.queryForObject(SELECT_COMMENT_AVERAGE_SCORE_BY_DISPLAY_ID, params, Double.class);
+		return Optional.of(averageScore);
 	}
 
-	public DisplayInfo selectDisplayInfo(int displayInfoId) {
-		String sql = ProductDaoSqls.SELECT_DISPLAYINFO_BY_DISPLAY_ID;
+	public Optional<DisplayInfo> selectDisplayInfo(int displayInfoId) {
 		Map<String, Integer> params = new HashMap<>();
 		params.put("displayInfoId", displayInfoId);
-		return jdbc.queryForObject(sql, params, displayInfoRowMapper);
+		DisplayInfo displayInfo = jdbc.queryForObject(SELECT_DISPLAYINFO_BY_DISPLAY_ID, params, displayInfoRowMapper);
+		return Optional.of(displayInfo);
 	}
 
-	public DisplayInfoImageDto selectDisplayInfoImage(int displayInfoId) {
-		String sql = ProductDaoSqls.SELECT_DISPLAY_INFO_IMG_BY_DISPLAY_ID;
+	public Optional<DisplayInfoImageDto> selectDisplayInfoImage(int displayInfoId) {
 		Map<String, Integer> params = new HashMap<>();
 		params.put("displayInfoId", displayInfoId);
-		return jdbc.queryForObject(sql, params, displayInfoImageRowMapper);
+		DisplayInfoImageDto displayInfoImageDto = jdbc.queryForObject(SELECT_DISPLAY_INFO_IMG_BY_DISPLAY_ID, params, displayInfoImageRowMapper);
+		return Optional.of(displayInfoImageDto);
 	}
 
 	public List<ProductImageDto> selectProductImage(int displayInfoId) {
-		String sql = ProductDaoSqls.SELECT_PRODUCT_IMAGE_BY_DISPLAY_ID;
 		Map<String, Integer> params = new HashMap<>();
 		params.put("displayInfoId", displayInfoId);
-		return jdbc.query(sql, params, proudcImageRowMapper);
+		return jdbc.query(SELECT_PRODUCT_IMAGE_BY_DISPLAY_ID, params, proudcImageRowMapper);
 	}
 
 	public List<ProductPriceDto> selectProductPrice(int displayInfoId) {
-		String sql = ProductDaoSqls.SELECT_PRODUCT_PRICE_BY_DISPLAY_ID;
 		Map<String, Integer> params = new HashMap<>();
 		params.put("displayInfoId", displayInfoId);
-		return jdbc.query(sql, params, proudcPriceRowMapper);
+		return jdbc.query(SELECT_PRODUCT_PRICE_BY_DISPLAY_ID, params, proudcPriceRowMapper);
 	}
 }

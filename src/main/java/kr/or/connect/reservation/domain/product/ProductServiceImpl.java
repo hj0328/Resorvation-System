@@ -1,5 +1,7 @@
 package kr.or.connect.reservation.domain.product;
 
+import kr.or.connect.reservation.config.exception.CustomException;
+import kr.or.connect.reservation.config.exception.CustomExceptionStatus;
 import kr.or.connect.reservation.domain.comment.dto.CommentDto;
 import kr.or.connect.reservation.domain.display.DisplayInfo;
 import kr.or.connect.reservation.domain.display.DisplayInfoImageDto;
@@ -38,20 +40,25 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public int getProductTotalCountById(int categoryId) {
-		return productDao.selectProductCountById(categoryId);
+		Integer productTotalCount = productDao.selectProductCountById(categoryId)
+				.orElseThrow(() -> new CustomException(CustomExceptionStatus.PRODUCT_NOT_FOUND));
+
+		return productTotalCount;
 	}
 
 	@Override
 	public Map<String, Object> getProductDetail(Integer displayInfoId) {
 		Map<String, Object> displayInfoMap = new HashMap<>();
 
-		DisplayInfo displayInfo = productDao.selectDisplayInfo(displayInfoId);
+		DisplayInfo displayInfo = productDao.selectDisplayInfo(displayInfoId)
+				.orElseThrow(() -> new CustomException(CustomExceptionStatus.PRODUCT_DISPLAY_NOT_FOUND));
 		displayInfoMap.put("displayInfo", displayInfo);
 
 		List<ProductImageDto> productImageList = productDao.selectProductImage(displayInfoId);
 		displayInfoMap.put("productImages", productImageList);
 
-		DisplayInfoImageDto displayInfoImage = productDao.selectDisplayInfoImage(displayInfoId);
+		DisplayInfoImageDto displayInfoImage = productDao.selectDisplayInfoImage(displayInfoId)
+						.orElseThrow(() -> new CustomException(CustomExceptionStatus.RESERVATION_NOT_FOUND));
 		displayInfoMap.put("displayInfoImage", displayInfoImage);
 
 		List<ProductPriceDto> productPriceList = productDao.selectProductPrice(displayInfoId);
@@ -60,7 +67,8 @@ public class ProductServiceImpl implements ProductService {
 		List<CommentDto> comments = commentService.getComments(displayInfoId);
 		displayInfoMap.put("comments", comments);
 
-		Double averageScore = productDao.selectAverageScore(displayInfoId);
+		Double averageScore = productDao.selectAverageScore(displayInfoId)
+				.orElseThrow(() -> new CustomException(CustomExceptionStatus.PRODUCT_AVERAGE_SCORE_NOT_FOUND));
 		displayInfoMap.put("averageScore", averageScore);
 
 		return displayInfoMap;

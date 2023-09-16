@@ -1,5 +1,6 @@
 package kr.or.connect.reservation.domain.product;
 
+import kr.or.connect.reservation.domain.comment.CommentServiceImpl;
 import kr.or.connect.reservation.domain.product.dto.ProductItemDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ class ProductServiceImplTest {
     private ProductDao productDao;
 
     @Mock
-    private ProductController.CommentServiceImpl commentService;
+    private CommentServiceImpl commentService;
 
     @InjectMocks
     private ProductServiceImpl productService;

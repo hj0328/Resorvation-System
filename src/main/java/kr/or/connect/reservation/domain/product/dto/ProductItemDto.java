@@ -3,8 +3,7 @@ package kr.or.connect.reservation.domain.product.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
+@Getter @Setter
 public class ProductItemDto {
 	private Integer displayInfoId;
 	private String placeName;
