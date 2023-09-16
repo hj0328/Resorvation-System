@@ -19,6 +19,6 @@ public class CategoryDao {
 	}
 
 	public List<CategoryItemDto> selectAll() {
-		return jdbc.query(CategoryDaoSqls.SELECT_CATEGORY, rowMapper);
+		return jdbc.query(CategoryDaoSql.SELECT_CATEGORY, rowMapper);
 	}
 }

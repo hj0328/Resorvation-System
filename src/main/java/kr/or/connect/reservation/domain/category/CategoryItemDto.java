@@ -1,31 +1,11 @@
 package kr.or.connect.reservation.domain.category;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
 public class CategoryItemDto {
 	private Integer count;
 	private Integer id;
 	private String name;
-
-	public Integer getCount() {
-		return count;
-	}
-	public void setCount(Integer count) {
-		this.count = count;
-	}
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	@Override
-	public String toString() {
-		return "Item [count=" + count + ", id=" + id + ", name=" + name + "]";
-	}
-
 }
