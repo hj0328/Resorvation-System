@@ -6,9 +6,7 @@ import lombok.ToString;
 
 import java.util.List;
 
-@Getter
-@Setter
-@ToString
+@Getter @Setter @ToString
 public class ReservationResponseDto {
 	private boolean cancelYn;
 	private String createDate;

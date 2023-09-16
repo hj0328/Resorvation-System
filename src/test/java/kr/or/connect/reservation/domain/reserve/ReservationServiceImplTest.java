@@ -6,6 +6,7 @@ import kr.or.connect.reservation.domain.reserve.dto.ReservationInfoDto;
 import kr.or.connect.reservation.domain.reserve.dto.ReservationPriceDto;
 import kr.or.connect.reservation.domain.reserve.dto.ReservationRequestDto;
 import kr.or.connect.reservation.domain.reserve.dto.ReservationResponseDto;
+import kr.or.connect.reservation.domain.user.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,6 +27,9 @@ class ReservationServiceImplTest {
 
     @Mock
     private ReservationDao myReservationDao;
+
+    @Mock
+    private UserService userService;
 
     @InjectMocks
     private ReservationServiceImpl reservationService;
@@ -41,13 +46,13 @@ class ReservationServiceImplTest {
         reservationInfo.setTotalPrice(1000);
 
         Mockito.when(myReservationDao.selectTotalPriceById(1))
-                .thenReturn(1000);
+                .thenReturn(Optional.of(Integer.valueOf(1000)));
 
         DisplayInfo displayInfo = new DisplayInfo();
         displayInfo.setDisplayInfoId(1);
         displayInfo.setDisplayInfoId(1);
         Mockito.when(myReservationDao.selectDisplayInfoById(1, 1))
-                .thenReturn(displayInfo);
+                .thenReturn(Optional.of(displayInfo));
 
         reservationInfo.setDisplayInfo(displayInfo);
         list.add(reservationInfo);
@@ -75,7 +80,7 @@ class ReservationServiceImplTest {
                 .thenReturn(reservationResponse.getPrices());
 
         Mockito.when(myReservationDao.selectReservationResponseDto(0))
-                .thenReturn(reservationResponse);
+                .thenReturn(Optional.of(reservationResponse));
 
 
         // when
@@ -93,7 +98,7 @@ class ReservationServiceImplTest {
         ReservationResponseDto reservationResponse = new ReservationResponseDto();
         reservationResponse.setCancelYn(true);
         Mockito.when(myReservationDao.selectReservationResponseDto(0))
-                .thenReturn(reservationResponse);
+                .thenReturn(Optional.of(reservationResponse));
 
         // when
         ReservationResponseDto response = reservationService.cancelReservation(0);
@@ -109,7 +114,7 @@ class ReservationServiceImplTest {
         prices.add(priceDto1);
 
         ReservationPriceDto priceDto2 = new ReservationPriceDto();
-        priceDto1.setCount(2);
+        priceDto2.setCount(2);
         prices.add(priceDto2);
 
         ReservationPriceDto priceDto3 = new ReservationPriceDto();
@@ -120,6 +125,9 @@ class ReservationServiceImplTest {
 
     private ReservationRequestDto getNewReservationRequest() {
         ReservationRequestDto reservationRequest = new ReservationRequestDto();
+        reservationRequest.setPrices(new ArrayList<>());
+        reservationRequest.setUserId(0);
+
         List<ReservationPriceDto> prices = new ArrayList<>();
         ReservationPriceDto priceDto1 = new ReservationPriceDto();
         priceDto1.setCount(1);
@@ -130,7 +138,7 @@ class ReservationServiceImplTest {
         prices.add(priceDto2);
 
         ReservationPriceDto priceDto3 = new ReservationPriceDto();
-        priceDto1.setCount(3);
+        priceDto3.setCount(3);
         prices.add(priceDto3);
         reservationRequest.setPrices(prices);
 

@@ -8,9 +8,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
-@Getter
-@Setter
-@ToString
+@Getter @Setter @ToString
 public class ReservationRequestDto {
 	@NotBlank
 	private int displayInfoId;

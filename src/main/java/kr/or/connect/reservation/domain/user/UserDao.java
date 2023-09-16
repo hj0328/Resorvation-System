@@ -43,7 +43,7 @@ public class UserDao {
         params.put("email", email);
         try {
             UserDto userDto = template.queryForObject(SELECT_USER_BY_EMAIL, params, UserDaoRowMapper);
-            return Optional.ofNullable(userDto);
+            return Optional.of(userDto);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -54,7 +54,7 @@ public class UserDao {
         params.put("userId", userId);
         try {
             UserType userType = template.queryForObject(SELECT_TYPE_BY_ID, params, UserType.class);
-            return Optional.ofNullable(userType);
+            return Optional.of(userType);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -65,7 +65,7 @@ public class UserDao {
         params.put("uerId", userId);
         try {
             Integer totalReservationCount = template.queryForObject(SELECT_TOTAL_RESERVATION_COUNT_BY_ID, params, Integer.class);
-            return Optional.ofNullable(totalReservationCount);
+            return Optional.of(totalReservationCount);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
