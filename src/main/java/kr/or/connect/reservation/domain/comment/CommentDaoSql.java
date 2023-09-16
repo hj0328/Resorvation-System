@@ -1,6 +1,6 @@
 package kr.or.connect.reservation.domain.comment;
 
-public class CommentDaoSqls {
+public class CommentDaoSql {
 	public static final String SELECT_COMMENT_BY_DISPLAY_ID = "SELECT ruc.comment, ruc.id AS commentId, ruc.create_date, ruc.modify_date, p.id AS product_id "
 			+ ", ri.reservation_date, ri.reservation_email, ri.id AS reservationInfoId, ri.reservation_name, ri.reservation_tel AS reservationTelephone, ruc.score "
 			+ "FROM display_info di, product p, reservation_info ri, reservation_user_comment ruc "

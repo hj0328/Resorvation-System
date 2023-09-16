@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static kr.or.connect.reservation.domain.product.ProductDaoSqls.*;
-import static kr.or.connect.reservation.domain.product.ProductDaoSqls.SELECT_PRODUCTS;
+import static kr.or.connect.reservation.domain.product.ProductDaoSql.*;
+import static kr.or.connect.reservation.domain.product.ProductDaoSql.SELECT_PRODUCTS;
 
 @Repository
 public class ProductDao {

@@ -1,6 +1,6 @@
 package kr.or.connect.reservation.domain.promotion;
 
-import static kr.or.connect.reservation.domain.promotion.PromotionDaoSqls.SELECT_PROMOTION;
+import static kr.or.connect.reservation.domain.promotion.PromotionDaoSql.SELECT_PROMOTION;
 
 import java.util.List;
 
