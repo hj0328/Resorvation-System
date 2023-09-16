@@ -1,5 +1,7 @@
 package kr.or.connect.reservation.domain.reserve;
 
+import kr.or.connect.reservation.config.exception.CustomException;
+import kr.or.connect.reservation.config.exception.CustomExceptionStatus;
 import kr.or.connect.reservation.domain.display.DisplayInfo;
 import kr.or.connect.reservation.domain.reserve.dto.ReservationInfoDto;
 import kr.or.connect.reservation.domain.reserve.dto.ReservationPriceDto;
@@ -31,10 +33,13 @@ public class ReservationServiceImpl implements ReservationService {
 			Integer reservationInfoId = reservationInfo.getReservationInfoId();
 			Integer displayInfoId = reservationInfo.getDisplayInfoId();
 
-			DisplayInfo displayInfo = reservationDao.selectDisplayInfoById(reservationInfoId, displayInfoId);
+			DisplayInfo displayInfo = reservationDao.selectDisplayInfoById(reservationInfoId, displayInfoId)
+					.orElseThrow(() -> new CustomException(CustomExceptionStatus.RESERVATION_NOT_FOUND));
 			reservationInfo.setDisplayInfo(displayInfo);
 
-			Integer totalPrice = reservationDao.selectTotalPriceById(reservationInfoId);
+			Integer totalPrice = reservationDao.selectTotalPriceById(reservationInfoId)
+					.orElseThrow(() -> new CustomException(CustomExceptionStatus.RESERVATION_NOT_FOUND));
+
 			reservationInfo.setTotalPrice(totalPrice);
 		}
 
@@ -58,8 +63,8 @@ public class ReservationServiceImpl implements ReservationService {
 	}
 
 	private ReservationResponseDto getReservationResponse(long reservationInfoId) {
-		ReservationResponseDto reservationResponseDto = reservationDao
-				.selectReservationResponseDto(reservationInfoId);
+		ReservationResponseDto reservationResponseDto = reservationDao.selectReservationResponseDto(reservationInfoId)
+				.orElseThrow(() -> new CustomException(CustomExceptionStatus.RESERVATION_NOT_FOUND));
 
 		List<ReservationPriceDto> prices = reservationDao
 				.selectReservationInfoPriceDtoList(reservationInfoId);
@@ -72,7 +77,6 @@ public class ReservationServiceImpl implements ReservationService {
 		List<ReservationPriceDto> newReservationList = reservationRequest.getPrices();
 		newReservationList.listIterator()
 				.forEachRemaining(reservationPriceDto -> reservationCount.addAndGet(reservationPriceDto.getCount()));
-
 
 		userService.updateUserType(reservationRequest.getUserId(), reservationCount.get());
 	}
