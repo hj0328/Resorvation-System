@@ -7,6 +7,8 @@ import kr.or.connect.reservation.utils.UtilConstant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,20 +27,19 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public UserResponseDto login(HttpServletRequest request, UserRequestDto userRequestDto) {
+    public UserResponseDto login(HttpServletRequest request, @Validated UserRequestDto userRequestDto) {
 
+        UserResponseDto userResponse = new UserResponseDto();
         UserDto user = userService.login(userRequestDto.getEmail(), userRequestDto.getPassword());
-        if (user.getEmail() == null) {
-            throw new IllegalArgumentException("아이디 또는 비밀번호를 확인해주세요.");
-        }
 
         HttpSession session = request.getSession();
         session.setAttribute(UtilConstant.LOGIN_ID, user.getEmail());
 
-        UserResponseDto userResponse = new UserResponseDto();
+        userResponse.setUserId(user.getUserId());
         userResponse.setName(user.getName());
         userResponse.setEmail(user.getEmail());
         userResponse.setType(user.getType());
+
         return userResponse;
     }
 
@@ -53,7 +54,8 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public UserResponseDto register(UserRequestDto userRequestDto) {
+    public UserResponseDto register(@Validated UserRequestDto userRequestDto,
+                                    BindingResult bindingResult) {
         log.info("POST /register UserRequestDto={}", userRequestDto);
         return userService.register(userRequestDto);
     }

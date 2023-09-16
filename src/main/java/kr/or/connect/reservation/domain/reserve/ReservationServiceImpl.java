@@ -67,13 +67,14 @@ public class ReservationServiceImpl implements ReservationService {
 		return reservationResponseDto;
 	}
 
-	private void updateUserType(ReservationRequestDto reservationRequestDto) {
+	private void updateUserType(ReservationRequestDto reservationRequest) {
 		AtomicInteger reservationCount = new AtomicInteger();
-		List<ReservationPriceDto> newReservationList = reservationRequestDto.getPrices();
+		List<ReservationPriceDto> newReservationList = reservationRequest.getPrices();
 		newReservationList.listIterator()
 				.forEachRemaining(reservationPriceDto -> reservationCount.addAndGet(reservationPriceDto.getCount()));
 
-		userService.updateUserType(reservationRequestDto.getReservationEmail(), reservationCount.get());
+
+		userService.updateUserType(reservationRequest.getUserId(), reservationCount.get());
 	}
 
 	@Transactional
@@ -83,10 +84,5 @@ public class ReservationServiceImpl implements ReservationService {
 
 		// 응답 데이터 생성 후 리턴
 		return getReservationResponse(reservationInfoId);
-	}
-
-	private Integer getUserReservedCount(String email) {
-		
-		return null;
 	}
 }

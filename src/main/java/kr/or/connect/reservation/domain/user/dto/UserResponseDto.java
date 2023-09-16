@@ -9,6 +9,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class UserResponseDto {
+    private Integer userId;
     private String name;
     private String email;
     private UserType type;

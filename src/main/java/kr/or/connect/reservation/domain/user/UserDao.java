@@ -1,6 +1,7 @@
 package kr.or.connect.reservation.domain.user;
 
 import kr.or.connect.reservation.domain.user.dto.UserDto;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static kr.or.connect.reservation.domain.user.UserSqls.*;
 
@@ -21,7 +23,6 @@ public class UserDao {
     private final NamedParameterJdbcTemplate template;
     private final SimpleJdbcInsert jdbcInsert;
     private RowMapper<UserDto> UserDaoRowMapper = BeanPropertyRowMapper.newInstance(UserDto.class);
-
 
     public UserDao(DataSource dataSource) {
         this.template = new NamedParameterJdbcTemplate(dataSource);
@@ -37,37 +38,45 @@ public class UserDao {
         return key.intValue();
     }
 
-    public UserDto selectUserByEmail(String email) {
+    public Optional<UserDto> selectUserByEmail(String email) {
         Map<String, Object> params = new HashMap<>();
         params.put("email", email);
-       return template.queryForObject(SELECT_USER_BY_EMAIL, params, UserDaoRowMapper);
+        try {
+            UserDto userDto = template.queryForObject(SELECT_USER_BY_EMAIL, params, UserDaoRowMapper);
+            return Optional.ofNullable(userDto);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
-    public UserType selectUserTypeByEmail(String email) {
+    public Optional<UserType> selectUserTypeById(Integer userId) {
         Map<String, Object> params = new HashMap<>();
-        params.put("email", email);
-        return template.queryForObject(SELECT_TYPE_BY_EMAIL, params, UserType.class);
+        params.put("userId", userId);
+        try {
+            UserType userType = template.queryForObject(SELECT_TYPE_BY_ID, params, UserType.class);
+            return Optional.ofNullable(userType);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
-    public Integer selectUserTotalReservationCount(String email) {
+    public Optional<Integer> selectUserTotalReservationCountById(Integer userId) {
         Map<String, Object> params = new HashMap<>();
-        params.put("email", email);
-        return template.queryForObject(SELECT_TOTAL_RESERVATION_COUNT_BY_EMAIL, params, Integer.class);
+        params.put("uerId", userId);
+        try {
+            Integer totalReservationCount = template.queryForObject(SELECT_TOTAL_RESERVATION_COUNT_BY_ID, params, Integer.class);
+            return Optional.ofNullable(totalReservationCount);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
-    public String selectUserPassword(String userEmail) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("email", userEmail);
-
-        return template.queryForObject(SELECT_PASSWORD_BY_EMAIL, params, String.class);
-    }
-
-    public int updateTypeAndTotalReservationCount(String email, UserType userType
+    public int updateTypeAndTotalReservationCountById(Integer userId, UserType userType
             , Integer totalReservationCount) {
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("email", email)
+                .addValue("userId", userId)
                 .addValue("type", userType.toString())
                 .addValue("totalReservationCount", totalReservationCount);
-        return template.update(UPDATE_TYPE_AND_TOTAL_RESERVATION_COUNT_BY_EMAIL, param);
+        return template.update(UPDATE_TYPE_AND_TOTAL_RESERVATION_COUNT_BY_ID, param);
     }
 }

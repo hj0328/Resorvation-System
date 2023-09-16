@@ -1,13 +1,16 @@
 package kr.or.connect.reservation.domain.user;
 
+import kr.or.connect.reservation.config.exception.CustomException;
+import kr.or.connect.reservation.config.exception.CustomExceptionStatus;
 import kr.or.connect.reservation.domain.user.dto.UserDto;
 import kr.or.connect.reservation.domain.user.dto.UserRequestDto;
 import kr.or.connect.reservation.domain.user.dto.UserResponseDto;
-import kr.or.connect.reservation.utils.UtilConstant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static kr.or.connect.reservation.utils.UtilConstant.*;
 
 @Service
 @RequiredArgsConstructor
@@ -18,12 +21,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto login(String email, String password) {
-        String encodePwd = userDao.selectUserPassword(email);
+        UserDto user = userDao.selectUserByEmail(email)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_FOUND));
+        String encodePwd = user.getPassword();
         if (!pwEncoder.matches(password, encodePwd)) {
-            throw new IllegalArgumentException("아이디 또는 비밀번호를 잘못입력하였습니다.");
+            throw new CustomException(CustomExceptionStatus.USER_LOGIN_FAIL);
         }
 
-        return userDao.selectUserByEmail(email);
+        return user;
     }
 
     @Transactional
@@ -36,7 +41,7 @@ public class UserServiceImpl implements UserService {
         userDto.setEmail(userRequestDto.getEmail());
         userDto.setPassword(encodePwd);
         userDto.setType(UserType.BASIC);
-        userDto.setTotalReservationCount(0);
+        userDto.setTotalReservationCount(DEFAULT_TOTAL_RESERVATION_COUNT);
 
         userDao.insertUser(userDto);
         UserResponseDto newUserRequest = new UserResponseDto();
@@ -52,25 +57,26 @@ public class UserServiceImpl implements UserService {
      */
     @Transactional
     @Override
-    public void updateUserType(String email, Integer addReservationCount) {
-        Integer reservedCount = getUserTotalReservationCount(email);
+    public void updateUserType(Integer userId, Integer addReservationCount) throws CustomException {
+        Integer reservedCount = getUserTotalReservationCount(userId);
 
-        if (addReservationCount == null || reservedCount == null) {
-            throw new IllegalArgumentException("Illegal reservedCount");
-        }
         Integer newReservationCount = reservedCount + addReservationCount;
 
-        UserType userType = userDao.selectUserTypeByEmail(email);
-        if(newReservationCount >= UtilConstant.VVIP_RESERVATION_COUNT) {
+        UserType userType = userDao.selectUserTypeById(userId)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_FOUND));
+
+        if(newReservationCount >= VVIP_RESERVATION_COUNT) {
             userType = UserType.VVIP;
-        } else if(newReservationCount >= UtilConstant.VIP_RESERVATION_COUNT) {
+        } else if(newReservationCount >= VIP_RESERVATION_COUNT) {
             userType = userType.VIP;
         }
 
-        userDao.updateTypeAndTotalReservationCount(email, userType, newReservationCount);
+        userDao.updateTypeAndTotalReservationCountById(userId, userType, newReservationCount);
     }
 
-    private Integer getUserTotalReservationCount(String email) {
-        return userDao.selectUserTotalReservationCount(email);
+    private Integer getUserTotalReservationCount(Integer userId) {
+        Integer totalReservationCount = userDao.selectUserTotalReservationCountById(userId)
+                .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_FOUND));
+        return totalReservationCount;
     }
 }

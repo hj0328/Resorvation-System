@@ -1,20 +1,23 @@
 package kr.or.connect.reservation.domain.user.dto;
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
 @ToString
 public class UserRequestDto {
-    @NonNull
+    @NotBlank
     private String name;
 
-    @NonNull
+    // @Email이 null을 허용하기 때문에 @NotBlank
+    @NotBlank @Email
     private String email;
 
-    @NonNull
+    @NotBlank
     private String password;
 }

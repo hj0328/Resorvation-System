@@ -21,6 +21,8 @@ public class UtilConstant {
 
     public static final Integer CANCEL_FLAG_Y = 1;
 
+    public static final Integer DEFAULT_TOTAL_RESERVATION_COUNT = 0;
+
     private UtilConstant() {
     }
 }
