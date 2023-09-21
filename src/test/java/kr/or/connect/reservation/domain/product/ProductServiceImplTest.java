@@ -1,7 +1,11 @@
 package kr.or.connect.reservation.domain.product;
 
 import kr.or.connect.reservation.domain.comment.CommentServiceImpl;
+import kr.or.connect.reservation.domain.display.DisplayInfo;
+import kr.or.connect.reservation.domain.display.DisplayInfoImageDto;
+import kr.or.connect.reservation.domain.product.dto.ProductImageDto;
 import kr.or.connect.reservation.domain.product.dto.ProductItemDto;
+import kr.or.connect.reservation.domain.product.dto.ProductPriceDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,9 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -63,6 +65,26 @@ class ProductServiceImplTest {
     @Test
     void get_Product_Detail_Test() {
         // given
+        DisplayInfo displayInfo = new DisplayInfo();
+        displayInfo.setDisplayInfoId(1);
+        when(productDao.selectDisplayInfo(1))
+                .thenReturn(Optional.of(displayInfo));
+
+        List<ProductImageDto> productImageList = new ArrayList<>();
+        when(productDao.selectProductImage(1))
+                .thenReturn(productImageList);
+
+        DisplayInfoImageDto displayInfoImage = new DisplayInfoImageDto();
+        when(productDao.selectDisplayInfoImage(1))
+                .thenReturn(Optional.of(displayInfoImage));
+
+        List<ProductPriceDto> productPriceList = new ArrayList<>();
+        when(productDao.selectProductPrice(1))
+                .thenReturn(productPriceList);
+
+        Double averageScore = (Double) 1.0;
+        when(productDao.selectAverageScore(1))
+                .thenReturn(Optional.ofNullable(averageScore));
 
         // when
         Map<String, Object> productDetail = productService.getProductDetail(1);
