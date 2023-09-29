@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 @ToString
-public class UserRequestDto {
+public class UserRequest {
     @NotBlank
     private String name;
 

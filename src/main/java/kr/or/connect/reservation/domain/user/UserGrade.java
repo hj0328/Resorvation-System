@@ -1,5 +1,5 @@
 package kr.or.connect.reservation.domain.user;
 
-public enum UserType {
+public enum UserGrade {
     BASIC, VIP, VVIP
 }

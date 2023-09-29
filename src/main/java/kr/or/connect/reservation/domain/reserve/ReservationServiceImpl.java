@@ -78,7 +78,7 @@ public class ReservationServiceImpl implements ReservationService {
 		newReservationList.listIterator()
 				.forEachRemaining(reservationPriceDto -> reservationCount.addAndGet(reservationPriceDto.getCount()));
 
-		userService.updateUserType(reservationRequest.getUserId(), reservationCount.get());
+		userService.updateUserGrade(reservationRequest.getUserId(), reservationCount.get());
 	}
 
 	@Transactional

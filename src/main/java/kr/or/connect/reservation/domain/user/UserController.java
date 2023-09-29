@@ -1,8 +1,8 @@
 package kr.or.connect.reservation.domain.user;
 
-import kr.or.connect.reservation.domain.user.dto.UserDto;
-import kr.or.connect.reservation.domain.user.dto.UserRequestDto;
-import kr.or.connect.reservation.domain.user.dto.UserResponseDto;
+import kr.or.connect.reservation.domain.user.dto.User;
+import kr.or.connect.reservation.domain.user.dto.UserRequest;
+import kr.or.connect.reservation.domain.user.dto.UserResponse;
 import kr.or.connect.reservation.utils.UtilConstant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ import javax.servlet.http.HttpSession;
 @Slf4j
 @Controller
 @RestController
-@RequestMapping(path = "/api/user")
+@RequestMapping(path = "/api/users")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -27,10 +27,9 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public UserResponseDto login(HttpServletRequest request, @Validated UserRequestDto userRequestDto) {
-
-        UserResponseDto userResponse = new UserResponseDto();
-        UserDto user = userService.login(userRequestDto.getEmail(), userRequestDto.getPassword());
+    public UserResponse login(HttpServletRequest request, @Validated UserRequest userRequestDto) {
+        UserResponse userResponse = new UserResponse();
+        User user = userService.login(userRequestDto.getEmail(), userRequestDto.getPassword());
 
         HttpSession session = request.getSession();
         session.setAttribute(UtilConstant.LOGIN_ID, user.getEmail());
@@ -53,10 +52,10 @@ public class UserController {
         return "expired";
     }
 
-    @PostMapping("/register")
-    public UserResponseDto register(@Validated UserRequestDto userRequestDto,
-                                    BindingResult bindingResult) {
-        log.info("POST /register UserRequestDto={}", userRequestDto);
-        return userService.register(userRequestDto);
+    @PostMapping("/join")
+    public UserResponse join(@Validated UserRequest userRequestDto,
+                                 BindingResult bindingResult) {
+        log.info("POST /join UserRequestDto={}", userRequestDto);
+        return userService.join(userRequestDto);
     }
 }

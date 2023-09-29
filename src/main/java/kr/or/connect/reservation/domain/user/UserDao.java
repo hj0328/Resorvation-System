@@ -1,6 +1,6 @@
 package kr.or.connect.reservation.domain.user;
 
-import kr.or.connect.reservation.domain.user.dto.UserDto;
+import kr.or.connect.reservation.domain.user.dto.User;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
@@ -22,7 +22,7 @@ import static kr.or.connect.reservation.domain.user.UserSqls.*;
 public class UserDao {
     private final NamedParameterJdbcTemplate template;
     private final SimpleJdbcInsert jdbcInsert;
-    private RowMapper<UserDto> UserDaoRowMapper = BeanPropertyRowMapper.newInstance(UserDto.class);
+    private RowMapper<User> UserDaoRowMapper = BeanPropertyRowMapper.newInstance(User.class);
 
     public UserDao(DataSource dataSource) {
         this.template = new NamedParameterJdbcTemplate(dataSource);
@@ -31,29 +31,29 @@ public class UserDao {
                 .usingGeneratedKeyColumns("user_id");
     }
 
-    public int insertUser(UserDto userDto) {
+    public int insertUser(User userDto) {
         BeanPropertySqlParameterSource param = new BeanPropertySqlParameterSource(userDto);
-        Number key = jdbcInsert.executeAndReturnKey(param);
+        Number pk = jdbcInsert.executeAndReturnKey(param);
 
-        return key.intValue();
+        return pk.intValue();
     }
 
-    public Optional<UserDto> selectUserByEmail(String email) {
+    public Optional<User> selectUserByEmail(String email) {
         Map<String, Object> params = new HashMap<>();
         params.put("email", email);
         try {
-            UserDto userDto = template.queryForObject(SELECT_USER_BY_EMAIL, params, UserDaoRowMapper);
-            return Optional.of(userDto);
+            User user = template.queryForObject(SELECT_USER_BY_EMAIL, params, UserDaoRowMapper);
+            return Optional.of(user);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
     }
 
-    public Optional<UserType> selectUserTypeById(Integer userId) {
+    public Optional<UserGrade> selectUserTypeById(Integer userId) {
         Map<String, Object> params = new HashMap<>();
         params.put("userId", userId);
         try {
-            UserType userType = template.queryForObject(SELECT_TYPE_BY_ID, params, UserType.class);
+            UserGrade userType = template.queryForObject(SELECT_TYPE_BY_ID, params, UserGrade.class);
             return Optional.of(userType);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
@@ -71,7 +71,7 @@ public class UserDao {
         }
     }
 
-    public int updateTypeAndTotalReservationCountById(Integer userId, UserType userType
+    public int updateTypeAndTotalReservationCountById(Integer userId, UserGrade userType
             , Integer totalReservationCount) {
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("userId", userId)

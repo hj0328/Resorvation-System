@@ -2,13 +2,15 @@ package kr.or.connect.reservation.domain.user;
 
 import kr.or.connect.reservation.config.exception.CustomException;
 import kr.or.connect.reservation.config.exception.CustomExceptionStatus;
-import kr.or.connect.reservation.domain.user.dto.UserDto;
-import kr.or.connect.reservation.domain.user.dto.UserRequestDto;
-import kr.or.connect.reservation.domain.user.dto.UserResponseDto;
+import kr.or.connect.reservation.domain.user.dto.User;
+import kr.or.connect.reservation.domain.user.dto.UserRequest;
+import kr.or.connect.reservation.domain.user.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 import static kr.or.connect.reservation.utils.UtilConstant.*;
 
@@ -20,8 +22,8 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder pwEncoder;
 
     @Override
-    public UserDto login(String email, String password) {
-        UserDto user = userDao.selectUserByEmail(email)
+    public User login(String email, String password) {
+        User user = userDao.selectUserByEmail(email)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_FOUND));
         String encodePwd = user.getPassword();
         if (!pwEncoder.matches(password, encodePwd)) {
@@ -33,23 +35,30 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public UserResponseDto register(UserRequestDto userRequestDto) {
+    public UserResponse join(UserRequest userRequestDto) {
         String encodePwd = pwEncoder.encode(userRequestDto.getPassword());
 
-        UserDto userDto = new UserDto();
-        userDto.setName(userRequestDto.getName());
-        userDto.setEmail(userRequestDto.getEmail());
-        userDto.setPassword(encodePwd);
-        userDto.setType(UserType.BASIC);
-        userDto.setTotalReservationCount(DEFAULT_TOTAL_RESERVATION_COUNT);
+        User user = new User();
+        user.setName(userRequestDto.getName());
+        user.setEmail(userRequestDto.getEmail());
+        user.setPassword(encodePwd);
+        user.setType(UserGrade.BASIC);
+        user.setTotalReservationCount(DEFAULT_TOTAL_RESERVATION_COUNT);
+        user.setCreateDate(LocalDateTime.now());
+        user.setModifyDate(LocalDateTime.now());
 
-        userDao.insertUser(userDto);
-        UserResponseDto newUserRequest = new UserResponseDto();
-        newUserRequest.setEmail(userDto.getEmail());
-        newUserRequest.setName(userDto.getName());
-        newUserRequest.setType(userDto.getType());
+        int id = userDao.insertUser(user);
+        UserResponse newUserRequest = new UserResponse();
+        newUserRequest.setUserId(id);
+        newUserRequest.setEmail(user.getEmail());
+        newUserRequest.setName(user.getName());
+        newUserRequest.setType(user.getType());
         return newUserRequest;
     }
+
+    // 중복 로그인 검사
+    // 이메일, 전화번호 중복되면 안 됨
+
 
     /*
         사용자의 타입 업데이트
@@ -57,16 +66,16 @@ public class UserServiceImpl implements UserService {
      */
     @Transactional
     @Override
-    public void updateUserType(Integer userId, Integer addReservationCount) throws CustomException {
+    public void updateUserGrade(Integer userId, Integer addReservationCount) throws CustomException {
         Integer reservedCount = getUserTotalReservationCount(userId);
 
         Integer newReservationCount = reservedCount + addReservationCount;
 
-        UserType userType = userDao.selectUserTypeById(userId)
+        UserGrade userType = userDao.selectUserTypeById(userId)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_FOUND));
 
         if(newReservationCount >= VVIP_RESERVATION_COUNT) {
-            userType = UserType.VVIP;
+            userType = UserGrade.VVIP;
         } else if(newReservationCount >= VIP_RESERVATION_COUNT) {
             userType = userType.VIP;
         }

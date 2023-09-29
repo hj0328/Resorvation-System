@@ -1,15 +1,15 @@
 package kr.or.connect.reservation.domain.user;
 
 import kr.or.connect.reservation.config.exception.CustomException;
-import kr.or.connect.reservation.domain.user.dto.UserDto;
-import kr.or.connect.reservation.domain.user.dto.UserRequestDto;
-import kr.or.connect.reservation.domain.user.dto.UserResponseDto;
+import kr.or.connect.reservation.domain.user.dto.User;
+import kr.or.connect.reservation.domain.user.dto.UserRequest;
+import kr.or.connect.reservation.domain.user.dto.UserResponse;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface UserService {
-    UserDto login(String email, String password);
+    User login(String email, String password);
 
-    UserResponseDto register(UserRequestDto userRequestDto);
+    UserResponse join(UserRequest userRequestDto);
 
 
     /*
@@ -17,5 +17,5 @@ public interface UserService {
         예매 건수에 따라 VIP, VVIP 로 등급이 변동된다.
      */
     @Transactional
-    void updateUserType(Integer userId, Integer addReservationCount) throws CustomException;
+    void updateUserGrade(Integer userId, Integer addReservationCount) throws CustomException;
 }
