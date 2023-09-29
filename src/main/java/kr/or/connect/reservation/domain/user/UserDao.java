@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static kr.or.connect.reservation.domain.user.UserSqls.*;
+import static kr.or.connect.reservation.domain.user.UserSql.*;
 
 @Repository
 public class UserDao {

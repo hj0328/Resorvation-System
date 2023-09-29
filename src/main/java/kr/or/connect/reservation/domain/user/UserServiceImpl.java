@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static kr.or.connect.reservation.utils.UtilConstant.*;
 
@@ -36,29 +37,32 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public UserResponse join(UserRequest userRequestDto) {
+        // 이미 가입된 이메일 검사
+        String email = userRequestDto.getEmail();
+        Optional<User> joinedUser = userDao.selectUserByEmail(email);
+        if (joinedUser.isPresent()) {
+            throw new CustomException(CustomExceptionStatus.DUPLICATE_USER_EMAIL);
+        }
+
         String encodePwd = pwEncoder.encode(userRequestDto.getPassword());
 
-        User user = new User();
-        user.setName(userRequestDto.getName());
-        user.setEmail(userRequestDto.getEmail());
-        user.setPassword(encodePwd);
-        user.setType(UserGrade.BASIC);
-        user.setTotalReservationCount(DEFAULT_TOTAL_RESERVATION_COUNT);
-        user.setCreateDate(LocalDateTime.now());
-        user.setModifyDate(LocalDateTime.now());
+        User joinUser = new User();
+        joinUser.setName(userRequestDto.getName());
+        joinUser.setEmail(userRequestDto.getEmail());
+        joinUser.setPassword(encodePwd);
+        joinUser.setType(UserGrade.BASIC);
+        joinUser.setTotalReservationCount(DEFAULT_TOTAL_RESERVATION_COUNT);
+        joinUser.setCreateDate(LocalDateTime.now());
+        joinUser.setModifyDate(LocalDateTime.now());
 
-        int id = userDao.insertUser(user);
+        int id = userDao.insertUser(joinUser);
         UserResponse newUserRequest = new UserResponse();
         newUserRequest.setUserId(id);
-        newUserRequest.setEmail(user.getEmail());
-        newUserRequest.setName(user.getName());
-        newUserRequest.setType(user.getType());
+        newUserRequest.setEmail(joinUser.getEmail());
+        newUserRequest.setName(joinUser.getName());
+        newUserRequest.setType(joinUser.getType());
         return newUserRequest;
     }
-
-    // 중복 로그인 검사
-    // 이메일, 전화번호 중복되면 안 됨
-
 
     /*
         사용자의 타입 업데이트
@@ -71,16 +75,16 @@ public class UserServiceImpl implements UserService {
 
         Integer newReservationCount = reservedCount + addReservationCount;
 
-        UserGrade userType = userDao.selectUserTypeById(userId)
+        UserGrade userGrade = userDao.selectUserTypeById(userId)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_FOUND));
 
         if(newReservationCount >= VVIP_RESERVATION_COUNT) {
-            userType = UserGrade.VVIP;
+            userGrade = UserGrade.VVIP;
         } else if(newReservationCount >= VIP_RESERVATION_COUNT) {
-            userType = userType.VIP;
+            userGrade = userGrade.VIP;
         }
 
-        userDao.updateTypeAndTotalReservationCountById(userId, userType, newReservationCount);
+        userDao.updateTypeAndTotalReservationCountById(userId, userGrade, newReservationCount);
     }
 
     private Integer getUserTotalReservationCount(Integer userId) {

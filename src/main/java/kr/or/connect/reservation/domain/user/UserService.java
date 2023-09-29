@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface UserService {
     User login(String email, String password);
 
-    UserResponse join(UserRequest userRequestDto);
+    UserResponse join(UserRequest userRequestDto) throws CustomException;
 
 
     /*

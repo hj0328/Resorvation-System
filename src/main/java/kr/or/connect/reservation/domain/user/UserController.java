@@ -7,14 +7,16 @@ import kr.or.connect.reservation.utils.UtilConstant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -25,11 +27,15 @@ public class UserController {
 
     private final UserService userService;
 
+    @PostMapping
+    public UserResponse join(@Valid UserRequest userRequest) {
+        return userService.join(userRequest);
+    }
 
-    @PostMapping("/login")
-    public UserResponse login(HttpServletRequest request, @Validated UserRequest userRequestDto) {
+    @PostMapping("/session")
+    public UserResponse login(HttpServletRequest request, @Valid UserRequest userRequest) {
         UserResponse userResponse = new UserResponse();
-        User user = userService.login(userRequestDto.getEmail(), userRequestDto.getPassword());
+        User user = userService.login(userRequest.getEmail(), userRequest.getPassword());
 
         HttpSession session = request.getSession();
         session.setAttribute(UtilConstant.LOGIN_ID, user.getEmail());
@@ -38,24 +44,18 @@ public class UserController {
         userResponse.setName(user.getName());
         userResponse.setEmail(user.getEmail());
         userResponse.setType(user.getType());
-
         return userResponse;
     }
 
-    @PostMapping("/logout")
-    public String logout(HttpServletRequest request) {
+    @DeleteMapping("/session")
+    public Map<String, String> logout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
         }
 
-        return "expired";
-    }
-
-    @PostMapping("/join")
-    public UserResponse join(@Validated UserRequest userRequestDto,
-                                 BindingResult bindingResult) {
-        log.info("POST /join UserRequestDto={}", userRequestDto);
-        return userService.join(userRequestDto);
+        Map<String, String> map = new HashMap<>();
+        map.put(UtilConstant.LOGIN_ID, "expired");
+        return map;
     }
 }
