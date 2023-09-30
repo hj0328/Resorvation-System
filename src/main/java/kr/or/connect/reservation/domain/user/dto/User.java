@@ -13,10 +13,10 @@ public class User {
     private String email;
     private String name;
     private String password;
-    private UserGrade type;
+    private UserGrade grade;
     private Integer totalReservationCount;
-    private String reservationInfoId;
-    private String reservationUerCommentId;
+    private Integer reservationInfoId;
+    private Integer reservationUerCommentId;
     private LocalDateTime createDate;
     private LocalDateTime modifyDate;
 }

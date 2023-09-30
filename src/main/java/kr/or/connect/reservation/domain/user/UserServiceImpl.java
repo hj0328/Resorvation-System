@@ -27,6 +27,7 @@ public class UserServiceImpl implements UserService {
         User user = userDao.selectUserByEmail(email)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_FOUND));
         String encodePwd = user.getPassword();
+
         if (!pwEncoder.matches(password, encodePwd)) {
             throw new CustomException(CustomExceptionStatus.USER_LOGIN_FAIL);
         }
@@ -36,31 +37,39 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public UserResponse join(UserRequest userRequestDto) {
+    public UserResponse join(UserRequest userRequest) {
         // 이미 가입된 이메일 검사
-        String email = userRequestDto.getEmail();
+        String email = userRequest.getEmail();
         Optional<User> joinedUser = userDao.selectUserByEmail(email);
         if (joinedUser.isPresent()) {
             throw new CustomException(CustomExceptionStatus.DUPLICATE_USER_EMAIL);
         }
 
-        String encodePwd = pwEncoder.encode(userRequestDto.getPassword());
+        String encodePwd = pwEncoder.encode(userRequest.getPassword());
+        User user = convertUser(userRequest, encodePwd);
 
+        int id = userDao.insertUser(user);
+        return convertUserResponse(user, id);
+    }
+
+    private User convertUser(UserRequest userRequest, String encodePwd) {
         User joinUser = new User();
-        joinUser.setName(userRequestDto.getName());
-        joinUser.setEmail(userRequestDto.getEmail());
+        joinUser.setName(userRequest.getName());
+        joinUser.setEmail(userRequest.getEmail());
         joinUser.setPassword(encodePwd);
-        joinUser.setType(UserGrade.BASIC);
+        joinUser.setGrade(UserGrade.BASIC);
         joinUser.setTotalReservationCount(DEFAULT_TOTAL_RESERVATION_COUNT);
         joinUser.setCreateDate(LocalDateTime.now());
         joinUser.setModifyDate(LocalDateTime.now());
+        return joinUser;
+    }
 
-        int id = userDao.insertUser(joinUser);
+    private UserResponse convertUserResponse(User user, int id) {
         UserResponse newUserRequest = new UserResponse();
         newUserRequest.setUserId(id);
-        newUserRequest.setEmail(joinUser.getEmail());
-        newUserRequest.setName(joinUser.getName());
-        newUserRequest.setType(joinUser.getType());
+        newUserRequest.setEmail(user.getEmail());
+        newUserRequest.setName(user.getName());
+        newUserRequest.setGrade(user.getGrade());
         return newUserRequest;
     }
 
@@ -70,7 +79,7 @@ public class UserServiceImpl implements UserService {
      */
     @Transactional
     @Override
-    public void updateUserGrade(Integer userId, Integer addReservationCount) throws CustomException {
+    public UserGrade updateUserGrade(Integer userId, Integer addReservationCount) throws CustomException {
         Integer reservedCount = getUserTotalReservationCount(userId);
 
         Integer newReservationCount = reservedCount + addReservationCount;
@@ -85,6 +94,7 @@ public class UserServiceImpl implements UserService {
         }
 
         userDao.updateTypeAndTotalReservationCountById(userId, userGrade, newReservationCount);
+        return userGrade;
     }
 
     private Integer getUserTotalReservationCount(Integer userId) {

@@ -31,8 +31,8 @@ public class UserDao {
                 .usingGeneratedKeyColumns("user_id");
     }
 
-    public int insertUser(User userDto) {
-        BeanPropertySqlParameterSource param = new BeanPropertySqlParameterSource(userDto);
+    public int insertUser(User user) {
+        BeanPropertySqlParameterSource param = new BeanPropertySqlParameterSource(user);
         Number pk = jdbcInsert.executeAndReturnKey(param);
 
         return pk.intValue();
@@ -53,8 +53,8 @@ public class UserDao {
         Map<String, Object> params = new HashMap<>();
         params.put("userId", userId);
         try {
-            UserGrade userType = template.queryForObject(SELECT_TYPE_BY_ID, params, UserGrade.class);
-            return Optional.of(userType);
+            UserGrade userGrade = template.queryForObject(SELECT_GRADE_BY_ID, params, UserGrade.class);
+            return Optional.of(userGrade);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -71,11 +71,11 @@ public class UserDao {
         }
     }
 
-    public int updateTypeAndTotalReservationCountById(Integer userId, UserGrade userType
+    public int updateTypeAndTotalReservationCountById(Integer userId, UserGrade userGrade
             , Integer totalReservationCount) {
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("userId", userId)
-                .addValue("type", userType.toString())
+                .addValue("grade", userGrade.toString())
                 .addValue("totalReservationCount", totalReservationCount);
         return template.update(UPDATE_TYPE_AND_TOTAL_RESERVATION_COUNT_BY_ID, param);
     }

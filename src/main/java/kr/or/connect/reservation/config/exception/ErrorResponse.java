@@ -2,11 +2,15 @@ package kr.or.connect.reservation.config.exception;
 
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 public class ErrorResponse {
-    private boolean isSuccess;
     private String message;
+    private List<String> reasons;
 
-    public ErrorResponse(boolean b, String defaultErrorMessage) {
+    public ErrorResponse(String message, List<String> reasons) {
+        this.message = message;
+        this.reasons = reasons;
     }
 }

@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface UserService {
     User login(String email, String password);
 
-    UserResponse join(UserRequest userRequestDto) throws CustomException;
+    UserResponse join(UserRequest userRequest) throws CustomException;
 
 
     /*
@@ -17,5 +17,5 @@ public interface UserService {
         예매 건수에 따라 VIP, VVIP 로 등급이 변동된다.
      */
     @Transactional
-    void updateUserGrade(Integer userId, Integer addReservationCount) throws CustomException;
+    UserGrade updateUserGrade(Integer userId, Integer addReservationCount) throws CustomException;
 }

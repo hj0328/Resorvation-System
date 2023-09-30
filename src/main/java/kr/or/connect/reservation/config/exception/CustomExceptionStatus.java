@@ -8,10 +8,11 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum CustomExceptionStatus {
-    REQUEST_ERROR(4000, "잘못된 요청입니다."),
+    INVALID_REQUEST_ERROR(4001, "잘못된 입력 요청입니다."),
 
     USER_LOGIN_FAIL(4010, "아이디 또는 비밀번호를 확인해주세요."),
     USER_NOT_FOUND(4011, "사용자를 찾을 수 없습니다."),
+    DUPLICATE_USER_EMAIL(4012, "이미 가입된 이메일입니다."),
 
     RESERVATION_NOT_FOUND(4100, "예약정보를 찾을 수 없습니다."),
     PRODUCT_NOT_FOUND(4200, "상품정보를 찾을 수 없습니다."),

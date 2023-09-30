@@ -51,12 +51,12 @@ public class ReservationServiceImpl implements ReservationService {
 
 	@Transactional
 	@Override
-	public ReservationResponseDto createReservations(ReservationRequestDto reservationRequestDto) {
-		long reservationInfoId = reservationDao.insertReservationInfo(reservationRequestDto);
-		reservationDao.insertReservationInfoPrice(reservationRequestDto, reservationInfoId);
+	public ReservationResponseDto createReservations(ReservationRequestDto reservationRequest) {
+		long reservationInfoId = reservationDao.insertReservationInfo(reservationRequest);
+		reservationDao.insertReservationInfoPrice(reservationRequest, reservationInfoId);
 
 		// 사용자 Type 예약 수에 따라 업데이트
-		updateUserType(reservationRequestDto);
+		updateUserType(reservationRequest);
 
 		// 응답 데이터 생성 후 리턴
 		return getReservationResponse(reservationInfoId);

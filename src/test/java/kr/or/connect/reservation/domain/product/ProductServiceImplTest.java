@@ -8,17 +8,19 @@ import kr.or.connect.reservation.domain.product.dto.ProductItemDto;
 import kr.or.connect.reservation.domain.product.dto.ProductPriceDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+
+
 class ProductServiceImplTest {
 
     @Mock
@@ -32,7 +34,7 @@ class ProductServiceImplTest {
 
     @DisplayName("모든 카테고리 품목 조회")
     @Test
-    void get_All_ProductsTest() {
+    void getAllProductsTest() {
         // given
         List<ProductItemDto> totalProducts = extractTotalProducts();
         when(productDao.selectAllProducts(0))
@@ -47,7 +49,7 @@ class ProductServiceImplTest {
 
     @DisplayName("특정 카테고리 품목 조회")
     @Test
-    void get_Specific_Category_ProductsTest() {
+    void getSpecificCategoryProductsTest() {
         // given
         List<ProductItemDto> totalProducts = extractProducts();
         when(productDao.selectProducts(1,0))
@@ -63,7 +65,7 @@ class ProductServiceImplTest {
 
     @DisplayName("특정 상품전시 상세 조회")
     @Test
-    void get_Product_Detail_Test() {
+    void getProductDetailTest() {
         // given
         DisplayInfo displayInfo = new DisplayInfo();
         displayInfo.setDisplayInfoId(1);

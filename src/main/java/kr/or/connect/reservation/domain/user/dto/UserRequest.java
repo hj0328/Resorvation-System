@@ -2,14 +2,12 @@ package kr.or.connect.reservation.domain.user.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
-@ToString
 public class UserRequest {
     @NotBlank
     private String name;
