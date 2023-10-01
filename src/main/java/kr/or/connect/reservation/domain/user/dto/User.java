@@ -1,6 +1,5 @@
 package kr.or.connect.reservation.domain.user.dto;
 
-import kr.or.connect.reservation.domain.user.UserGrade;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +8,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class User {
-    private Integer userId;
+    private Integer id;
     private String email;
     private String name;
     private String password;

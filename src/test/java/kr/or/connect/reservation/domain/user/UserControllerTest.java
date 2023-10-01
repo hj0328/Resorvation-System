@@ -3,6 +3,7 @@ package kr.or.connect.reservation.domain.user;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.or.connect.reservation.config.exception.ExceptionAdvice;
 import kr.or.connect.reservation.domain.user.dto.User;
+import kr.or.connect.reservation.domain.user.dto.UserGrade;
 import kr.or.connect.reservation.domain.user.dto.UserRequest;
 import kr.or.connect.reservation.domain.user.dto.UserResponse;
 import kr.or.connect.reservation.utils.UtilConstant;

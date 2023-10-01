@@ -126,7 +126,7 @@ class ReservationServiceImplTest {
     private ReservationRequestDto getNewReservationRequest() {
         ReservationRequestDto reservationRequest = new ReservationRequestDto();
         reservationRequest.setPrices(new ArrayList<>());
-        reservationRequest.setUserId(0);
+        reservationRequest.setId(0);
 
         List<ReservationPriceDto> prices = new ArrayList<>();
         ReservationPriceDto priceDto1 = new ReservationPriceDto();

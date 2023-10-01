@@ -3,8 +3,10 @@ package kr.or.connect.reservation.domain.user;
 import kr.or.connect.reservation.config.exception.CustomException;
 import kr.or.connect.reservation.config.exception.CustomExceptionStatus;
 import kr.or.connect.reservation.domain.user.dto.User;
+import kr.or.connect.reservation.domain.user.dto.UserGrade;
 import kr.or.connect.reservation.domain.user.dto.UserRequest;
 import kr.or.connect.reservation.domain.user.dto.UserResponse;
+import kr.or.connect.reservation.domain.user.dao.UserDao;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,7 +26,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User login(String email, String password) {
-        User user = userDao.selectUserByEmail(email)
+        User user = userDao.findUserByEmail(email)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_FOUND));
         String encodePwd = user.getPassword();
 
@@ -40,7 +42,7 @@ public class UserServiceImpl implements UserService {
     public UserResponse join(UserRequest userRequest) {
         // 이미 가입된 이메일 검사
         String email = userRequest.getEmail();
-        Optional<User> joinedUser = userDao.selectUserByEmail(email);
+        Optional<User> joinedUser = userDao.findUserByEmail(email);
         if (joinedUser.isPresent()) {
             throw new CustomException(CustomExceptionStatus.DUPLICATE_USER_EMAIL);
         }
@@ -48,7 +50,7 @@ public class UserServiceImpl implements UserService {
         String encodePwd = pwEncoder.encode(userRequest.getPassword());
         User user = convertUser(userRequest, encodePwd);
 
-        int id = userDao.insertUser(user);
+        int id = userDao.saveUser(user);
         return convertUserResponse(user, id);
     }
 
@@ -66,7 +68,7 @@ public class UserServiceImpl implements UserService {
 
     private UserResponse convertUserResponse(User user, int id) {
         UserResponse newUserRequest = new UserResponse();
-        newUserRequest.setUserId(id);
+        newUserRequest.setId(id);
         newUserRequest.setEmail(user.getEmail());
         newUserRequest.setName(user.getName());
         newUserRequest.setGrade(user.getGrade());
@@ -79,12 +81,12 @@ public class UserServiceImpl implements UserService {
      */
     @Transactional
     @Override
-    public UserGrade updateUserGrade(Integer userId, Integer addReservationCount) throws CustomException {
-        Integer reservedCount = getUserTotalReservationCount(userId);
+    public UserGrade updateUserGrade(Integer id, Integer addReservationCount) throws CustomException {
+        Integer reservedCount = getUserTotalReservationCount(id);
 
         Integer newReservationCount = reservedCount + addReservationCount;
 
-        UserGrade userGrade = userDao.selectUserTypeById(userId)
+        UserGrade userGrade = userDao.findUserTypeById(id)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_FOUND));
 
         if(newReservationCount >= VVIP_RESERVATION_COUNT) {
@@ -93,12 +95,12 @@ public class UserServiceImpl implements UserService {
             userGrade = userGrade.VIP;
         }
 
-        userDao.updateTypeAndTotalReservationCountById(userId, userGrade, newReservationCount);
+        userDao.updateTypeAndTotalReservationCountById(id, userGrade, newReservationCount);
         return userGrade;
     }
 
-    private Integer getUserTotalReservationCount(Integer userId) {
-        Integer totalReservationCount = userDao.selectUserTotalReservationCountById(userId)
+    private Integer getUserTotalReservationCount(Integer id) {
+        Integer totalReservationCount = userDao.findUserTotalReservationCountById(id)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_FOUND));
         return totalReservationCount;
     }

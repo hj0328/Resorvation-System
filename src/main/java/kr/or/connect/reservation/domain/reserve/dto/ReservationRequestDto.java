@@ -13,7 +13,7 @@ public class ReservationRequestDto {
 	@NotBlank
 	private int displayInfoId;
 	@NotBlank
-	private int UserId;
+	private int id;
 	private List<ReservationPriceDto> prices;
 
 	@NotBlank

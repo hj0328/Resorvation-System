@@ -2,8 +2,10 @@ package kr.or.connect.reservation.domain.user;
 
 import kr.or.connect.reservation.config.exception.CustomException;
 import kr.or.connect.reservation.domain.user.dto.User;
+import kr.or.connect.reservation.domain.user.dto.UserGrade;
 import kr.or.connect.reservation.domain.user.dto.UserRequest;
 import kr.or.connect.reservation.domain.user.dto.UserResponse;
+import kr.or.connect.reservation.domain.user.dao.UserDaoJdbcTemplate;
 import kr.or.connect.reservation.utils.UtilConstant;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +28,7 @@ import static org.mockito.Mockito.when;
 class UserServiceImplTest {
 
     @Mock
-    private UserDao userDao;
+    private UserDaoJdbcTemplate userDao;
 
     @Mock
     private PasswordEncoder pwEncoder;
@@ -39,7 +41,7 @@ class UserServiceImplTest {
     void loginTest() {
         // when
         User testUser = getTestUser();
-        when(userDao.selectUserByEmail("test@gmail.com"))
+        when(userDao.findUserByEmail("test@gmail.com"))
                 .thenReturn(Optional.of(testUser));
 
         when(pwEncoder.matches("test1", "test1"))
@@ -49,7 +51,7 @@ class UserServiceImplTest {
         User loginUser = userService.login("test@gmail.com", "test1");
 
         // then
-        assertThat(loginUser.getUserId()).isEqualTo(testUser.getUserId());
+        assertThat(loginUser.getId()).isEqualTo(testUser.getId());
         assertThat(loginUser.getPassword()).isEqualTo(testUser.getPassword());
         assertThat(loginUser.getName()).isEqualTo(testUser.getName());
         assertThat(loginUser.getReservationInfoId()).isEqualTo(testUser.getReservationInfoId());
@@ -64,7 +66,7 @@ class UserServiceImplTest {
     void loginPasswordFailTest() {
         // when
         User testUser = getTestUser();
-        when(userDao.selectUserByEmail("test@gmail.com"))
+        when(userDao.findUserByEmail("test@gmail.com"))
                 .thenReturn(Optional.of(testUser));
 
         // then
@@ -92,14 +94,14 @@ class UserServiceImplTest {
         userRequest.setName("test");
         userRequest.setPassword("test1");
 
-        when(userDao.insertUser(any()))
+        when(userDao.saveUser(any()))
                 .thenReturn(1);
 
         // given
         UserResponse join = userService.join(userRequest);
 
         // then
-        assertThat(join.getUserId()).isEqualTo(1);
+        assertThat(join.getId()).isEqualTo(1);
         assertThat(join.getEmail()).isEqualTo("test@gmail.com");
         assertThat(join.getGrade()).isEqualTo(UserGrade.BASIC);
         assertThat(join.getName()).isEqualTo("test");
@@ -115,7 +117,7 @@ class UserServiceImplTest {
         userRequest.setPassword("test1");
 
         User testUser = getTestUser();
-        when(userDao.selectUserByEmail("test@gmail.com"))
+        when(userDao.findUserByEmail("test@gmail.com"))
                 .thenReturn(Optional.of(testUser));
 
         // then
@@ -127,10 +129,10 @@ class UserServiceImplTest {
     @Test
     void updateUserGradeVIPTest() {
         // given
-        when(userDao.selectUserTypeById(1))
+        when(userDao.findUserTypeById(1))
                 .thenReturn(Optional.of(UserGrade.BASIC));
 
-        when(userDao.selectUserTotalReservationCountById(1))
+        when(userDao.findUserTotalReservationCountById(1))
                 .thenReturn(Optional.of(1));
 
         // when
@@ -144,10 +146,10 @@ class UserServiceImplTest {
     @Test
     void updateUserGradeVVIPTest() {
         // given
-        when(userDao.selectUserTypeById(1))
+        when(userDao.findUserTypeById(1))
                 .thenReturn(Optional.of(UserGrade.BASIC));
 
-        when(userDao.selectUserTotalReservationCountById(1))
+        when(userDao.findUserTotalReservationCountById(1))
                 .thenReturn(Optional.of(1));
 
         // when
@@ -157,12 +159,9 @@ class UserServiceImplTest {
         assertThat(userGrade).isEqualTo(UserGrade.VVIP);
     }
 
-
-
-
     private User getTestUser() {
         User user = new User();
-        user.setUserId(1);
+        user.setId(1);
         user.setGrade(UserGrade.BASIC);
         user.setName("tester");
         user.setEmail("test@gmail.com");
