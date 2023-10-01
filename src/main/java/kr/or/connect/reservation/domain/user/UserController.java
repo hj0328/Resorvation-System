@@ -3,7 +3,6 @@ package kr.or.connect.reservation.domain.user;
 import kr.or.connect.reservation.domain.user.dto.User;
 import kr.or.connect.reservation.domain.user.dto.UserRequest;
 import kr.or.connect.reservation.domain.user.dto.UserResponse;
-import kr.or.connect.reservation.utils.UtilConstant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -14,6 +13,9 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
+
+import static kr.or.connect.reservation.utils.UtilConstant.USER_EMAIL;
+import static kr.or.connect.reservation.utils.UtilConstant.USER_ID;
 
 @Slf4j
 @Controller
@@ -35,7 +37,8 @@ public class UserController {
         User user = userService.login(userRequest.getEmail(), userRequest.getPassword());
 
         HttpSession session = request.getSession();
-        session.setAttribute(UtilConstant.LOGIN_ID, user.getEmail());
+        session.setAttribute(USER_EMAIL, user.getEmail());
+        session.setAttribute(USER_ID, userResponse.getId());
 
         userResponse.setId(user.getId());
         userResponse.setName(user.getName());
@@ -46,13 +49,15 @@ public class UserController {
 
     @DeleteMapping("/session")
     public Map<String, String> logout(HttpServletRequest request) {
+        log.info("delete session={}", request.getSession().getId());
+
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
         }
 
         Map<String, String> map = new HashMap<>();
-        map.put(UtilConstant.LOGIN_ID, "expired");
+        map.put(USER_EMAIL, "expired");
         return map;
     }
 }
