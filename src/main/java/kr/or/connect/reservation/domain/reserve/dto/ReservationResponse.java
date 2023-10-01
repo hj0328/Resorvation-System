@@ -1,22 +1,24 @@
 package kr.or.connect.reservation.domain.reserve.dto;
 
+import kr.or.connect.reservation.domain.display.DisplayInfo;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter @Setter @ToString
+@Getter @Setter
 public class ReservationResponse {
-	private boolean cancelYn;
-	private String createDate;
-	private String modifyDate;
-	private int displayInfoId;
+	private Boolean cancelYn;
+	private Integer displayInfoId;
 	private List<ReservationPrice> prices;
-	private int productId;
-	private String reservationEmail;
-	private String reservationName;
-	private String reservationTelephone;
+	private Integer productId;
+	private Integer totalPrice;
 	private String reservationDate;
-	private int reservationInfoId;
+	private String reservationEmail;
+	private Integer reservationInfoId;
+	private String reservationTelephone;
+	private String reservationName;
+	private DisplayInfo displayInfo;
+	private LocalDateTime modifyDate;
 }

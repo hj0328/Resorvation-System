@@ -3,9 +3,7 @@ package kr.or.connect.reservation.domain.reserve;
 import kr.or.connect.reservation.domain.display.DisplayInfo;
 import kr.or.connect.reservation.domain.reserve.dto.ReservationInfo;
 import kr.or.connect.reservation.domain.reserve.dto.ReservationPrice;
-import kr.or.connect.reservation.domain.reserve.dto.ReservationRequest;
 import kr.or.connect.reservation.domain.reserve.dto.ReservationResponse;
-import kr.or.connect.reservation.utils.UtilConstant;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -20,6 +18,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static kr.or.connect.reservation.domain.reserve.ReservationSql.*;
+import static kr.or.connect.reservation.utils.UtilConstant.*;
 
 @Repository
 public class ReservationDao {
@@ -45,40 +46,39 @@ public class ReservationDao {
 				.usingGeneratedKeyColumns("id");
 	}
 
-	public List<ReservationInfo> selectReservationInfoByEmail(String reservationEmail) {
-		Map<String, String> params = new HashMap<>();
-		params.put(UtilConstant.RESERVATION_EMAIL, reservationEmail);
-		List<ReservationInfo> reservationInfo = jdbc.query(ReservationSql.SELECT_RESERVATION_INFO_BY_EMAIL, params,
-				reservationInfoRowMapper);
+	public List<ReservationInfo> findReservationInfoByUserId(Integer userId) {
+		Map<String, Object> params = new HashMap<>();
+		params.put(USER_ID, userId);
+		List<ReservationInfo> reservationInfo = jdbc.query(SELECT_RESERVATION_INFO_BY_EMAIL,
+				params, reservationInfoRowMapper);
 
 		return reservationInfo;
 	}
 
-	public Optional<DisplayInfo> selectDisplayInfoById(Integer reservationInfoId, Integer displayInfoId) {
+	public Optional<DisplayInfo> findDisplayInfoById(Integer reservationInfoId, Integer displayInfoId) {
 		Map<String, Integer> params = new HashMap<>();
-		params.put(UtilConstant.DISPLAY_INFO_ID, displayInfoId);
-		params.put(UtilConstant.RESERVATION_INFO_ID, reservationInfoId);
+		params.put(DISPLAY_INFO_ID, displayInfoId);
+		params.put(RESERVATION_INFO_ID, reservationInfoId);
 
-		DisplayInfo displayInfo = jdbc.queryForObject(ReservationSql.SELECT_DISPLAY_INFO_BY_ID, params, displayInfoRowMapper);
+		DisplayInfo displayInfo = jdbc.queryForObject(SELECT_DISPLAY_INFO_BY_ID, params, displayInfoRowMapper);
 		return Optional.of(displayInfo);
 	}
 
-	public Optional<Integer> selectTotalPriceById(Integer reservationInfoId) {
+	public Optional<Integer> findTotalPriceById(Integer reservationInfoId) {
 		Map<String, Integer> params = new HashMap<>();
-		params.put(UtilConstant.RESERVATION_INFO_ID, reservationInfoId);
+		params.put(RESERVATION_INFO_ID, reservationInfoId);
 
-		Integer totalPrice = jdbc.queryForObject(ReservationSql.SELECT_TOTAL_PRICE_BY_ID, params, Integer.class);
+		Integer totalPrice = jdbc.queryForObject(SELECT_TOTAL_PRICE_BY_ID, params, Integer.class);
 		return Optional.of(totalPrice);
 	}
 
-	public long insertReservationInfo(ReservationRequest reservationRequest) {
-		BeanPropertySqlParameterSource param = new BeanPropertySqlParameterSource(reservationRequest);
-		Number key = jdbcInsertInfo.executeAndReturnKey(param);
-		return key.longValue();
+	public Integer saveReservationInfo(ReservationInfo info) {
+		BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(info);
+		Number key = jdbcInsertInfo.executeAndReturnKey(params);
+		return key.intValue();
 	}
 
-	public void insertReservationInfoPrice(ReservationRequest reservationRequest, long reservationInfoId) {
-		List<ReservationPrice> prices = reservationRequest.getPrices();
+	public void saveReservationInfoPrice(List<ReservationPrice> prices, long reservationInfoId) {
 		for (ReservationPrice price : prices) {
 			Map<String, Object> params = new HashMap<>();
 			params.put("count", price.getCount());
@@ -90,26 +90,25 @@ public class ReservationDao {
 		}
 	}
 
-	public Optional<ReservationResponse> selectReservationResponse(long reservationInfoId) {
-		Map<String, Long> params = new HashMap<>();
-		params.put(UtilConstant.RESERVATION_INFO_ID, reservationInfoId);
+	public Optional<ReservationResponse> findReservationResponseById(Integer reservationInfoId) {
+		Map<String, Integer> params = new HashMap<>();
+		params.put(RESERVATION_INFO_ID, reservationInfoId);
 
-		ReservationResponse reservationResponse = jdbc.queryForObject(ReservationSql.SELECT_RESERVATION_INFO_BY_ID, params,
+		ReservationResponse reservationResponse = jdbc.queryForObject(SELECT_RESERVATION_INFO_BY_ID, params,
 				reservationResponseRowMapper);
 		return Optional.of(reservationResponse);
 	}
 
-	public List<ReservationPrice> selectReservationInfoPriceList(long reservationInfoId) {
-		Map<String, Long> params = new HashMap<>();
-		params.put(UtilConstant.RESERVATION_INFO_ID, reservationInfoId);
-
-		return jdbc.query(ReservationSql.SELECT_RESERVATION_INFO_PRICE_BY_ID, params, reservationPriceRowMapper);
+	public List<ReservationPrice> findReservationInfoPriceListById(Integer reservationInfoId) {
+		Map<String, Integer> params = new HashMap<>();
+		params.put(RESERVATION_INFO_ID, reservationInfoId);
+		return jdbc.query(SELECT_RESERVATION_INFO_PRICE_BY_ID, params, reservationPriceRowMapper);
 	}
 
-	public void cancelReservation(int reservationInfoId) {
+	public void updateReservationCancel(int reservationInfoId) {
 		SqlParameterSource params = new MapSqlParameterSource()
-				.addValue(UtilConstant.RESERVATION_INFO_ID, reservationInfoId);
+				.addValue(RESERVATION_INFO_ID, reservationInfoId);
 
-		jdbc.update(ReservationSql.UPDATE_RESERVATION_CANCEL, params);
+		jdbc.update(UPDATE_RESERVATION_CANCEL, params);
 	}
 }

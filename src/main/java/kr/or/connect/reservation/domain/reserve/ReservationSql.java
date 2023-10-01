@@ -6,11 +6,12 @@ import kr.or.connect.reservation.utils.UtilConstant;
  *  '나의 예매내역 확인' 페이지 관련 sql문
  */
 public class ReservationSql {
-	public static final String SELECT_RESERVATION_INFO_BY_EMAIL = "SELECT id AS 'reservationInfoId', product_id 'productId', display_info_id, "
+	public static final String SELECT_RESERVATION_INFO_BY_EMAIL = "SELECT ri.id AS 'reservationInfoId', product_id 'productId', display_info_id, "
 			+ "reservation_name, reservation_tel 'reservationTelephone', reservation_email "
 			+ ", IF(cancel_flag = 0, 'false', 'true') AS 'cancelYn' "
-			+ ", reservation_date, create_date, modify_date "
-			+ "FROM reservation_info ri " + "WHERE ri.reservation_email  = :reservationEmail ";
+			+ ", reservation_date, ri.create_date, ri.modify_date "
+			+ "FROM reservation_info ri JOIN user_info ifo ON ri.user_id = ifo.id "
+			+ "WHERE ifo.id = :userId ";
 
 	public static final String SELECT_DISPLAY_INFO_BY_ID = "SELECT c.id 'categoryId', c.name 'categoryName', di.create_date, di.id 'displayInfoId', di.email, di.homepage, "
 			+ "di.modify_date, di.opening_hours, di.place_lot, "

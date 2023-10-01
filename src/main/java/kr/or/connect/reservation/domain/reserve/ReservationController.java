@@ -6,8 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletException;
-import java.io.IOException;
 import java.util.Map;
 
 @Slf4j
@@ -20,23 +18,21 @@ public class ReservationController {
 
 	/**
 	 * 예약정보조회
-	 * @param reservationEmail
+	 * @param userId
 	 */
-	@GetMapping
-	public Map<String, Object> getReservations(@RequestParam String reservationEmail)
-			throws ServletException, IOException {
-		log.info("GET /api/reservation, reservationEmail={}", reservationEmail);
-		return reservationService.getReservations(reservationEmail);
+	@GetMapping("/{userId}")
+	public Map<String, Object> getReservations(@PathVariable Integer userId) {
+		return reservationService.getReservations(userId);
 	}
 
 	/**
-	 * 예약하기
-	 * @param reservationRequest
+	 * {userId} 예약하기
 	 */
-	@PostMapping
-	public ReservationResponse setReservation(
-			@RequestBody ReservationRequest reservationRequest) {
-		return reservationService.createReservations(reservationRequest);
+	@PostMapping("/{userId}")
+	public ReservationResponse createReservation(
+			@RequestBody ReservationRequest reservationRequest,
+			@PathVariable Integer userId) {
+		return reservationService.createReservations(reservationRequest, userId);
 	}
 
 	/**
@@ -45,9 +41,7 @@ public class ReservationController {
 	 * @param reservationId
 	 */
 	@PutMapping("/{reservationId}")
-	public ReservationResponse deleteReservation(@PathVariable int reservationId) {
-		log.info("PUT /api/reservation, reservationId={}", reservationId);
-		return reservationService.cancelReservation(reservationId);
+	public ReservationResponse setReservationCancel(@PathVariable int reservationId) {
+		return reservationService.setReservationCancel(reservationId);
 	}
-
 }

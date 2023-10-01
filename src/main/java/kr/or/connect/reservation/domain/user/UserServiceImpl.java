@@ -81,12 +81,12 @@ public class UserServiceImpl implements UserService {
      */
     @Transactional
     @Override
-    public UserGrade updateUserGrade(Integer id, Integer addReservationCount) throws CustomException {
-        Integer reservedCount = getUserTotalReservationCount(id);
+    public UserGrade updateUserGrade(Integer userId, Integer addReservationCount) throws CustomException {
+        Integer reservedCount = getUserTotalReservationCount(userId);
 
         Integer newReservationCount = reservedCount + addReservationCount;
 
-        UserGrade userGrade = userDao.findUserTypeById(id)
+        UserGrade userGrade = userDao.findUserTypeById(userId)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_FOUND));
 
         if(newReservationCount >= VVIP_RESERVATION_COUNT) {
@@ -95,7 +95,7 @@ public class UserServiceImpl implements UserService {
             userGrade = userGrade.VIP;
         }
 
-        userDao.updateTypeAndTotalReservationCountById(id, userGrade, newReservationCount);
+        userDao.updateTypeAndTotalReservationCountById(userId, userGrade, newReservationCount);
         return userGrade;
     }
 

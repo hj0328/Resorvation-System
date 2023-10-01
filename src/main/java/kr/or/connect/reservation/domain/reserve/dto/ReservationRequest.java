@@ -2,18 +2,15 @@ package kr.or.connect.reservation.domain.reserve.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
-@Getter @Setter @ToString
+@Getter @Setter
 public class ReservationRequest {
 	@NotBlank
 	private int displayInfoId;
-	@NotBlank
-	private int id;
 	private List<ReservationPrice> prices;
 
 	@NotBlank
