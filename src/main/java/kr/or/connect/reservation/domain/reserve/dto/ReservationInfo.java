@@ -6,7 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Getter @Setter @ToString
-public class ReservationInfoDto {
+public class ReservationInfo {
 	private Boolean cancelYn;
 	private String createDate;
 	private Integer displayInfoId;

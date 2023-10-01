@@ -3,10 +3,10 @@ package kr.or.connect.reservation.domain.reserve;
 import kr.or.connect.reservation.config.exception.CustomException;
 import kr.or.connect.reservation.config.exception.CustomExceptionStatus;
 import kr.or.connect.reservation.domain.display.DisplayInfo;
-import kr.or.connect.reservation.domain.reserve.dto.ReservationInfoDto;
-import kr.or.connect.reservation.domain.reserve.dto.ReservationPriceDto;
-import kr.or.connect.reservation.domain.reserve.dto.ReservationRequestDto;
-import kr.or.connect.reservation.domain.reserve.dto.ReservationResponseDto;
+import kr.or.connect.reservation.domain.reserve.dto.ReservationInfo;
+import kr.or.connect.reservation.domain.reserve.dto.ReservationPrice;
+import kr.or.connect.reservation.domain.reserve.dto.ReservationRequest;
+import kr.or.connect.reservation.domain.reserve.dto.ReservationResponse;
 import kr.or.connect.reservation.domain.user.UserService;
 import kr.or.connect.reservation.utils.UtilConstant;
 import lombok.RequiredArgsConstructor;
@@ -27,9 +27,9 @@ public class ReservationServiceImpl implements ReservationService {
 
 	@Override
 	public Map<String, Object> getReservations(String reservationEmail) {
-		List<ReservationInfoDto> reservationInfoList = reservationDao.selectReservationInfoByEmail(reservationEmail);
+		List<ReservationInfo> reservationInfoList = reservationDao.selectReservationInfoByEmail(reservationEmail);
 
-		for (ReservationInfoDto reservationInfo : reservationInfoList) {
+		for (ReservationInfo reservationInfo : reservationInfoList) {
 			Integer reservationInfoId = reservationInfo.getReservationInfoId();
 			Integer displayInfoId = reservationInfo.getDisplayInfoId();
 
@@ -51,7 +51,7 @@ public class ReservationServiceImpl implements ReservationService {
 
 	@Transactional
 	@Override
-	public ReservationResponseDto createReservations(ReservationRequestDto reservationRequest) {
+	public ReservationResponse createReservations(ReservationRequest reservationRequest) {
 		long reservationInfoId = reservationDao.insertReservationInfo(reservationRequest);
 		reservationDao.insertReservationInfoPrice(reservationRequest, reservationInfoId);
 
@@ -62,28 +62,28 @@ public class ReservationServiceImpl implements ReservationService {
 		return getReservationResponse(reservationInfoId);
 	}
 
-	private ReservationResponseDto getReservationResponse(long reservationInfoId) {
-		ReservationResponseDto reservationResponseDto = reservationDao.selectReservationResponseDto(reservationInfoId)
+	private ReservationResponse getReservationResponse(long reservationInfoId) {
+		ReservationResponse reservationResponse = reservationDao.selectReservationResponse(reservationInfoId)
 				.orElseThrow(() -> new CustomException(CustomExceptionStatus.RESERVATION_NOT_FOUND));
 
-		List<ReservationPriceDto> prices = reservationDao
-				.selectReservationInfoPriceDtoList(reservationInfoId);
-		reservationResponseDto.setPrices(prices);
-		return reservationResponseDto;
+		List<ReservationPrice> prices = reservationDao
+				.selectReservationInfoPriceList(reservationInfoId);
+		reservationResponse.setPrices(prices);
+		return reservationResponse;
 	}
 
-	private void updateUserType(ReservationRequestDto reservationRequest) {
+	private void updateUserType(ReservationRequest reservationRequest) {
 		AtomicInteger reservationCount = new AtomicInteger();
-		List<ReservationPriceDto> newReservationList = reservationRequest.getPrices();
+		List<ReservationPrice> newReservationList = reservationRequest.getPrices();
 		newReservationList.listIterator()
-				.forEachRemaining(reservationPriceDto -> reservationCount.addAndGet(reservationPriceDto.getCount()));
+				.forEachRemaining(reservationPrice -> reservationCount.addAndGet(reservationPrice.getCount()));
 
 		userService.updateUserGrade(reservationRequest.getId(), reservationCount.get());
 	}
 
 	@Transactional
 	@Override
-	public ReservationResponseDto cancelReservation(int reservationInfoId) {
+	public ReservationResponse cancelReservation(int reservationInfoId) {
 		reservationDao.cancelReservation(reservationInfoId);
 
 		// 응답 데이터 생성 후 리턴

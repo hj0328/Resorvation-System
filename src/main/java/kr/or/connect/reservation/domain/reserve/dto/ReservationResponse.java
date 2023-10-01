@@ -7,12 +7,12 @@ import lombok.ToString;
 import java.util.List;
 
 @Getter @Setter @ToString
-public class ReservationResponseDto {
+public class ReservationResponse {
 	private boolean cancelYn;
 	private String createDate;
 	private String modifyDate;
 	private int displayInfoId;
-	private List<ReservationPriceDto> prices;
+	private List<ReservationPrice> prices;
 	private int productId;
 	private String reservationEmail;
 	private String reservationName;

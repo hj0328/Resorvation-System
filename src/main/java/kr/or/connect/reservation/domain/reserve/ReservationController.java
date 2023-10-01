@@ -1,7 +1,7 @@
 package kr.or.connect.reservation.domain.reserve;
 
-import kr.or.connect.reservation.domain.reserve.dto.ReservationRequestDto;
-import kr.or.connect.reservation.domain.reserve.dto.ReservationResponseDto;
+import kr.or.connect.reservation.domain.reserve.dto.ReservationRequest;
+import kr.or.connect.reservation.domain.reserve.dto.ReservationResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -31,12 +31,12 @@ public class ReservationController {
 
 	/**
 	 * 예약하기
-	 * @param reservationRequestDto
+	 * @param reservationRequest
 	 */
 	@PostMapping
-	public ReservationResponseDto setReservation(@RequestBody ReservationRequestDto reservationRequestDto) {
-		log.info("POST /api/reservation, reservationRequestDto={}", reservationRequestDto);
-		return reservationService.createReservations(reservationRequestDto);
+	public ReservationResponse setReservation(
+			@RequestBody ReservationRequest reservationRequest) {
+		return reservationService.createReservations(reservationRequest);
 	}
 
 	/**
@@ -45,7 +45,7 @@ public class ReservationController {
 	 * @param reservationId
 	 */
 	@PutMapping("/{reservationId}")
-	public ReservationResponseDto deleteReservation(@PathVariable int reservationId) {
+	public ReservationResponse deleteReservation(@PathVariable int reservationId) {
 		log.info("PUT /api/reservation, reservationId={}", reservationId);
 		return reservationService.cancelReservation(reservationId);
 	}

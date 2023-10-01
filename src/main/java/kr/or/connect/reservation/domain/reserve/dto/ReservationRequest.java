@@ -9,12 +9,12 @@ import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Getter @Setter @ToString
-public class ReservationRequestDto {
+public class ReservationRequest {
 	@NotBlank
 	private int displayInfoId;
 	@NotBlank
 	private int id;
-	private List<ReservationPriceDto> prices;
+	private List<ReservationPrice> prices;
 
 	@NotBlank
 	private int productId;

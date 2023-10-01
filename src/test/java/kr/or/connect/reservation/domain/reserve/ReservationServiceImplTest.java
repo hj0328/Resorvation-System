@@ -2,10 +2,10 @@ package kr.or.connect.reservation.domain.reserve;
 
 
 import kr.or.connect.reservation.domain.display.DisplayInfo;
-import kr.or.connect.reservation.domain.reserve.dto.ReservationInfoDto;
-import kr.or.connect.reservation.domain.reserve.dto.ReservationPriceDto;
-import kr.or.connect.reservation.domain.reserve.dto.ReservationRequestDto;
-import kr.or.connect.reservation.domain.reserve.dto.ReservationResponseDto;
+import kr.or.connect.reservation.domain.reserve.dto.ReservationInfo;
+import kr.or.connect.reservation.domain.reserve.dto.ReservationPrice;
+import kr.or.connect.reservation.domain.reserve.dto.ReservationRequest;
+import kr.or.connect.reservation.domain.reserve.dto.ReservationResponse;
 import kr.or.connect.reservation.domain.user.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,9 +38,9 @@ class ReservationServiceImplTest {
     @Test
     void getReservationsTest() {
         // given
-        List<ReservationInfoDto> list = new ArrayList<>();
+        List<ReservationInfo> list = new ArrayList<>();
 
-        ReservationInfoDto reservationInfo = new ReservationInfoDto();
+        ReservationInfo reservationInfo = new ReservationInfo();
         reservationInfo.setReservationInfoId(1);
         reservationInfo.setDisplayInfoId(1);
         reservationInfo.setTotalPrice(1000);
@@ -74,18 +74,18 @@ class ReservationServiceImplTest {
     @Test
     void createReservationsTest() {
         // given
-        ReservationResponseDto reservationResponse = new ReservationResponseDto();
+        ReservationResponse reservationResponse = new ReservationResponse();
         reservationResponse.setPrices(getReservationPriceDtoList());
         Mockito.when(myReservationDao.selectReservationInfoPriceDtoList(0))
                 .thenReturn(reservationResponse.getPrices());
 
-        Mockito.when(myReservationDao.selectReservationResponseDto(0))
+        Mockito.when(myReservationDao.selectReservationResponse(0))
                 .thenReturn(Optional.of(reservationResponse));
 
 
         // when
-        ReservationRequestDto newReservationRequest = getNewReservationRequest();
-        ReservationResponseDto response = reservationService.createReservations(newReservationRequest);
+        ReservationRequest newReservationRequest = getNewReservationRequest();
+        ReservationResponse response = reservationService.createReservations(newReservationRequest);
 
         // then
         assertThat(response.getPrices().size()).isEqualTo(3);
@@ -95,49 +95,49 @@ class ReservationServiceImplTest {
     @Test
     void cancelReservationsTest() {
         // given
-        ReservationResponseDto reservationResponse = new ReservationResponseDto();
+        ReservationResponse reservationResponse = new ReservationResponse();
         reservationResponse.setCancelYn(true);
-        Mockito.when(myReservationDao.selectReservationResponseDto(0))
+        Mockito.when(myReservationDao.selectReservationResponse(0))
                 .thenReturn(Optional.of(reservationResponse));
 
         // when
-        ReservationResponseDto response = reservationService.cancelReservation(0);
+        ReservationResponse response = reservationService.cancelReservation(0);
 
         // then
         assertThat(response.isCancelYn()).isEqualTo(true);
     }
 
-    private List<ReservationPriceDto> getReservationPriceDtoList() {
-        List<ReservationPriceDto> prices = new ArrayList<>();
-        ReservationPriceDto priceDto1 = new ReservationPriceDto();
+    private List<ReservationPrice> getReservationPriceDtoList() {
+        List<ReservationPrice> prices = new ArrayList<>();
+        ReservationPrice priceDto1 = new ReservationPrice();
         priceDto1.setCount(1);
         prices.add(priceDto1);
 
-        ReservationPriceDto priceDto2 = new ReservationPriceDto();
+        ReservationPrice priceDto2 = new ReservationPrice();
         priceDto2.setCount(2);
         prices.add(priceDto2);
 
-        ReservationPriceDto priceDto3 = new ReservationPriceDto();
+        ReservationPrice priceDto3 = new ReservationPrice();
         priceDto1.setCount(3);
         prices.add(priceDto3);
         return prices;
     }
 
-    private ReservationRequestDto getNewReservationRequest() {
-        ReservationRequestDto reservationRequest = new ReservationRequestDto();
+    private ReservationRequest getNewReservationRequest() {
+        ReservationRequest reservationRequest = new ReservationRequest();
         reservationRequest.setPrices(new ArrayList<>());
         reservationRequest.setId(0);
 
-        List<ReservationPriceDto> prices = new ArrayList<>();
-        ReservationPriceDto priceDto1 = new ReservationPriceDto();
+        List<ReservationPrice> prices = new ArrayList<>();
+        ReservationPrice priceDto1 = new ReservationPrice();
         priceDto1.setCount(1);
         prices.add(priceDto1);
 
-        ReservationPriceDto priceDto2 = new ReservationPriceDto();
+        ReservationPrice priceDto2 = new ReservationPrice();
         priceDto1.setCount(2);
         prices.add(priceDto2);
 
-        ReservationPriceDto priceDto3 = new ReservationPriceDto();
+        ReservationPrice priceDto3 = new ReservationPrice();
         priceDto3.setCount(3);
         prices.add(priceDto3);
         reservationRequest.setPrices(prices);
