@@ -39,7 +39,6 @@ public class UserController {
         HttpSession session = request.getSession();
         session.setAttribute(USER_EMAIL, user.getEmail());
         session.setAttribute(USER_ID, user.getId());
-        log.info("login userID={}", user.getId());
 
         userResponse.setId(user.getId());
         userResponse.setName(user.getName());

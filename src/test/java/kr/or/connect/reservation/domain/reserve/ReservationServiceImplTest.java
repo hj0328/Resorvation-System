@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static kr.or.connect.reservation.utils.UtilConstant.RESERVATIONS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,35 +39,44 @@ class ReservationServiceImplTest {
     @Test
     void getReservationsTest() {
         // given
-        List<ReservationInfo> list = new ArrayList<>();
+        List<ReservationInfo> infoList = new ArrayList<>();
+        ReservationInfo info = new ReservationInfo();
+        info.setUserId(1);
+        info.setReservationInfoId(1);
+        info.setDisplayInfoId(1);
+        info.setProductId(1);
+        infoList.add(info);
 
-        ReservationInfo reservationInfo = new ReservationInfo();
-        reservationInfo.setReservationInfoId(1);
-        reservationInfo.setDisplayInfoId(1);
-        reservationInfo.setTotalPrice(1000);
+        Mockito.when(myReservationDao.findReservationInfoByUserId(1))
+                .thenReturn(infoList);
 
-        Mockito.when(myReservationDao.selectTotalPriceById(1))
+        List<ReservationResponse> list = new ArrayList<>();
+
+        ReservationResponse response = new ReservationResponse();
+        response.setReservationInfoId(1);
+        response.setDisplayInfoId(1);
+        response.setProductId(1);
+
+        Mockito.when(myReservationDao.findTotalPriceById(1))
                 .thenReturn(Optional.of(Integer.valueOf(1000)));
 
         DisplayInfo displayInfo = new DisplayInfo();
-        displayInfo.setDisplayInfoId(1);
-        displayInfo.setDisplayInfoId(1);
-        Mockito.when(myReservationDao.selectDisplayInfoById(1, 1))
+        Mockito.when(myReservationDao.findDisplayInfoById(1, 1))
                 .thenReturn(Optional.of(displayInfo));
+        response.setDisplayInfo(displayInfo);
 
-        reservationInfo.setDisplayInfo(displayInfo);
-        list.add(reservationInfo);
-        Mockito.when(myReservationDao.selectReservationInfoByEmail("test@gmail.com"))
-                .thenReturn(list);
+        list.add(response);
 
         // when
-        Map<String, Object> reservations = reservationService.getReservations("test@gmail.com");
+        Map<String, Object> reservationMap = reservationService.getReservations(1);
 
         // then
-        Object reservations1 = reservations.get("reservations");
-        assertThat(reservations1).isEqualTo(list);
+        List<ReservationResponse> returnRespList = (List<ReservationResponse>) reservationMap.get(RESERVATIONS);
+        assertThat(returnRespList.size()).isEqualTo(list.size());
+        assertThat(returnRespList.get(0).getDisplayInfo()).isEqualTo(list.get(0).getDisplayInfo());
+        assertThat(returnRespList.get(0).getProductId()).isEqualTo(list.get(0).getProductId());
 
-        Object size = reservations.get("size");
+        Object size = reservationMap.get("size");
         assertThat(size).isEqualTo(1);
     }
 
@@ -76,16 +86,16 @@ class ReservationServiceImplTest {
         // given
         ReservationResponse reservationResponse = new ReservationResponse();
         reservationResponse.setPrices(getReservationPriceDtoList());
-        Mockito.when(myReservationDao.selectReservationInfoPriceDtoList(0))
+        Mockito.when(myReservationDao.findReservationInfoPriceListById(0))
                 .thenReturn(reservationResponse.getPrices());
 
-        Mockito.when(myReservationDao.selectReservationResponse(0))
+        Mockito.when(myReservationDao.findReservationResponseById(0))
                 .thenReturn(Optional.of(reservationResponse));
 
 
         // when
         ReservationRequest newReservationRequest = getNewReservationRequest();
-        ReservationResponse response = reservationService.createReservations(newReservationRequest);
+        ReservationResponse response = reservationService.createReservations(newReservationRequest, 1);
 
         // then
         assertThat(response.getPrices().size()).isEqualTo(3);
@@ -97,14 +107,14 @@ class ReservationServiceImplTest {
         // given
         ReservationResponse reservationResponse = new ReservationResponse();
         reservationResponse.setCancelYn(true);
-        Mockito.when(myReservationDao.selectReservationResponse(0))
+        Mockito.when(myReservationDao.findReservationResponseById(0))
                 .thenReturn(Optional.of(reservationResponse));
 
         // when
-        ReservationResponse response = reservationService.cancelReservation(0);
+        ReservationResponse response = reservationService.setReservationCancel(0);
 
         // then
-        assertThat(response.isCancelYn()).isEqualTo(true);
+        assertThat(response.getCancelYn()).isEqualTo(true);
     }
 
     private List<ReservationPrice> getReservationPriceDtoList() {
@@ -126,7 +136,6 @@ class ReservationServiceImplTest {
     private ReservationRequest getNewReservationRequest() {
         ReservationRequest reservationRequest = new ReservationRequest();
         reservationRequest.setPrices(new ArrayList<>());
-        reservationRequest.setId(0);
 
         List<ReservationPrice> prices = new ArrayList<>();
         ReservationPrice priceDto1 = new ReservationPrice();

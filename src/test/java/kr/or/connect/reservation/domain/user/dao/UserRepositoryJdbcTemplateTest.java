@@ -19,12 +19,13 @@ class UserRepositoryJdbcTemplateTest {
     @Autowired
     private UserDaoJdbcTemplate repository;
     private User user;
+    private final String TEST_EMAIL = "USER_TEST_EMAIL@gmail.com";
 
     @BeforeEach
     void init() {
         user = new User();
         user.setId(1);
-        user.setEmail("test@gmail.com");
+        user.setEmail(TEST_EMAIL);
         user.setPassword("test");
         user.setName("lee");
         user.setGrade(UserGrade.BASIC);
@@ -46,7 +47,7 @@ class UserRepositoryJdbcTemplateTest {
         repository.saveUser(user);
 
         // when
-        User userA = repository.findUserByEmail("test@gmail.com").get();
+        User userA = repository.findUserByEmail(TEST_EMAIL).get();
 
         // then
         assertThat(userA.getEmail()).isEqualTo(user.getEmail());
@@ -55,7 +56,7 @@ class UserRepositoryJdbcTemplateTest {
     @Test
     void findUserByEmailFailTest() {
         // when
-        Optional<User> userA = repository.findUserByEmail("test@gmail.com");
+        Optional<User> userA = repository.findUserByEmail(TEST_EMAIL);
 
         // then
         assertThat(userA).isEqualTo(Optional.empty());

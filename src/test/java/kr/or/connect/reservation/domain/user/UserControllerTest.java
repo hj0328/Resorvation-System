@@ -6,7 +6,6 @@ import kr.or.connect.reservation.domain.user.dto.User;
 import kr.or.connect.reservation.domain.user.dto.UserGrade;
 import kr.or.connect.reservation.domain.user.dto.UserRequest;
 import kr.or.connect.reservation.domain.user.dto.UserResponse;
-import kr.or.connect.reservation.utils.UtilConstant;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,6 +20,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static kr.or.connect.reservation.utils.UtilConstant.USER_EMAIL;
+import static kr.or.connect.reservation.utils.UtilConstant.USER_ID;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
@@ -64,8 +65,10 @@ class UserControllerTest {
         response.setName("lee");
 
         user = new User();
+        user.setName("lee");
         user.setEmail("test@gmail.com");
         user.setPassword("test");
+        user.setId(1);
     }
 
     @Test
@@ -99,7 +102,8 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(request))
                 )
                 .andExpect(status().isOk())
-                .andExpect(request().sessionAttribute(UtilConstant.LOGIN_ID, notNullValue()))
+                .andExpect(request().sessionAttribute(USER_ID, notNullValue()))
+                .andExpect(request().sessionAttribute(USER_EMAIL, notNullValue()))
                 .andExpect(jsonPath("email").exists());
     }
 
@@ -108,7 +112,7 @@ class UserControllerTest {
     void logoutTest() throws Exception {
 
         MockHttpSession session = new MockHttpSession();
-        session.setAttribute(UtilConstant.LOGIN_ID, "session");
+        session.setAttribute(USER_ID, "session");
 
         // 로그아웃 세션없음 확인!
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/users/session")
@@ -119,6 +123,7 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(request))
                 )
                 .andExpect(status().isOk())
-                .andExpect(request().sessionAttribute(UtilConstant.LOGIN_ID, nullValue()));
+                .andExpect(request().sessionAttribute(USER_ID, nullValue()))
+                .andExpect(request().sessionAttribute(USER_EMAIL, nullValue()));
     }
 }
