@@ -41,7 +41,7 @@ public class ReservationController {
 	 * @param reservationId
 	 */
 	@PutMapping("/{reservationId}")
-	public ReservationResponse setReservationCancel(@PathVariable int reservationId) {
+	public ReservationResponse setReservationCancel(@PathVariable Integer reservationId) {
 		return reservationService.setReservationCancel(reservationId);
 	}
 }

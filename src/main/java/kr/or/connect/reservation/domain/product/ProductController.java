@@ -31,7 +31,7 @@ public class ProductController {
 		int totalProductCount = productService.getProductTotalCountById(categoryId);
 
 		Map<String, Object> map = new HashMap<>();
-		map.put(UtilConstant.ITMES, products);
+		map.put(UtilConstant.ITEMS, products);
 		map.put(UtilConstant.TOTAL_COUNT, totalProductCount);
 		return map;
 	}

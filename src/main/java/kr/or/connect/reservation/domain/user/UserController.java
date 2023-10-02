@@ -49,8 +49,6 @@ public class UserController {
 
     @DeleteMapping("/session")
     public Map<String, String> logout(HttpServletRequest request) {
-        log.info("delete session={}", request.getSession().getId());
-
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
@@ -60,4 +58,8 @@ public class UserController {
         map.put(USER_EMAIL, "expired");
         return map;
     }
+
+    /**
+     *  사용자가 작성한 모든 댓글 확인
+     */
 }

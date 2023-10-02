@@ -35,4 +35,6 @@ public class ReservationSql {
 
 	public static final String UPDATE_RESERVATION_CANCEL = "UPDATE reservation_info SET cancel_flag = "
 			+ UtilConstant.CANCEL_FLAG_Y + " WHERE id = :reservationInfoId ";
+
+	public static final String SELECT_PRODUCT_ID_BY_ID = "SELECT product_id FROM reservation_info WHERE id = :reservationInfoId ";
 }

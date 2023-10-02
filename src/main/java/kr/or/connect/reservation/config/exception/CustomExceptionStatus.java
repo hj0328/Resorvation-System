@@ -18,8 +18,16 @@ public enum CustomExceptionStatus {
     PRODUCT_NOT_FOUND(4200, "상품정보를 찾을 수 없습니다."),
     PRODUCT_AVERAGE_SCORE_NOT_FOUND(4201, "상품의 평점정보를 찾을 수 없습니다."),
 
+
     PRODUCT_DISPLAY_NOT_FOUND(4202, "상품의 전시정보를 찾을 수 없습니다."),
-    PRODUCT_DISPLAY_IMAGE_NOT_FOUND(4203, "상품의 전시 이미지 정보를 찾을 수 없습니다.")
+    PRODUCT_DISPLAY_IMAGE_NOT_FOUND(4203, "상품의 전시 이미지 정보를 찾을 수 없습니다."),
+
+    MULTIPLICITY_VIOLATION(4301, "둘 이상의 값을 저장할 수 없습니다."),
+    MULTIPLICITY_COMMENTS_VIOLATION(4302, "둘 이상의 메시지를 등록할 수 없습니다."),
+
+    COMMENT_SAVING_FAIL(4401, "댓글을 저장할 수 없습니다."),
+    COMMENT_NOT_FOUND(4402, "댓글을 찾을 수 없습니다."),
+    COMMENT_IMAGE_NOT_FOUND(4402, "댓글 이미지를 찾을 수 없습니다.")
     ;
 
     private final Integer code;

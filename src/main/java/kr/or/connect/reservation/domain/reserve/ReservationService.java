@@ -9,4 +9,5 @@ public interface ReservationService {
 	Map<String, Object> getReservations(Integer userId);
 	ReservationResponse createReservations(ReservationRequest reservationRequest, Integer userId);
 	ReservationResponse setReservationCancel(int reservationInfoId);
+	Integer getProductIdById(Integer reservationInfoId);
 }

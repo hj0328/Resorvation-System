@@ -118,4 +118,11 @@ public class ReservationServiceImpl implements ReservationService {
 		ReservationResponse response = getReservationResponse(reservationInfoId);
 		return response;
 	}
+
+	@Override
+	public Integer getProductIdById(Integer reservationInfoId) {
+		Integer productId = reservationDao.findProductIdById(reservationInfoId)
+				.orElseThrow(() -> new CustomException(CustomExceptionStatus.PRODUCT_NOT_FOUND));
+		return productId;
+	}
 }

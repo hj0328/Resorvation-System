@@ -100,7 +100,7 @@ public class ReservationDao {
 	}
 
 	public List<ReservationPrice> findReservationInfoPriceListById(Integer reservationInfoId) {
-		Map<String, Integer> params = new HashMap<>();
+		Map<String, Object> params = new HashMap<>();
 		params.put(RESERVATION_INFO_ID, reservationInfoId);
 		return jdbc.query(SELECT_RESERVATION_INFO_PRICE_BY_ID, params, reservationPriceRowMapper);
 	}
@@ -110,5 +110,12 @@ public class ReservationDao {
 				.addValue(RESERVATION_INFO_ID, reservationInfoId);
 
 		jdbc.update(UPDATE_RESERVATION_CANCEL, params);
+	}
+
+	public Optional<Integer> findProductIdById(Integer reservationInfoId) {
+		Map<String, Object> params = new HashMap<>();
+		params.put(RESERVATION_INFO_ID, reservationInfoId);
+		Integer productId = jdbc.queryForObject(SELECT_PRODUCT_ID_BY_ID, params, Integer.class);
+		return Optional.of(productId);
 	}
 }

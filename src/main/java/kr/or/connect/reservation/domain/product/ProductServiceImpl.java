@@ -2,7 +2,7 @@ package kr.or.connect.reservation.domain.product;
 
 import kr.or.connect.reservation.config.exception.CustomException;
 import kr.or.connect.reservation.config.exception.CustomExceptionStatus;
-import kr.or.connect.reservation.domain.comment.dto.CommentDto;
+import kr.or.connect.reservation.domain.comment.dto.CommentResponse;
 import kr.or.connect.reservation.domain.display.DisplayInfo;
 import kr.or.connect.reservation.domain.display.DisplayInfoImageDto;
 import kr.or.connect.reservation.domain.comment.CommentService;
@@ -64,7 +64,7 @@ public class ProductServiceImpl implements ProductService {
 		List<ProductPriceDto> productPriceList = productDao.selectProductPrice(displayInfoId);
 		displayInfoMap.put("productPriceId", productPriceList);
 
-		List<CommentDto> comments = commentService.getComments(displayInfoId);
+		List<CommentResponse> comments = commentService.getComments(displayInfoId);
 		displayInfoMap.put("comments", comments);
 
 		Double averageScore = productDao.selectAverageScore(displayInfoId)
