@@ -34,7 +34,8 @@ public class UserController {
     @PostMapping("/session")
     public UserResponse login(HttpServletRequest request, @Valid @RequestBody UserRequest userRequest) {
         UserResponse userResponse = new UserResponse();
-        User user = userService.login(userRequest.getEmail(), userRequest.getPassword());
+        User user = null;
+        user = userService.login(userRequest.getEmail(), userRequest.getPassword());
 
         HttpSession session = request.getSession();
         session.setAttribute(USER_EMAIL, user.getEmail());
@@ -48,8 +49,7 @@ public class UserController {
     }
 
     @DeleteMapping("/session")
-    public Map<String, String> logout(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
+    public Map<String, String> logout(HttpServletRequest request) {HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
         }

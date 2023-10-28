@@ -1,11 +1,12 @@
 package kr.or.connect.reservation.domain.user;
 
+import kr.or.connect.reservation.config.PasswordEncoder;
 import kr.or.connect.reservation.config.exception.CustomException;
+import kr.or.connect.reservation.domain.user.dao.UserDaoJdbcTemplate;
 import kr.or.connect.reservation.domain.user.dto.User;
 import kr.or.connect.reservation.domain.user.dto.UserGrade;
 import kr.or.connect.reservation.domain.user.dto.UserRequest;
 import kr.or.connect.reservation.domain.user.dto.UserResponse;
-import kr.or.connect.reservation.domain.user.dao.UserDaoJdbcTemplate;
 import kr.or.connect.reservation.utils.UtilConstant;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.Optional;

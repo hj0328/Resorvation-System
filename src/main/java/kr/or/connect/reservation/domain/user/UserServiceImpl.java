@@ -1,5 +1,6 @@
 package kr.or.connect.reservation.domain.user;
 
+import kr.or.connect.reservation.config.PasswordEncoder;
 import kr.or.connect.reservation.config.exception.CustomException;
 import kr.or.connect.reservation.config.exception.CustomExceptionStatus;
 import kr.or.connect.reservation.domain.user.dto.User;
@@ -8,10 +9,10 @@ import kr.or.connect.reservation.domain.user.dto.UserRequest;
 import kr.or.connect.reservation.domain.user.dto.UserResponse;
 import kr.or.connect.reservation.domain.user.dao.UserDao;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -28,8 +29,8 @@ public class UserServiceImpl implements UserService {
     public User login(String email, String password) {
         User user = userDao.findUserByEmail(email)
                 .orElseThrow(() -> new CustomException(CustomExceptionStatus.USER_NOT_FOUND));
-        String encodePwd = user.getPassword();
 
+        String encodePwd = user.getPassword();
         if (!pwEncoder.matches(password, encodePwd)) {
             throw new CustomException(CustomExceptionStatus.USER_LOGIN_FAIL);
         }
@@ -47,7 +48,12 @@ public class UserServiceImpl implements UserService {
             throw new CustomException(CustomExceptionStatus.DUPLICATE_USER_EMAIL);
         }
 
-        String encodePwd = pwEncoder.encode(userRequest.getPassword());
+        String encodePwd = null;
+        try {
+            encodePwd = pwEncoder.encode(userRequest.getPassword());
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("잘못된 암호화 알고리즘 입니다.");
+        }
         User user = convertUser(userRequest, encodePwd);
 
         int id = userDao.saveUser(user);
