@@ -10,12 +10,9 @@
     4. 나의 예매 내역 확인
     5. 한줄평등록
 
-해당 프로젝트는 부스트코스 웹 강의에서 진행한 과제입니다.  
-html, css는 부스트코스에서 제공되었습니다.
-
 ## 기술스택 
-Spring Framework, MySql, Git  
-Spring Boot 전환 
+초기 구현 기술: Spring Framework, MySql, Git  
+추가 구현 시 적용 기술: Spring Boot, JUnit
 
 ## ERD 
 ![connectdb](https://github.com/hj0328/Resorvation-System/assets/24749457/92c88c6a-63ee-4973-abf2-2febedff2480)
@@ -35,9 +32,6 @@ Spring Boot 전환
 1. Spring Boot 적용
 2. Junit5 유닛테스트 추가 (진행중)
 3. api 예외처리 처리 로직 추가하여 500에러 400에러로 변경하여 리턴
-
-유닛 테스트 추가 (진행중)  
-JPA 적용(진행중)
 
  
 
