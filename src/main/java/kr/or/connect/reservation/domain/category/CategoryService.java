@@ -1,7 +1,17 @@
 package kr.or.connect.reservation.domain.category;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 
-public interface CategoryService {
-	List<CategoryItemDto> getCategories();
+@Service
+@RequiredArgsConstructor
+public class CategoryService {
+
+	private final CategoryDao categoryDao;
+	
+	public List<CategoryItemDto> getCategories() {
+		return categoryDao.selectAll();
+	}
 }

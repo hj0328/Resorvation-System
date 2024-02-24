@@ -1,9 +1,5 @@
 package kr.or.connect.reservation.domain.product;
 
-import kr.or.connect.reservation.domain.comment.CommentServiceImpl;
-import kr.or.connect.reservation.domain.display.DisplayInfo;
-import kr.or.connect.reservation.domain.display.DisplayInfoImageDto;
-import kr.or.connect.reservation.domain.product.dto.ProductImageDto;
 import kr.or.connect.reservation.domain.product.dto.ProductItemDto;
 import kr.or.connect.reservation.domain.product.dto.ProductPriceDto;
 import org.junit.jupiter.api.DisplayName;
@@ -26,11 +22,8 @@ class ProductServiceImplTest {
     @Mock
     private ProductDao productDao;
 
-    @Mock
-    private CommentServiceImpl commentService;
-
     @InjectMocks
-    private ProductServiceImpl productService;
+    private ProductService productService;
 
     @DisplayName("모든 카테고리 품목 조회")
     @Test
@@ -67,18 +60,6 @@ class ProductServiceImplTest {
     @Test
     void getProductDetailTest() {
         // given
-        DisplayInfo displayInfo = new DisplayInfo();
-        displayInfo.setDisplayInfoId(1);
-        when(productDao.selectDisplayInfo(1))
-                .thenReturn(Optional.of(displayInfo));
-
-        List<ProductImageDto> productImageList = new ArrayList<>();
-        when(productDao.selectProductImage(1))
-                .thenReturn(productImageList);
-
-        DisplayInfoImageDto displayInfoImage = new DisplayInfoImageDto();
-        when(productDao.selectDisplayInfoImage(1))
-                .thenReturn(Optional.of(displayInfoImage));
 
         List<ProductPriceDto> productPriceList = new ArrayList<>();
         when(productDao.selectProductPrice(1))
@@ -93,7 +74,7 @@ class ProductServiceImplTest {
 
         // then
         assertThat(productDetail.keySet())
-                .contains("productImages", "displayInfoImage", "productPriceId", "comments", "averageScore");
+                .contains("productImages", "productPriceId", "comments", "averageScore");
     }
 
     private List<ProductItemDto> extractTotalProducts() {

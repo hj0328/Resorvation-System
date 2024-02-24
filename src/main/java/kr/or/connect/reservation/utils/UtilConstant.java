@@ -4,9 +4,6 @@ public class UtilConstant {
 
     public static final String USER_ID = "userId";
     public static final String USER_EMAIL = "userEmail";
-    public static final Integer VVIP_RESERVATION_COUNT = 20;
-    public static final Integer VIP_RESERVATION_COUNT = 10;
-
     public static final Integer ALL_PRODUCTS = 0;
     public static final Integer MAX_PRODUCT_SELECT_COUNT = 4;
 
