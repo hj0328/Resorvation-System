@@ -15,11 +15,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CategoryController {
 
-	private final CategoryService categoryService;
+	private final CategoryDao categoryDao;
 
 	@GetMapping(path = "/categories")
 	public Map<String, Object> getCategories() {
-		List<CategoryItemDto> categories = categoryService.getCategories();
+		List<CategoryItemDto> categories = categoryDao.selectAll();
 		Map<String, Object> map = new HashMap<>();
 		map.put("items", categories);
 		return map;

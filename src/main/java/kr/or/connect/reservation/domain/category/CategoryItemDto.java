@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter @Setter
 public class CategoryItemDto {
+	private Long id;
 	private Integer count;
-	private Integer id;
 	private String name;
 }
