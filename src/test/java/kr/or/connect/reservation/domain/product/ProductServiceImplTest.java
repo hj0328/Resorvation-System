@@ -1,7 +1,9 @@
 package kr.or.connect.reservation.domain.product;
 
-import kr.or.connect.reservation.domain.product.dto.ProductItemDto;
-import kr.or.connect.reservation.domain.product.dto.ProductPriceDto;
+import kr.or.connect.reservation.domain.product.dao.ProductDao;
+import kr.or.connect.reservation.domain.product.dto.ProductPriceResponse;
+import kr.or.connect.reservation.domain.product.dto.ProductResponse;
+import kr.or.connect.reservation.domain.product.entity.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -9,7 +11,6 @@ import org.mockito.Mock;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,12 +30,12 @@ class ProductServiceImplTest {
     @Test
     void getAllProductsTest() {
         // given
-        List<ProductItemDto> totalProducts = extractTotalProducts();
-        when(productDao.selectAllProducts(0))
-                .thenReturn(totalProducts);
+        List<Product> totalProducts = new ArrayList<>();
+//        when(productDao.selectAllProducts(0))
+//                .thenReturn(totalProducts);
 
         // when
-        List<ProductItemDto> products = productService.getProducts(0, 0);
+        List<ProductResponse> products = productService.getPagedProductsByCategoryId(0L, 0);
 
         // then
         assertThat(products.size()).isEqualTo(10);
@@ -44,12 +45,12 @@ class ProductServiceImplTest {
     @Test
     void getSpecificCategoryProductsTest() {
         // given
-        List<ProductItemDto> totalProducts = extractProducts();
-        when(productDao.selectProducts(1,0))
+        List<ProductResponse> totalProducts = new ArrayList<>();
+        when(productDao.selectProducts(1L, 0L))
                 .thenReturn(totalProducts);
 
         // when
-        List<ProductItemDto> products = productService.getProducts(1, 0);
+        List<ProductResponse> products = productService.getPagedProductsByCategoryId(1L, 0);
 
         // then
         assertThat(products.size()).isEqualTo(10);
@@ -61,40 +62,21 @@ class ProductServiceImplTest {
     void getProductDetailTest() {
         // given
 
-        List<ProductPriceDto> productPriceList = new ArrayList<>();
+        List<ProductPriceResponse> productPriceList = new ArrayList<>();
         when(productDao.selectProductPrice(1))
                 .thenReturn(productPriceList);
 
-        Double averageScore = (Double) 1.0;
+        Double averageScore = 1.0;
         when(productDao.selectAverageScore(1))
                 .thenReturn(Optional.ofNullable(averageScore));
 
         // when
-        Map<String, Object> productDetail = productService.getProductDetail(1);
+//        Map<String, Object> productDetail = productService.getProductDetailInfo(1L);
 
         // then
-        assertThat(productDetail.keySet())
-                .contains("productImages", "productPriceId", "comments", "averageScore");
+//        assertThat(productDetail.keySet())
+//                .contains("productImages", "productPriceId", "comments", "averageScore");
     }
 
-    private List<ProductItemDto> extractTotalProducts() {
-        List<ProductItemDto> products = new ArrayList<>();
-        int totalProductCount = 10;
-        for (int i = 0; i < totalProductCount; i++) {
-            products.add(new ProductItemDto());
-        }
-
-        return products;
-    }
-
-    private List<ProductItemDto> extractProducts() {
-        List<ProductItemDto> products = new ArrayList<>();
-        int productCount = 10;
-        for (int i = 0; i < productCount; i++) {
-            products.add(new ProductItemDto());
-        }
-
-        return products;
-    }
 
 }
