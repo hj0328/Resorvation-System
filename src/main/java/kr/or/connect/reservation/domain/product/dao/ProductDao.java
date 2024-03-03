@@ -1,7 +1,7 @@
-package kr.or.connect.reservation.domain.product;
+package kr.or.connect.reservation.domain.product.dao;
 
-import kr.or.connect.reservation.domain.product.dto.ProductItemDto;
-import kr.or.connect.reservation.domain.product.dto.ProductPriceDto;
+import kr.or.connect.reservation.domain.product.dto.ProductPriceResponse;
+import kr.or.connect.reservation.domain.product.dto.ProductResponse;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -17,31 +17,31 @@ import static kr.or.connect.reservation.domain.product.ProductDaoSql.*;
 
 @Repository
 public class ProductDao {
-	private NamedParameterJdbcTemplate jdbc;
-	private RowMapper<ProductItemDto> rowMapper = BeanPropertyRowMapper.newInstance(ProductItemDto.class);
-	private RowMapper<ProductPriceDto> proudcPriceRowMapper = BeanPropertyRowMapper.newInstance(ProductPriceDto.class);
+	private final NamedParameterJdbcTemplate jdbc;
+	private final RowMapper<ProductResponse> rowMapper = BeanPropertyRowMapper.newInstance(ProductResponse.class);
+	private final RowMapper<ProductPriceResponse> proudcPriceRowMapper = BeanPropertyRowMapper.newInstance(ProductPriceResponse.class);
 
 	public ProductDao(DataSource dataSource) {
 		jdbc = new NamedParameterJdbcTemplate(dataSource);
 	}
 
-	public List<ProductItemDto> selectProducts(Integer categoryId, Integer start) {
-		Map<String, Integer> params = new HashMap<>();
+	public List<ProductResponse> selectProducts(Long categoryId, Long start) {
+		Map<String, Long> params = new HashMap<>();
 		params.put("categoryId", categoryId);
 		params.put("start", start);
 
 		return jdbc.query(SELECT_PRODUCTS, params, rowMapper);
 	}
 
-	public List<ProductItemDto> selectAllProducts(Integer start) {
+	public List<ProductResponse> selectAllProducts(Integer start) {
 		Map<String, Integer> params = new HashMap<>();
 		params.put("start", start);
 
 		return jdbc.query(SELECT_ALL_PRODUCTS, params, rowMapper);
 	}
 
-	public Optional<Integer> selectProductCountById(int categoryId) {
-		Map<String, Integer> params = new HashMap<>();
+	public Optional<Integer> selectProductCountById(Long categoryId) {
+		Map<String, Long> params = new HashMap<>();
 		String sql = SELECT_PRODUCTS_COUNT_BY_ID;
 
 		if (categoryId == 0) {
@@ -61,7 +61,7 @@ public class ProductDao {
 		return Optional.of(averageScore);
 	}
 
-	public List<ProductPriceDto> selectProductPrice(int displayInfoId) {
+	public List<ProductPriceResponse> selectProductPrice(int displayInfoId) {
 		Map<String, Integer> params = new HashMap<>();
 		params.put("displayInfoId", displayInfoId);
 		return jdbc.query(SELECT_PRODUCT_PRICE_BY_DISPLAY_ID, params, proudcPriceRowMapper);

@@ -2,58 +2,167 @@ package kr.or.connect.reservation.domain.product;
 
 import kr.or.connect.reservation.config.exception.CustomException;
 import kr.or.connect.reservation.config.exception.CustomExceptionStatus;
-import kr.or.connect.reservation.domain.comment.CommentService;
-import kr.or.connect.reservation.domain.comment.dto.CommentResponse;
-import kr.or.connect.reservation.domain.product.dto.ProductItemDto;
-import kr.or.connect.reservation.domain.product.dto.ProductPriceDto;
+import kr.or.connect.reservation.domain.product.dao.CategoryRepository;
+import kr.or.connect.reservation.domain.product.dao.PlaceRepository;
+import kr.or.connect.reservation.domain.product.dao.ProductRepository;
+import kr.or.connect.reservation.domain.product.dao.ProductSeatScheduleRepository;
+import kr.or.connect.reservation.domain.product.dto.*;
+import kr.or.connect.reservation.domain.product.entity.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 import static kr.or.connect.reservation.utils.UtilConstant.ALL_PRODUCTS;
+import static kr.or.connect.reservation.utils.UtilConstant.PRODUCT_PAGE_SIZE;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ProductService {
 
-	private final CommentService commentService;
-	private final ProductDao productDao;
+//	private final CommentService commentService;
+//	private final ProductDao productDao;
+	private final ProductRepository productRepository;
+	private final ProductSeatScheduleRepository productSeatScheduleRepository;
+	private final PlaceRepository placeRepository;
+	private final CategoryRepository categoryRepository;
 
-	public List<ProductItemDto> getProducts(Integer categoryId, Integer start) {
-		List<ProductItemDto> products = Collections.emptyList();
+	public List<ProductResponse> getPagedProductsByCategoryId(Long categoryId, Integer start) {
+		PageRequest pageRequest = PageRequest.of(start, PRODUCT_PAGE_SIZE
+				, Sort.by(Sort.Direction.DESC, "releaseDate"));
+
+		List<Product> products = Collections.emptyList();
 		if (ALL_PRODUCTS.equals(categoryId)) {
-			products = productDao.selectAllProducts(start);
+			products = productRepository.findAll(pageRequest).getContent();
 		} else {
-			products = productDao.selectProducts(categoryId, start);
+			products = productRepository.findAllByCategoryId(categoryId, pageRequest).getContent();
 		}
-
-		return products;
+		return products.stream()
+				.map(ProductResponse::of)
+				.collect(Collectors.toList());
 	}
 
-	public int getProductTotalCountById(int categoryId) {
-		Integer productTotalCount = productDao.selectProductCountById(categoryId)
+	public Long getProductCountByCategoryId(Long categoryId) {
+		if (ALL_PRODUCTS.equals(categoryId)) {
+			return Long.valueOf(productRepository.count());
+		}
+		return productRepository.countByCategoryId(categoryId);
+	}
+
+	public ProductDetailResponse getProductDetailInfo(Long productId) {
+		Product product = productRepository.findById(productId)
 				.orElseThrow(() -> new CustomException(CustomExceptionStatus.PRODUCT_NOT_FOUND));
 
-		return productTotalCount;
+		List<ProductPriceResponse> priceDtoList = product.getProductPriceList().stream()
+				.map(ProductPriceResponse::of)
+				.collect(Collectors.toList());
+
+		String category = product.getCategory().getName().toString();
+		return ProductDetailResponse.of(category, product, priceDtoList);
 	}
 
-	public Map<String, Object> getProductDetail(Integer displayInfoId) {
-		Map<String, Object> displayInfoMap = new HashMap<>();
+	public List<ProductSeatScheduleResponse> getProductSeatScheduleList(Long productId) {
+		List<ProductSeatSchedule> seatScheduleList = productSeatScheduleRepository.findAllByProductId(productId);
 
-		List<ProductPriceDto> productPriceList = productDao.selectProductPrice(displayInfoId);
-		displayInfoMap.put("productPriceId", productPriceList);
+		return seatScheduleList.stream()
+				.map(v -> ProductSeatScheduleResponse.of(v, v.getPlace()))
+				.collect(Collectors.toList());
+	}
 
-		List<CommentResponse> comments = commentService.getComments(displayInfoId);
-		displayInfoMap.put("comments", comments);
+	@Transactional
+	public ProductResponse addNewProduct(ProductRegisterRequest request) {
+		Category category = categoryRepository.getReferenceById(request.getCategoryId());
 
-		Double averageScore = productDao.selectAverageScore(displayInfoId)
-				.orElseThrow(() -> new CustomException(CustomExceptionStatus.PRODUCT_AVERAGE_SCORE_NOT_FOUND));
-		displayInfoMap.put("averageScore", averageScore);
+		Product product = request.toProduct();
+		product.registerCategory(category);
+		Product saveProduct = productRepository.save(product);
 
-		return displayInfoMap;
+		List<ProductPrice> savedPriceList = request.getPriceList().stream()
+				.map(v -> v.toProductPrice(saveProduct))
+				.collect(Collectors.toList());
+
+		return ProductResponse.of(saveProduct);
+	}
+
+	@Transactional
+	public ProductSeatScheduleResponse addProductSeatSchedule(Long productId, ProductSeatScheduleRequest request) {
+		ProductSeatSchedule requestSchedule = request.toProductSeatSchedule();
+
+		registerScheduleToProduct(productId, requestSchedule);
+
+		Place place = placeRepository.findById(request.getPlaceId())
+				.orElseThrow(() -> new CustomException(CustomExceptionStatus.PLACE_NOT_FOUND));
+
+		requestSchedule.updatePlace(place);
+		ProductSeatSchedule saveProductSeatSchedule = productSeatScheduleRepository.save(requestSchedule);
+
+		return ProductSeatScheduleResponse.of(saveProductSeatSchedule, place);
+	}
+
+	private void registerScheduleToProduct(Long productId, ProductSeatSchedule requestSchedule) {
+		Product product = productRepository.findById(productId)
+				.orElseThrow(() -> new CustomException(CustomExceptionStatus.PRODUCT_NOT_FOUND));
+
+		List<ProductSeatSchedule> scheduleList = product.getProductSeatScheduleList();
+		if (scheduleList.stream()
+				.anyMatch(v -> v.equals(requestSchedule))) {
+			throw new CustomException(CustomExceptionStatus.DUPLICATE_PRODUCT_SCHEDULE);
+		}
+		product.addProductSeatSchedule(requestSchedule);
+	}
+
+	public List<ProductResponse> searchProductByTitle(String title) {
+		PageRequest pageRequest = PageRequest.
+				of(0, PRODUCT_PAGE_SIZE, Sort.by(Sort.Direction.DESC, "releaseDate"));
+
+		List<Product> foundProductList = productRepository
+				.findByTitleStartsWith(title, pageRequest);
+
+		return foundProductList.stream()
+				.sorted(Comparator.comparing(Product::getReleaseDate,
+								Comparator.reverseOrder())
+						.thenComparing(Product::getId))
+				.map(ProductResponse::of)
+				.collect(Collectors.toList());
+	}
+
+	@Transactional
+	public ProductResponse updateProduct(Long productId, ProductRequest productRequest) {
+		Product product = productRepository.findById(productId)
+				.orElseThrow(() -> new CustomException(CustomExceptionStatus.PRODUCT_NOT_FOUND));
+		product.updateProduct(productRequest);
+
+		product.getCategory().updateCategory(productRequest.getCategory());
+		return ProductResponse.of(product);
+	}
+
+	@Transactional
+	public ProductSeatScheduleResponse updateProductSeatSchedule(Long productId, Long productSeatScheduleId, ProductSeatScheduleUpdateRequest request) {
+		Product product = productRepository.findById(productId)
+				.orElseThrow(() -> new CustomException(CustomExceptionStatus.PRODUCT_NOT_FOUND));
+
+		ProductSeatSchedule seatSchedule = productSeatScheduleRepository.findById(productSeatScheduleId)
+				.orElseThrow(() -> new CustomException(CustomExceptionStatus.PRODUCT_SCHEDULE_NOT_FOUND));
+
+		Long expectProductId = seatSchedule.getProduct().getId();
+		if (!expectProductId.equals(product.getId())) {
+			throw new CustomException(CustomExceptionStatus.INVALID_REQUEST_ERROR);
+		}
+
+		Place place = placeRepository.findById(request.getPlaceId())
+				.orElseThrow(() -> new CustomException(CustomExceptionStatus.PLACE_NOT_FOUND));
+
+		seatSchedule.update(request.getEventDateTime(), request.getReservedQuantity(), place);
+
+		return ProductSeatScheduleResponse.of(seatSchedule, place);
 	}
 }

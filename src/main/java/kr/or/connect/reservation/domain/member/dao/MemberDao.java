@@ -1,6 +1,7 @@
 package kr.or.connect.reservation.domain.member.dao;
 
-import kr.or.connect.reservation.domain.member.dto.Member;
+import kr.or.connect.reservation.domain.member.dto.MemberDto;
+import kr.or.connect.reservation.domain.member.entity.Member;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
@@ -21,7 +22,7 @@ import static kr.or.connect.reservation.domain.member.MemberSql.SELECT_USER_BY_E
 public class MemberDao {
     private final NamedParameterJdbcTemplate template;
     private final SimpleJdbcInsert jdbcInsert;
-    private RowMapper<Member> MemberDaoRowMapper = BeanPropertyRowMapper.newInstance(Member.class);
+    private final RowMapper<MemberDto> MemberDaoRowMapper = BeanPropertyRowMapper.newInstance(MemberDto.class);
 
     public MemberDao(DataSource dataSource) {
         this.template = new NamedParameterJdbcTemplate(dataSource);
@@ -37,11 +38,11 @@ public class MemberDao {
         return pk.intValue();
     }
 
-    public Optional<Member> findMemberByEmail(String email) {
+    public Optional<MemberDto> findMemberByEmail(String email) {
         Map<String, Object> params = new HashMap<>();
         params.put("email", email);
         try {
-            Member member = template.queryForObject(SELECT_USER_BY_EMAIL, params, MemberDaoRowMapper);
+            MemberDto member = template.queryForObject(SELECT_USER_BY_EMAIL, params, MemberDaoRowMapper);
             return Optional.of(member);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
