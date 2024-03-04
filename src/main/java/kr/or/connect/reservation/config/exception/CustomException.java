@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class CustomException extends RuntimeException {
-    private CustomExceptionStatus customExceptionStatus;
+    private final CustomExceptionStatus customExceptionStatus;
 
     public CustomException(CustomExceptionStatus customExceptionStatus) {
         this.customExceptionStatus = customExceptionStatus;

@@ -6,8 +6,8 @@ import java.util.List;
 
 @Getter
 public class ErrorResponse {
-    private String message;
-    private List<String> reasons;
+    private final String message;
+    private final List<String> reasons;
 
     public ErrorResponse(String message, List<String> reasons) {
         this.message = message;
