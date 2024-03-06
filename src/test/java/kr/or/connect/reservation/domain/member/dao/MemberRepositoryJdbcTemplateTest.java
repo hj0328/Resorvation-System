@@ -1,6 +1,7 @@
 package kr.or.connect.reservation.domain.member.dao;
 
-import kr.or.connect.reservation.domain.member.dto.Member;
+import kr.or.connect.reservation.domain.member.dto.MemberDto;
+import kr.or.connect.reservation.domain.member.entity.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +23,7 @@ class MemberRepositoryJdbcTemplateTest {
 
     @BeforeEach
     void init() {
-        user = new Member();
-        user.setId(1);
-        user.setEmail(TEST_EMAIL);
-        user.setPassword("test");
-        user.setName("lee");
-        user.setTotalReservationCount(1);
+        user = Member.create(TEST_EMAIL, "lee", "test");
     }
 
     @Test
@@ -45,7 +41,7 @@ class MemberRepositoryJdbcTemplateTest {
         repository.saveMember(user);
 
         // when
-        Member userA = repository.findMemberByEmail(TEST_EMAIL).get();
+        MemberDto userA = repository.findMemberByEmail(TEST_EMAIL).get();
 
         // then
         assertThat(userA.getEmail()).isEqualTo(user.getEmail());
@@ -54,7 +50,7 @@ class MemberRepositoryJdbcTemplateTest {
     @Test
     void findUserByEmailFailTest() {
         // when
-        Optional<Member> userA = repository.findMemberByEmail(TEST_EMAIL);
+        Optional<MemberDto> userA = repository.findMemberByEmail(TEST_EMAIL);
 
         // then
         assertThat(userA).isEqualTo(Optional.empty());

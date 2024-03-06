@@ -1,21 +1,30 @@
 package kr.or.connect.reservation.domain.member.dto;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Getter
-@Setter
 public class MemberRequest {
-    @NotBlank
+    @NotBlank(message = "이름을 입력해주시기 바랍니다.")
     private String name;
 
-    // @Email이 null을 허용하기 때문에 @NotBlank
-    @NotBlank @Email
+    @NotBlank(message = "이메일을 입력해주시기 바랍니다.")
+    @Email(message = "이메일 형식을 확인바랍니다.")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "비밀번호를 입력해주시기 바랍니다.")
     private String password;
+
+    private MemberRequest(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
+
+    static public MemberRequest createMemberRequest(String name, String email, String password) {
+        return new MemberRequest(name, email, password);
+    }
+
 }

@@ -2,9 +2,9 @@ package kr.or.connect.reservation.domain.member;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.or.connect.reservation.config.exception.ExceptionAdvice;
-import kr.or.connect.reservation.domain.member.dto.Member;
 import kr.or.connect.reservation.domain.member.dto.MemberRequest;
 import kr.or.connect.reservation.domain.member.dto.MemberResponse;
+import kr.or.connect.reservation.domain.member.entity.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,8 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static kr.or.connect.reservation.utils.UtilConstant.USER_EMAIL;
-import static kr.or.connect.reservation.utils.UtilConstant.USER_ID;
+import static kr.or.connect.reservation.utils.UtilConstant.*;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
@@ -37,10 +36,10 @@ class MemberControllerTest {
 
     private MockMvc mockMvc;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private MemberResponse response;
-    private Member user;
+    private Member member;
     private MemberRequest request;
 
     @BeforeEach
@@ -53,20 +52,9 @@ class MemberControllerTest {
 
     @BeforeEach
     void initDto() {
-        request = new MemberRequest();
-        request.setName("lee");
-        request.setEmail("test@gmail.com");
-        request.setPassword("test");
-
-        response = new MemberResponse();
-        response.setEmail("tset@gmail.com");
-        response.setName("lee");
-
-        user = new Member();
-        user.setName("lee");
-        user.setEmail("test@gmail.com");
-        user.setPassword("test");
-        user.setId(1);
+        request = MemberRequest.createMemberRequest("lee", "test@gmail.com", "test");
+        member = Member.create("test@gmail.com", "lee", "test");
+        response = MemberResponse.of(member);
     }
 
     @Test
@@ -89,8 +77,7 @@ class MemberControllerTest {
     @DisplayName("로그인 컨트롤러")
     void loginTest() throws Exception {
         Mockito.when(userService.login("test@gmail.com", "test"))
-                .thenReturn(user);
-
+                .thenReturn(response);
         // 로그인 세션 확인!
         mockMvc.perform(MockMvcRequestBuilders.post("/api/users/session")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -99,7 +86,7 @@ class MemberControllerTest {
                         .content(objectMapper.writeValueAsString(request))
                 )
                 .andExpect(status().isOk())
-                .andExpect(request().sessionAttribute(USER_ID, notNullValue()))
+                .andExpect(request().sessionAttribute(MEMBER_ID, notNullValue()))
                 .andExpect(request().sessionAttribute(USER_EMAIL, notNullValue()))
                 .andExpect(jsonPath("email").exists());
     }
@@ -109,7 +96,7 @@ class MemberControllerTest {
     void logoutTest() throws Exception {
 
         MockHttpSession session = new MockHttpSession();
-        session.setAttribute(USER_ID, "session");
+        session.setAttribute(MEMBER_ID, "session");
 
         // 로그아웃 세션없음 확인!
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/users/session")
@@ -120,7 +107,7 @@ class MemberControllerTest {
                         .content(objectMapper.writeValueAsString(request))
                 )
                 .andExpect(status().isOk())
-                .andExpect(request().sessionAttribute(USER_ID, nullValue()))
+                .andExpect(request().sessionAttribute(MEMBER_ID, nullValue()))
                 .andExpect(request().sessionAttribute(USER_EMAIL, nullValue()));
     }
 }
