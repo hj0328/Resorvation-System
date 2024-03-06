@@ -43,27 +43,12 @@ public class ProductController {
 	/**
 	 * 실시간 예매 인기 순위
 	 * 현재 가장 많이 예매한 순위 상위 10개 조회
-	 * 1. 관람가능한 product 중 예매 순위 상위 10개 조회
-	 * <p>
-	 * <p>
-	 * 다음 상위 10개를 조회 시 다시 조회
-	 * <p>
-	 * 로컬 캐시 적용
-	 * 로컬 캐시는 dirty checking으로 검사하지 말아야 함
-	 * 처음에는 어쩔 수 없이 소팅된 애를 조회
 	 */
 	@GetMapping("/popular-products")
 	public List<PopularProductResponse> getRealTimePopularProduct(
 			@RequestParam(required = false, defaultValue = "0") Integer start
 	) {
-		/*
-				group by productId
-				seat schedule에서 reservedCount를 모두 합침
-
-				productId를 정렬해서 조회
-		 */
 		return productService.getRealTimePopularProduct(start);
-
 	}
 
 

@@ -2,10 +2,9 @@ package kr.or.connect.reservation.domain.product;
 
 import kr.or.connect.reservation.config.exception.CustomException;
 import kr.or.connect.reservation.config.exception.CustomExceptionStatus;
-import kr.or.connect.reservation.domain.product.dao.CategoryRepository;
-import kr.or.connect.reservation.domain.product.dao.PlaceRepository;
-import kr.or.connect.reservation.domain.product.dao.ProductRepository;
-import kr.or.connect.reservation.domain.product.dao.ProductSeatScheduleRepository;
+
+import kr.or.connect.reservation.domain.product.dao.*;
+import kr.or.connect.reservation.domain.product.dao.dto.PopularProductDto;
 import kr.or.connect.reservation.domain.product.dto.*;
 import kr.or.connect.reservation.domain.product.entity.*;
 import lombok.RequiredArgsConstructor;
@@ -29,12 +28,15 @@ import static kr.or.connect.reservation.utils.UtilConstant.PRODUCT_PAGE_SIZE;
 @Transactional(readOnly = true)
 public class ProductService {
 
-//	private final CommentService commentService;
-//	private final ProductDao productDao;
+	//	private final CommentService commentService;
+	private final ProductDao productDao;
 	private final ProductRepository productRepository;
 	private final ProductSeatScheduleRepository productSeatScheduleRepository;
+	private final ProductPriceRepository productPriceRepository;
 	private final PlaceRepository placeRepository;
 	private final CategoryRepository categoryRepository;
+
+	private final InMemoryPopularProduct inMemoryPopularProduct;
 
 	public List<ProductResponse> getPagedProductsByCategoryId(Long categoryId, Integer start) {
 		PageRequest pageRequest = PageRequest.of(start, PRODUCT_PAGE_SIZE
@@ -89,6 +91,8 @@ public class ProductService {
 		List<ProductPrice> savedPriceList = request.getPriceList().stream()
 				.map(v -> v.toProductPrice(saveProduct))
 				.collect(Collectors.toList());
+
+		List<ProductPrice> productPrices = productPriceRepository.saveAll(savedPriceList);
 
 		return ProductResponse.of(saveProduct);
 	}
@@ -164,5 +168,23 @@ public class ProductService {
 		seatSchedule.update(request.getEventDateTime(), request.getReservedQuantity(), place);
 
 		return ProductSeatScheduleResponse.of(seatSchedule, place);
+	}
+
+	public List<PopularProductResponse> getRealTimePopularProduct(Integer start) {
+		if (inMemoryPopularProduct.isEmpty()) {
+			log.info("get popular product from DB");
+
+			PageRequest pageRequest = PageRequest.of(start, PRODUCT_PAGE_SIZE);
+			List<PopularProductDto> popularProductDtos = productSeatScheduleRepository
+					.findProductByReservation(pageRequest);
+
+			return popularProductDtos.stream()
+					.map(PopularProductResponse::of)
+					.collect(Collectors.toList());
+		}
+
+		int startPage = start * PRODUCT_PAGE_SIZE;
+		return inMemoryPopularProduct.getProducts(startPage, PRODUCT_PAGE_SIZE);
+
 	}
 }
