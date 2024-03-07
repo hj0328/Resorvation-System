@@ -2,105 +2,156 @@ package kr.or.connect.reservation.domain.reservation;
 
 import kr.or.connect.reservation.config.exception.CustomException;
 import kr.or.connect.reservation.config.exception.CustomExceptionStatus;
-import kr.or.connect.reservation.domain.reservation.dto.ReservationInfo;
-import kr.or.connect.reservation.domain.reservation.dto.ReservationPrice;
-import kr.or.connect.reservation.domain.reservation.dto.ReservationRequest;
-import kr.or.connect.reservation.domain.reservation.dto.ReservationResponse;
+import kr.or.connect.reservation.domain.member.dao.MemberRepository;
+import kr.or.connect.reservation.domain.member.entity.Member;
+import kr.or.connect.reservation.domain.product.dao.ProductRepository;
+import kr.or.connect.reservation.domain.product.dao.ProductSeatScheduleRepository;
+import kr.or.connect.reservation.domain.product.entity.Product;
+import kr.or.connect.reservation.domain.product.entity.ProductSeatSchedule;
+import kr.or.connect.reservation.domain.reservation.dao.ReservationPriceRepository;
+import kr.or.connect.reservation.domain.reservation.dao.ReservationRepository;
+import kr.or.connect.reservation.domain.reservation.dto.*;
+import kr.or.connect.reservation.domain.reservation.entity.Reservation;
+import kr.or.connect.reservation.domain.reservation.entity.ReservationPrice;
+import kr.or.connect.reservation.domain.reservation.entity.ReservationStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import static kr.or.connect.reservation.utils.UtilConstant.RESERVATIONS;
-import static kr.or.connect.reservation.utils.UtilConstant.SIZE;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ReservationService {
 
-	private final ReservationDao reservationDao;
+//	private final ReservationDao reservationDao;
+	private final ReservationRepository reservationRepository;
+	private final ReservationPriceRepository reservationPriceRepository;
 
-	public Map<String, Object> getReservations(Integer userId) {
-		List<ReservationInfo> reservationInfoList = reservationDao.findReservationInfoByUserId(userId);
-		List<ReservationResponse> responseList = new ArrayList<>();
+	private final ProductRepository productRepository;
+	private final ProductSeatScheduleRepository productSeatScheduleRepository;
+	private final MemberRepository memberRepository;
 
-		for (ReservationInfo info : reservationInfoList) {
-			ReservationResponse response = convertToResponse(info);
 
-			Integer reservationInfoId = info.getReservationInfoId();
+	@Transactional
+	public NewReservationResponse createReservation(NewReservationRequest request) {
+		Reservation reservation = makeReservation(request);
 
-			response.setTotalPrice(reservationDao.findTotalPriceById(reservationInfoId)
-					.orElseThrow(() -> new CustomException(CustomExceptionStatus.RESERVATION_NOT_FOUND)));
+		List<ReservationPriceDto> reservationPriceDtos = request.getReservationPriceDtos();
+		List<Long> priceIdsResponse = new ArrayList<>();
+		Integer totalReservedQuantity = 0;
+		for (ReservationPriceDto reservationPriceDto : reservationPriceDtos) {
+			ReservationPrice reservationPrice = makeReservationPrice(reservationPriceDto, reservation);
 
-			responseList.add(response);
+			calculateQuantity(reservationPriceDto, reservationPrice);
+
+			priceIdsResponse.add(reservationPrice.getId());
+			totalReservedQuantity += reservationPrice.getReservedQuantity();
 		}
 
-		HashMap<String, Object> reservationMap = new HashMap<>();
-		reservationMap.put(RESERVATIONS, responseList);
-		reservationMap.put(SIZE, responseList.size());
-		return reservationMap;
+
+		return NewReservationResponse.of(reservation.getId(), priceIdsResponse);
+	}
+	private Reservation makeReservation(NewReservationRequest request) {
+		Reservation reservation = Reservation.create(ReservationStatus.RESERVED, request.getReservedDate());
+
+		Member member = memberRepository.findById(request.getMemberId())
+				.orElseThrow(() -> new CustomException(CustomExceptionStatus.MEMBER_NOT_FOUND));
+
+		Product product = productRepository.findById(request.getProductId())
+				.orElseThrow(() -> new CustomException(CustomExceptionStatus.PRODUCT_NOT_FOUND));
+
+		reservation.setReservationInfo(member, product);
+		return reservationRepository.save(reservation);
+	}
+	/*
+		reservation seat 정보
+		producct schedule에 저장
+			저장 가능 유무 확인
+		product schedule를 reservation price에 연관 관계
+		reservation price를 reservation에 연관관계
+	 */
+
+	private ReservationPrice makeReservationPrice(ReservationPriceDto reservationPriceDto,
+												  Reservation reservation) {
+		ReservationPrice reservationPrice = ReservationPrice.create(reservationPriceDto.getQuantity(), reservationPriceDto.getPrice(), reservationPriceDto.getSeatType());
+		reservationPrice.register(reservation);
+		return reservationPriceRepository.save(reservationPrice);
 	}
 
-	private ReservationResponse convertToResponse(ReservationInfo info) {
-		ReservationResponse response = new ReservationResponse();
-		response.setCancelYn(info.getCancelYn());
-		response.setReservationDate(info.getReservationDate());
-		response.setReservationName(info.getReservationName());
-		response.setReservationEmail(info.getReservationEmail());
-		response.setReservationTelephone(info.getReservationTelephone());
-		response.setProductId(info.getProductId());
-		response.setModifyDate(info.getModifyDate());
-		return response;
+	private void calculateQuantity(ReservationPriceDto reservationPriceDto,
+													  ReservationPrice reservationPrice) {
+
+		ProductSeatSchedule productSeatSchedule = productSeatScheduleRepository
+				.findById(reservationPriceDto.getProductSeatScheduleId())
+				.orElseThrow(() -> new CustomException(CustomExceptionStatus.PRODUCT_SCHEDULE_NOT_FOUND));
+
+		reservationPrice.schedule(productSeatSchedule);
+
+		Integer seatQuantity = productSeatSchedule.getPlace().getSeatQuantity();
+		if (seatQuantity < reservationPriceDto.getQuantity() + productSeatSchedule.getReservedQuantity()) {
+			throw new CustomException(CustomExceptionStatus.NO_SEAT_AVAILABLE);
+		}
+
+		productSeatSchedule.addQuantity(reservationPriceDto.getQuantity());
 	}
 
 	@Transactional
-	public ReservationResponse createReservations(ReservationRequest request, Integer userId) {
-		ReservationInfo reservationInfo = convertToReservationInfo(request, userId);
-
-		Integer reservationInfoId = reservationDao.saveReservationInfo(reservationInfo);
-		List<ReservationPrice> prices = request.getPrices();
-		reservationDao.saveReservationInfoPrice(prices, reservationInfoId);
-
-		// 응답 데이터 생성 후 리턴
-		return getReservationResponse(reservationInfoId);
-	}
-
-	private ReservationInfo convertToReservationInfo(ReservationRequest request, Integer userId) {
-		ReservationInfo reservationInfo = new ReservationInfo();
-		reservationInfo.setDisplayInfoId(request.getDisplayInfoId());
-		reservationInfo.setProductId(request.getProductId());
-		reservationInfo.setReservationEmail(request.getReservationEmail());
-		reservationInfo.setReservationName(request.getReservationName());
-		reservationInfo.setReservationTelephone(request.getReservationTelephone());
-		reservationInfo.setReservationDate(request.getReservationYearMonthDay());
-		reservationInfo.setUserId(userId);
-		return reservationInfo;
-	}
-
-	private ReservationResponse getReservationResponse(Integer reservationInfoId) {
-		ReservationResponse reservationResponse = reservationDao.findReservationResponseById(reservationInfoId)
+	public ReservationCancelResponse cancelReservation(ReservationCancelRequest request) {
+		Reservation reservation = reservationRepository.findById(request.getReservationId())
 				.orElseThrow(() -> new CustomException(CustomExceptionStatus.RESERVATION_NOT_FOUND));
 
-		List<ReservationPrice> prices = reservationDao
-				.findReservationInfoPriceListById(reservationInfoId);
-		reservationResponse.setPrices(prices);
-		return reservationResponse;
+		Long memberId = reservation.getMember().getId();
+		if (!memberId.equals(request.getMemberId())) {
+			throw new CustomException(CustomExceptionStatus.INVALID_REQUEST_ERROR);
+		}
+
+		reservation.cancel();
+
+		List<ReservationPrice> reservationPrices = reservationPriceRepository.findAllByReservationId(reservation.getId());
+		Integer totalReservedQuantity = 0;
+		for (ReservationPrice reservationPrice : reservationPrices) {
+			Integer reservedQuantity = reservationPrice.getReservedQuantity();
+
+			totalReservedQuantity += reservedQuantity;
+			ProductSeatSchedule productSeatSchedule = reservationPrice.getProductSeatSchedule();
+			productSeatSchedule.minusQuantity(reservedQuantity);
+		}
+
+
+
+		return ReservationCancelResponse
+				.of(memberId, reservation.getId(), reservation.getReservationStatus());
 	}
 
-	@Transactional
-	public ReservationResponse setReservationCancel(int reservationInfoId) {
-		reservationDao.updateReservationCancel(reservationInfoId);
-		ReservationResponse response = getReservationResponse(reservationInfoId);
+    public List<MyReservationResponse> getReservation(Long memberId) {
+		List<Reservation> reservations = reservationRepository.findAllByMemberId(memberId);
+
+		List<MyReservationResponse> response = new ArrayList<>();
+		for (Reservation reservation : reservations) {
+			Product product = reservation.getProduct();
+			List<ReservationPrice> reservationPriceList = reservation.getReservationPrice();
+
+			response.add(MyReservationResponse.of(product, reservation, reservationPriceList));
+		}
+
 		return response;
 	}
 
-	public Integer getProductIdById(Integer reservationInfoId) {
-		Integer productId = reservationDao.findProductIdById(reservationInfoId)
-				.orElseThrow(() -> new CustomException(CustomExceptionStatus.PRODUCT_NOT_FOUND));
-		return productId;
+	public ReservationWatchedResponse setReservationWatched(ReservationWatchedRequest request) {
+		Reservation reservation = reservationRepository.findById(request.getReservationId())
+				.orElseThrow(() -> new CustomException(CustomExceptionStatus.RESERVATION_NOT_FOUND));
+
+		Long memberId = reservation.getMember().getId();
+		if (!memberId.equals(request.getMemberId())) {
+			throw new CustomException(CustomExceptionStatus.INVALID_REQUEST_ERROR);
+		}
+
+		reservation.watch();
+		return ReservationWatchedResponse
+				.of(memberId, reservation.getId(), reservation.getReservationStatus());
 	}
+
 }

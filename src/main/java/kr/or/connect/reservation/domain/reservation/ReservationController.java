@@ -1,14 +1,20 @@
 package kr.or.connect.reservation.domain.reservation;
 
-import kr.or.connect.reservation.domain.reservation.dto.ReservationRequest;
-import kr.or.connect.reservation.domain.reservation.dto.ReservationResponse;
+import kr.or.connect.reservation.config.exception.CustomException;
+import kr.or.connect.reservation.config.exception.CustomExceptionStatus;
+import kr.or.connect.reservation.domain.reservation.dto.*;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.List;
+import java.util.Objects;
 
-@Slf4j
+import static kr.or.connect.reservation.utils.UtilConstant.MEMBER_ID;
+
 @RestController
 @RequestMapping(path = "/api/reservations")
 @RequiredArgsConstructor
@@ -18,30 +24,49 @@ public class ReservationController {
 
 	/**
 	 * 예약정보조회
-	 * @param memberId
 	 */
-	@GetMapping("/{memberId}")
-	public Map<String, Object> getReservations(@PathVariable Integer memberId) {
-		return reservationService.getReservations(memberId);
+	@GetMapping("/my-reservations")
+	public ResponseEntity<List<MyReservationResponse>> getReservations(
+			HttpServletRequest request) {
+		HttpSession session = request.getSession(false);
+		if (Objects.isNull(session)) {
+			throw new CustomException(CustomExceptionStatus.NO_SESSION_EXIST);
+		}
+
+		Long memberId = (Long) session.getAttribute(MEMBER_ID);
+		return ResponseEntity.ok(reservationService.getReservation(memberId));
 	}
 
 	/**
-	 * {memberId} 예약하기
+	 * 예약하기
 	 */
-	@PostMapping("/{memberId}")
-	public ReservationResponse createReservation(
-			@RequestBody ReservationRequest reservationRequest,
-			@PathVariable Integer memberId) {
-		return reservationService.createReservations(reservationRequest, memberId);
+	@PostMapping
+	public ResponseEntity<NewReservationResponse> createReservation (
+			@RequestBody NewReservationRequest request) {
+		NewReservationResponse reservation = reservationService.createReservation(request);
+		return ResponseEntity
+				.status(HttpStatus.CREATED)
+				.body(reservation);
 	}
 
 	/**
 	 * 예약취소
-	 * 예약취소 시, 예약 리소스는 바로 삭제되지 취소 표시만 남긴 후 향후 삭제한다.
-	 * @param reservationId
+	 * 예약 리소스는 바로 삭제되지 취소 표시만 남긴 후 향후 삭제
 	 */
-	@PutMapping("/{reservationId}")
-	public ReservationResponse setReservationCancel(@PathVariable Integer reservationId) {
-		return reservationService.setReservationCancel(reservationId);
+	@PutMapping("/cancellation")
+	public ResponseEntity<ReservationCancelResponse> setReservationCancel(
+			@RequestBody ReservationCancelRequest request) {
+
+		return ResponseEntity.ok(reservationService.cancelReservation(request));
+	}
+
+	/**
+	 * 제품 시청 완료
+	 */
+	@PutMapping("/complete")
+	public ResponseEntity<ReservationWatchedResponse> setReservationWatched(
+			@RequestBody ReservationWatchedRequest request) {
+
+		return ResponseEntity.ok(reservationService.setReservationWatched(request));
 	}
 }

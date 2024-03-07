@@ -1,7 +1,7 @@
-package kr.or.connect.reservation.domain.reservation;
+package kr.or.connect.reservation.domain.reservation.dao;
 
 import kr.or.connect.reservation.domain.reservation.dto.ReservationInfo;
-import kr.or.connect.reservation.domain.reservation.dto.ReservationPrice;
+import kr.or.connect.reservation.domain.reservation.dto.ReservationPriceDto;
 import kr.or.connect.reservation.domain.reservation.dto.ReservationResponse;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
@@ -19,8 +19,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import static kr.or.connect.reservation.domain.reservation.ReservationSql.*;
+import static kr.or.connect.reservation.utils.UtilConstant.MEMBER_ID;
 import static kr.or.connect.reservation.utils.UtilConstant.RESERVATION_INFO_ID;
-import static kr.or.connect.reservation.utils.UtilConstant.USER_ID;
 
 @Repository
 public class ReservationDao {
@@ -28,12 +28,12 @@ public class ReservationDao {
 	private final SimpleJdbcInsert jdbcInsertInfo;
 	private final SimpleJdbcInsert jdbcInsertInfoPrice;
 
-	private RowMapper<ReservationInfo> reservationInfoRowMapper = BeanPropertyRowMapper
+	private final RowMapper<ReservationInfo> reservationInfoRowMapper = BeanPropertyRowMapper
 			.newInstance(ReservationInfo.class);
-	private RowMapper<ReservationResponse> reservationResponseRowMapper = BeanPropertyRowMapper
+	private final RowMapper<ReservationResponse> reservationResponseRowMapper = BeanPropertyRowMapper
 			.newInstance(ReservationResponse.class);
-	private RowMapper<ReservationPrice> reservationPriceRowMapper = BeanPropertyRowMapper
-			.newInstance(ReservationPrice.class);
+	private final RowMapper<ReservationPriceDto> reservationPriceRowMapper = BeanPropertyRowMapper
+			.newInstance(ReservationPriceDto.class);
 
 	public ReservationDao(DataSource dataSource) {
 		this.jdbc = new NamedParameterJdbcTemplate(dataSource);
@@ -47,7 +47,7 @@ public class ReservationDao {
 
 	public List<ReservationInfo> findReservationInfoByUserId(Integer userId) {
 		Map<String, Object> params = new HashMap<>();
-		params.put(USER_ID, userId);
+		params.put(MEMBER_ID, userId);
 		List<ReservationInfo> reservationInfo = jdbc.query(SELECT_RESERVATION_INFO_BY_EMAIL,
 				params, reservationInfoRowMapper);
 
@@ -69,11 +69,11 @@ public class ReservationDao {
 		return key.intValue();
 	}
 
-	public void saveReservationInfoPrice(List<ReservationPrice> prices, long reservationInfoId) {
-		for (ReservationPrice price : prices) {
+	public void saveReservationInfoPrice(List<ReservationPriceDto> prices, long reservationInfoId) {
+		for (ReservationPriceDto price : prices) {
 			Map<String, Object> params = new HashMap<>();
-			params.put("count", price.getCount());
-			params.put("productPriceId", price.getProductPriceId());
+//			params.put("count", price.getCount());
+//			params.put("productPriceId", price.getProductPriceId());
 			params.put("reservationInfoId", reservationInfoId);
 
 			BeanPropertySqlParameterSource param = new BeanPropertySqlParameterSource(price);
@@ -90,7 +90,7 @@ public class ReservationDao {
 		return Optional.of(reservationResponse);
 	}
 
-	public List<ReservationPrice> findReservationInfoPriceListById(Integer reservationInfoId) {
+	public List<ReservationPriceDto> findReservationInfoPriceListById(Integer reservationInfoId) {
 		Map<String, Object> params = new HashMap<>();
 		params.put(RESERVATION_INFO_ID, reservationInfoId);
 		return jdbc.query(SELECT_RESERVATION_INFO_PRICE_BY_ID, params, reservationPriceRowMapper);
