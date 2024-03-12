@@ -185,6 +185,5 @@ public class ProductService {
 
 		int startPage = start * PRODUCT_PAGE_SIZE;
 		return inMemoryPopularProduct.getProducts(startPage, PRODUCT_PAGE_SIZE);
-
 	}
 }
