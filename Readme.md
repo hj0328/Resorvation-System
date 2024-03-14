@@ -34,6 +34,12 @@
 
 ## 주요기능 
 
+## Postman API Docs
+
+<img width="100%" alt="image" src="https://github.com/hj0328/Reservation-System/assets/24749457/a61f231c-c9ac-4c3d-b282-2dfb7ef329bf">
+
+- https://documenter.getpostman.com/view/15521816/2sA35A6QEr
+
 ## ERD 
 <img width="100%" alt="image" src="https://github.com/hj0328/Reservation-System/assets/24749457/9786e870-79dc-4f4a-b0c0-540bce13f24e">
 
@@ -45,7 +51,7 @@
 3. product_price
     - 제품의 좌석별 가격
 4. product_seat_schedule
-    - 제품 좌석별 예약 시간과 예약 수량
+    - 제품 좌석별 예약 시간과 총 예약 수량
     - (Ex. 뮤지컬 P1 A좌석의 관람 시간, 예약 수량  
     - 뮤지컬 P1 VIP좌석의 관람시간, 예약 수량 등등)
 5. place
@@ -75,8 +81,6 @@
 
 - 캐시는 정렬된 상태를 유지하고 있기 때문에 product의 예약/예약 취소 시 insertion sort로 재정렬하여 디비 조회 요청을 줄일 수 있다.
 
-
-
 ### 1-3. 응답 속도 비교
 
 - 환경
@@ -86,6 +90,7 @@
 <img width="100%" alt="image" src="https://github.com/hj0328/Reservation-System/assets/24749457/560f0e81-2795-4c0f-872b-934bbb324774">
 
 - 캐싱 적용 전 응답 속도: 약 90ms
+---  
 
 <img width="100%" alt="로컬 캐싱 적용 후" src="https://github.com/hj0328/Reservation-System/assets/24749457/bfb3275a-210f-494a-90da-2e077510a21b">
 
@@ -103,8 +108,23 @@
 
 코드: https://github.com/hj0328/Reservation-System/commit/68cedcee0a95852618e0ad7fd01aeac8761de356
 
-<!-- 
-### 2. 동시성 문제 해결 - Pessimisitc Lock
-- 다수의 사용자가 동시에 상품 예약 시 좌석 수가 제대로 계산되지 않는 현상 해결 -->
 
-                                  
+### 2. 동시성 문제 해결 - Pessimisitc Lock
+- 예약 시스템 특성상 다수의 고객이 동시에 예약 요청을 할 수 있기 때문에 동시에 예약 요청이 들어와도 안전한 처리가 필요
+
+- 테스트 결과 다수의 사용자가 동시에 상품 예약 시 총 예약 좌석 수가 제대로 계산되지 않는 현상 
+ 
+<img width="100%" alt="스크린샷 2024-03-23 오후 7 46 51" src="https://github.com/hj0328/Reservation-System/assets/24749457/17332cd1-e2f1-4c05-9afc-43b9da68ee05">
+
+- 예약 요청 로직은 위와 같다. 
+
+<img width="100%" src="https://github.com/hj0328/Reservation-System/assets/24749457/ef0726fb-d5e7-446f-8a9d-13a0f084906e">
+
+- 동시 요청이 들어왔을 때 4, 5번째 로직에서 동시성 문제 발생 
+- 따라서 4번 조회 로직은 먼저 실행된 트랜잭션의 update 요청 이후에 수행되어야 한다. 
+
+<img width="819" alt="스크린샷 2024-03-23 오후 7 35 56" src="https://github.com/hj0328/Reservation-System/assets/24749457/8edc1e61-e593-4134-9a2d-e3faaca7022a">
+
+- 비관적 락(pessimistic lock)을 이용하여 DB 테이블에 락 거는 방법을 변경한다.
+- 4번 로직에서 테이블 row를 조회할 때 쓰기와 같은 수준의 Exclusive Lock을 건다.
+- 그러면 이전 트랜잭션의 update 요청이 끝나야 4번 로직에서 lock 을 얻어 작업을 수행할 수 있다.
