@@ -176,7 +176,7 @@ public class ProductService {
 
 			PageRequest pageRequest = PageRequest.of(start, PRODUCT_PAGE_SIZE);
 			List<PopularProductDto> popularProductDtos = productSeatScheduleRepository
-					.findProductByReservation(pageRequest);
+					.findPopularProductByReservation(pageRequest);
 
 			return popularProductDtos.stream()
 					.map(PopularProductResponse::of)

@@ -4,10 +4,11 @@ import kr.or.connect.reservation.domain.product.dao.dto.PopularProductDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 
-@Getter @Setter
+@Getter @Setter @ToString
 public class InMemoryProductDto {
     private Long productId;
     private String title;

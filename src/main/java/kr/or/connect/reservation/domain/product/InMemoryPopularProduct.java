@@ -118,7 +118,7 @@ public class InMemoryPopularProduct {
             return false;
         }
 
-        InMemoryProductDto preInMemoryProductDto = this.popularProductMap.get(previousIdx);
+        InMemoryProductDto preInMemoryProductDto = this.popularProductMap.get(Long.valueOf(previousIdx));
         if (updateInMemoryProduct.getTotalReservedCount() > preInMemoryProductDto.getTotalReservedCount()) {
             return true;
         }

@@ -25,7 +25,7 @@ public class InMemoryProductScheduler {
     @Scheduled(fixedDelay = 60000)
     public void refreshPopularProduct() {
         List<PopularProductDto> popularProductDtos = productSeatScheduleRepository
-                .findAllProductByReservation();
+                .findAllPopularProductByReservation();
 
         List<InMemoryProductDto> inMemoryProductDtos = popularProductDtos.stream()
                 .map(InMemoryProductDto::of)

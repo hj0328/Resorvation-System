@@ -21,7 +21,6 @@ public interface ProductSeatScheduleRepository extends JpaRepository<ProductSeat
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<ProductSeatSchedule> findById(Long id);
 
-
     @Query("select p.id as productId, p.title as title, p.description as description, " +
                 "p.runningTime as runningTime, p.releaseDate as releaseDate," +
                 " sum(pss.reservedQuantity) as totalReservedCount " +
@@ -29,7 +28,7 @@ public interface ProductSeatScheduleRepository extends JpaRepository<ProductSeat
             "where pss.reservedQuantity is not null " +
             "group by p.id " +
             "order by totalReservedCount desc")
-    List<PopularProductDto> findProductByReservation(PageRequest pageRequest);
+    List<PopularProductDto> findPopularProductByReservation(PageRequest pageRequest);
 
     @Query("select p.id as productId, p.title as title, p.description as description, " +
                 "p.runningTime as runningTime, p.releaseDate as releaseDate," +
@@ -38,6 +37,6 @@ public interface ProductSeatScheduleRepository extends JpaRepository<ProductSeat
             "where pss.reservedQuantity is not null " +
             "group by p.id  " +
             "order by totalReservedCount desc")
-    List<PopularProductDto> findAllProductByReservation();
+    List<PopularProductDto> findAllPopularProductByReservation();
 
 }
