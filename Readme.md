@@ -54,8 +54,12 @@
 
 ## 최적화 
 
-### 1-1. 로컬 캐싱
+### 1-1. 인메모리 캐싱 속도 개선
+#### 구조
+<img width="100%" alt="image" src="https://github.com/hj0328/Reservation-System/assets/24749457/34897c09-c5f6-4fb6-ae37-3b937de2da4d">
 
+
+#### 다이어그램
 <img width="100%" alt="image" src="https://github.com/hj0328/Reservation-System/assets/24749457/aec7c472-522d-4b2e-9a3d-c223e94f1f2c">
 
 - Product을 Group by를 통해 매번 예매 순서에 따라 정렬된 상태로 조회하는 것은 DB에 부담을 주게 된다. 
@@ -98,9 +102,12 @@
 
 
 ### 2. 동시성 문제 해결 - Pessimisitc Lock
+<img width="100%" alt="스크린샷 2024-03-23 오후 7 46 51" src="https://github.com/hj0328/Reservation-System/assets/24749457/23f6c5c7-5f2d-4e2b-b49b-16d24cfe9df5">
 - 예약 시스템 특성상 다수의 고객이 동시에 예약 요청을 할 수 있기 때문에 동시에 예약 요청이 들어와도 안전한 처리가 필요
 
 - 테스트 결과 다수의 사용자가 동시에 상품 예약 시 총 예약 좌석 수가 제대로 계산되지 않는 현상 
+
+
  
 <img width="100%" alt="스크린샷 2024-03-23 오후 7 46 51" src="https://github.com/hj0328/Reservation-System/assets/24749457/17332cd1-e2f1-4c05-9afc-43b9da68ee05">
 
