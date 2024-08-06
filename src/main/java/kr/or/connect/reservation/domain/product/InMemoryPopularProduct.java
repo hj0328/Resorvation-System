@@ -104,7 +104,7 @@ public class InMemoryPopularProduct {
             return false;
         }
 
-        InMemoryProductDto nextInMemoryProductDto = this.popularProductMap.get(nextIds);
+        InMemoryProductDto nextInMemoryProductDto = this.popularProductMap.get((long) nextIds);
         if (updateInMemoryProduct.getTotalReservedCount() < nextInMemoryProductDto.getTotalReservedCount()) {
             return true;
         }
@@ -118,7 +118,7 @@ public class InMemoryPopularProduct {
             return false;
         }
 
-        InMemoryProductDto preInMemoryProductDto = this.popularProductMap.get(Long.valueOf(previousIdx));
+        InMemoryProductDto preInMemoryProductDto = this.popularProductMap.get((long) previousIdx);
         if (updateInMemoryProduct.getTotalReservedCount() > preInMemoryProductDto.getTotalReservedCount()) {
             return true;
         }
