@@ -6,6 +6,7 @@ public class UtilConstant {
     public static final String USER_EMAIL = "userEmail";
     public static final Long ALL_PRODUCTS = 0L;
     public static final Integer PRODUCT_PAGE_SIZE = 100;
+    public static final Integer RESERVATION_PAGE_SIZE = 10;
 
     public static final String RESERVATION_INFO_ID = "reservationInfoId";
 
