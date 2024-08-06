@@ -22,7 +22,7 @@ public class InMemoryProductScheduler {
         refreshPopularProduct();
     }
 
-    @Scheduled(fixedDelay = 60000)
+    @Scheduled(fixedDelay = 600000)
     public void refreshPopularProduct() {
         List<PopularProductDto> popularProductDtos = productSeatScheduleRepository
                 .findAllPopularProductByReservation();
