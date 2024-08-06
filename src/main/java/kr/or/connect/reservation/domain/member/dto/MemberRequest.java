@@ -7,7 +7,6 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 public class MemberRequest {
-    @NotBlank(message = "이름을 입력해주시기 바랍니다.")
     private String name;
 
     @NotBlank(message = "이메일을 입력해주시기 바랍니다.")

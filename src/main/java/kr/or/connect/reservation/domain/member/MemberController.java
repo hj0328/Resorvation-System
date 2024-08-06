@@ -37,7 +37,7 @@ public class MemberController {
 
     /**
      * 로그인
-     * 이름, 이메일, 비밀번호 모두 필수
+     * 이메일, 비밀번호 모두 필수
      * 로그인 성공 시 세션 유지
      */
     @PostMapping("/session")
