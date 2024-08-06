@@ -27,14 +27,15 @@ public class ReservationController {
 	 */
 	@GetMapping("/my-reservations")
 	public ResponseEntity<List<MyReservationResponse>> getReservations(
-			HttpServletRequest request) {
+			HttpServletRequest request,
+			@RequestParam(required = false, defaultValue = "0") Integer start) {
 		HttpSession session = request.getSession(false);
 		if (Objects.isNull(session)) {
 			throw new CustomException(CustomExceptionStatus.NO_SESSION_EXIST);
 		}
 
 		Long memberId = (Long) session.getAttribute(MEMBER_ID);
-		return ResponseEntity.ok(reservationService.getReservation(memberId));
+		return ResponseEntity.ok(reservationService.getReservation(memberId, start));
 	}
 
 	/**

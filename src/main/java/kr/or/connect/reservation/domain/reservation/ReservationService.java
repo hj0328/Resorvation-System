@@ -17,11 +17,15 @@ import kr.or.connect.reservation.domain.reservation.entity.Reservation;
 import kr.or.connect.reservation.domain.reservation.entity.ReservationPrice;
 import kr.or.connect.reservation.domain.reservation.entity.ReservationStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static kr.or.connect.reservation.utils.UtilConstant.RESERVATION_PAGE_SIZE;
 
 @Service
 @RequiredArgsConstructor
@@ -130,8 +134,10 @@ public class ReservationService {
 				.of(memberId, reservation.getId(), reservation.getReservationStatus());
 	}
 
-    public List<MyReservationResponse> getReservation(Long memberId) {
-		List<Reservation> reservations = reservationRepository.findAllByMemberId(memberId);
+	public List<MyReservationResponse> getReservation(Long memberId, Integer start) {
+		PageRequest pageRequest = PageRequest.of(start, RESERVATION_PAGE_SIZE
+				, Sort.by(Sort.Direction.DESC, "reservedDate"));
+		List<Reservation> reservations = reservationRepository.findAllByMemberId(memberId, pageRequest);
 
 		List<MyReservationResponse> response = new ArrayList<>();
 		for (Reservation reservation : reservations) {
