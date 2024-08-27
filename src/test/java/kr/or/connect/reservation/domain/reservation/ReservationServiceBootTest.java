@@ -40,6 +40,7 @@ class ReservationServiceBootTest {
                     .price(10)
                     .quantity(1)
                     .seatType(SeatType.S.name())
+                    .placeId(31)
                     .build();
             List<ReservationPriceDto> list1 = new ArrayList<>();
             list1.add(price);
