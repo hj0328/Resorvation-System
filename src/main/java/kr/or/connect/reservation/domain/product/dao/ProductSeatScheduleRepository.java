@@ -30,13 +30,13 @@ public interface ProductSeatScheduleRepository extends JpaRepository<ProductSeat
             "order by totalReservedCount desc")
     List<PopularProductDto> findPopularProductByReservation(PageRequest pageRequest);
 
-    @Query("select p.id as productId, p.title as title, p.description as description, " +
-                "p.runningTime as runningTime, p.releaseDate as releaseDate," +
-                " sum(pss.reservedQuantity) as totalReservedCount " +
-            "from ProductSeatSchedule pss left join pss.product p " +
-            "where pss.reservedQuantity is not null " +
-            "group by p.id  " +
-            "order by totalReservedCount desc")
+    @Query(value = "select p.product_id as productId, p.title as title, p.description as description, p.running_Time as runningTime, p.release_date as releaseDate, sub.totalReservedCount " +
+            "from product p, " +
+            " (select pss.product_id, sum(pss.reserved_quantity) as totalReservedCount  " +
+            " from product_seat_schedule pss " +
+            " group by pss.product_id) as sub " +
+            "where p.product_id = sub.product_id " +
+            "order by totalReservedCount desc ", nativeQuery = true)
     List<PopularProductDto> findAllPopularProductByReservation();
 
 }

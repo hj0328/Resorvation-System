@@ -25,7 +25,7 @@ public class InMemoryPopularProduct {
     }
 
     public List<PopularProductResponse> getProducts(int offset, int limit) {
-        log.info("get popular product from cache. offset={}, limit={}", offset, limit);
+        log.debug("get popular product from cache. offset={}, limit={}", offset, limit);
         int fromIndex = offset;
         int toIndex = offset + limit;
         int idsSize = sortedProductIds.size();
@@ -105,7 +105,10 @@ public class InMemoryPopularProduct {
         }
 
         InMemoryProductDto nextInMemoryProductDto = this.popularProductMap.get((long) nextIds);
-        if (updateInMemoryProduct.getTotalReservedCount() < nextInMemoryProductDto.getTotalReservedCount()) {
+        if (nextInMemoryProductDto == null || nextInMemoryProductDto.getTotalReservedCount() == null) {
+            return true;
+        }
+        if (nextInMemoryProductDto != null || updateInMemoryProduct.getTotalReservedCount() < nextInMemoryProductDto.getTotalReservedCount()) {
             return true;
         }
 
@@ -119,6 +122,9 @@ public class InMemoryPopularProduct {
         }
 
         InMemoryProductDto preInMemoryProductDto = this.popularProductMap.get((long) previousIdx);
+        if (preInMemoryProductDto == null || preInMemoryProductDto.getTotalReservedCount() == null) {
+            return true;
+        }
         if (updateInMemoryProduct.getTotalReservedCount() > preInMemoryProductDto.getTotalReservedCount()) {
             return true;
         }
