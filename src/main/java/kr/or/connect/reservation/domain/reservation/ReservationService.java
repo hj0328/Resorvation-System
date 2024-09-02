@@ -4,8 +4,8 @@ import kr.or.connect.reservation.config.exception.CustomException;
 import kr.or.connect.reservation.config.exception.CustomExceptionStatus;
 import kr.or.connect.reservation.domain.member.dao.MemberRepository;
 import kr.or.connect.reservation.domain.member.entity.Member;
-import kr.or.connect.reservation.domain.product.InMemoryPopularProduct;
 import kr.or.connect.reservation.domain.product.InMemoryProductDto;
+import kr.or.connect.reservation.domain.product.RedisPopularProduct;
 import kr.or.connect.reservation.domain.product.dao.ProductRepository;
 import kr.or.connect.reservation.domain.product.dao.ProductSeatScheduleRepository;
 import kr.or.connect.reservation.domain.product.entity.Product;
@@ -40,7 +40,8 @@ public class ReservationService {
 	private final ProductSeatScheduleRepository productSeatScheduleRepository;
 	private final MemberRepository memberRepository;
 
-	private final InMemoryPopularProduct inMemoryPopularProduct;
+//	private final InMemoryPopularProduct inMemoryPopularProduct;
+	private final RedisPopularProduct redisPopularProduct;
 
 	@Transactional
 	public NewReservationResponse createReservation(NewReservationRequest request) {
@@ -166,25 +167,27 @@ public class ReservationService {
 
 	private void saveInMemoryProduct(Reservation reservation, Integer totalReservedQuantity) {
 		Product product = reservation.getProduct();
-		InMemoryProductDto inMemoryProductDto = InMemoryProductDto.builder()
+		InMemoryProductDto saveProductDto = InMemoryProductDto.builder()
 				.productId(product.getId())
 				.title(product.getTitle())
 				.runningTime(product.getRunningTime())
 				.description(product.getDescription())
 				.releaseDate(product.getReleaseDate())
 				.totalReservedCount(totalReservedQuantity).build();
-		inMemoryPopularProduct.reserve(inMemoryProductDto);
+		redisPopularProduct.reserve(saveProductDto);
+//		inMemoryPopularProduct.reserve(saveProductDto);
 	}
 
 	private void cancelInMemoryProduct(Reservation reservation, Integer totalReservedQuantity) {
 		Product product = reservation.getProduct();
-		InMemoryProductDto inMemoryProductDto = InMemoryProductDto.builder()
+		InMemoryProductDto cancelProductDto = InMemoryProductDto.builder()
 				.productId(product.getId())
 				.title(product.getTitle())
 				.runningTime(product.getRunningTime())
 				.description(product.getDescription())
 				.releaseDate(product.getReleaseDate())
 				.totalReservedCount(totalReservedQuantity).build();
-		inMemoryPopularProduct.cancel(inMemoryProductDto);
+		redisPopularProduct.cancel(cancelProductDto);
+		// inMemoryPopularProduct.cancel(cancelProductDto);
 	}
 }
