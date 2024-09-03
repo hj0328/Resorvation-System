@@ -46,9 +46,9 @@ public class ProductController {
 	 */
 	@GetMapping("/popular-products")
 	public List<PopularProductResponse> getRealTimePopularProduct(
-			@RequestParam(required = false, defaultValue = "0") Integer start
+			@RequestParam(required = false, defaultValue = "0") Integer startPage
 	) {
-		return productService.getRealTimePopularProduct(start);
+		return productService.getRealTimePopularProduct(startPage);
 	}
 
 
