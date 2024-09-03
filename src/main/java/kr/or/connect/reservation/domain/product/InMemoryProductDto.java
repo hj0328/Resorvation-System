@@ -6,10 +6,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Getter @Setter @ToString
-public class InMemoryProductDto {
+public class InMemoryProductDto implements Serializable, Comparable<InMemoryProductDto> {
     private Long productId;
     private String title;
     private String description;
@@ -44,5 +46,21 @@ public class InMemoryProductDto {
 
     public void minusReservedQuantity(Integer reservedQuantity) {
         this.totalReservedCount -= reservedQuantity;
+    }
+
+    @Override
+    public int compareTo(InMemoryProductDto o) {
+        // 동일 객체
+        boolean isEqual = Objects.equals(productId, o.productId);
+        if (isEqual) {
+            return 0;
+        }
+
+        // 다른 객체, 예약 개수가 동일 -> set에 추가
+        if (this.totalReservedCount == o.getTotalReservedCount()) {
+            return 1;
+        }
+        // 다른 객체, 예약 개수가 다름 -> 정렬하여 set에 추가
+        return - this.totalReservedCount + o.getTotalReservedCount();
     }
 }

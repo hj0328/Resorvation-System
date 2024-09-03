@@ -2,9 +2,7 @@ package kr.or.connect.reservation.domain.product;
 
 import kr.or.connect.reservation.config.exception.CustomException;
 import kr.or.connect.reservation.config.exception.CustomExceptionStatus;
-
 import kr.or.connect.reservation.domain.product.dao.*;
-import kr.or.connect.reservation.domain.product.dao.dto.PopularProductDto;
 import kr.or.connect.reservation.domain.product.dto.*;
 import kr.or.connect.reservation.domain.product.entity.*;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +35,7 @@ public class ProductService {
 	private final CategoryRepository categoryRepository;
 
 	private final InMemoryPopularProduct inMemoryPopularProduct;
+	private final RedisPopularProduct redisPopularProduct;
 
 	public List<ProductResponse> getPagedProductsByCategoryId(Long categoryId, Integer start) {
 		PageRequest pageRequest = PageRequest.of(start, PRODUCT_PAGE_SIZE
@@ -170,20 +169,41 @@ public class ProductService {
 		return ProductSeatScheduleResponse.of(seatSchedule, place);
 	}
 
-	public List<PopularProductResponse> getRealTimePopularProduct(Integer start) {
-		if (inMemoryPopularProduct.isEmpty()) {
-			log.info("get popular product from DB");
+	public List<PopularProductResponse> getRealTimePopularProduct(Integer startPage) {
+		List<InMemoryProductDto> inMemoryProductDto = redisPopularProduct.getInMemoryProductDto();
 
-			PageRequest pageRequest = PageRequest.of(start, PRODUCT_PAGE_SIZE);
-			List<PopularProductDto> popularProductDtos = productSeatScheduleRepository
-					.findPopularProductByReservation(pageRequest);
+		int offset = startPage * PRODUCT_PAGE_SIZE;
+		int limit = PRODUCT_PAGE_SIZE;
+		int fromIndex = offset;
+		int toIndex = offset + limit;
+		int idsSize = inMemoryProductDto.size();
 
-			return popularProductDtos.stream()
-					.map(PopularProductResponse::of)
-					.collect(Collectors.toList());
+		if (offset > idsSize) {
+			return Collections.emptyList();
 		}
 
-		int startPage = start * PRODUCT_PAGE_SIZE;
-		return inMemoryPopularProduct.getProducts(startPage, PRODUCT_PAGE_SIZE);
+		if (toIndex > idsSize) {
+			toIndex = idsSize;
+		}
+
+		return inMemoryProductDto.subList(fromIndex, toIndex).stream()
+				.map(PopularProductResponse::of)
+				.collect(Collectors.toList());
+
+//		local thread 코드
+//		if (inMemoryPopularProduct.isEmpty()) {
+//			log.info("get popular product from DB");
+//
+//			PageRequest pageRequest = PageRequest.of(startPage, PRODUCT_PAGE_SIZE);
+//			List<PopularProductDto> popularProductDtos = productSeatScheduleRepository
+//					.findPopularProductByReservation(pageRequest);
+//
+//			return popularProductDtos.stream()
+//					.map(PopularProductResponse::of)
+//					.collect(Collectors.toList());
+//		}
+//
+
+//		return inMemoryPopularProduct.getProducts(startPage, PRODUCT_PAGE_SIZE);
 	}
 }
